@@ -1,8 +1,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
+import 'package:central_borssa/business_logic/Borssa/bloc/borssa_event.dart';
+import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
+import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:central_borssa/presentation/Company/company.dart';
+import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readmore/readmore.dart';
 
@@ -12,26 +19,27 @@ import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Post/GetPost.dart';
 import 'package:central_borssa/presentation/Post/add_Post.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/intl.dart';
 
 class AllPost extends StatefulWidget {
   AllPostPage createState() => AllPostPage();
 }
 
-final List<String> imagesList = [
-  'assest/Images/slider3.jpg',
-  'assest/Images/slider3.jpg'
-];
-late PostBloc bloc;
-late CompanyBloc companybloc;
-late List<Posts> post = [];
-
-late int totalpost;
-late String? location;
-
 class AllPostPage extends State<AllPost> {
+  final List<String> imagesList = [
+    'assest/Images/slider3.jpg',
+    'assest/Images/slider3.jpg'
+  ];
+  late PostBloc bloc;
+  late BorssaBloc borssaBloc;
+  late CompanyBloc companybloc;
+  late List<Posts> post = [];
+  late List<list> cities = [];
+
+  late int totalpost;
+  late String? location;
   int currentPage = 1;
   late int countItemPerpage = 3;
+  late List<Object> selectedcities= [];
   final RefreshController refreshController =
       RefreshController(initialRefresh: true);
   GlobalKey _contentKey = GlobalKey();
@@ -67,10 +75,14 @@ class AllPostPage extends State<AllPost> {
     super.dispose();
   }
 
+  late final _citiesname;
+
   @override
   void initState() {
     post.clear();
     bloc = BlocProvider.of<PostBloc>(context);
+    borssaBloc = BlocProvider.of<BorssaBloc>(context);
+    borssaBloc.add(AllCitiesList());
 
     postloading();
     super.initState();
@@ -179,8 +191,12 @@ class AllPostPage extends State<AllPost> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(right: 6),
-                                    child: Text(DateFormat.Hm().format(
-                                        DateTime.parse(post[index].createdAt))),
+                                    child: Text(
+                                        // DateFormat.Hm().format(
+                                        //   DateTime.parse(
+                                        // post[index].createdAt
+                                        // ))
+                                        'time'),
                                   ),
                                   Text(
                                     post[index].user.name,
@@ -299,35 +315,316 @@ class AllPostPage extends State<AllPost> {
     );
   }
 
+  late DateTime _startDate = DateTime.now();
+  late DateTime _endDate = DateTime.now();
+
+  void _selectDate(bool type) async {
+    if (type) {
+      final DateTime? newDate = await showDatePicker(
+        context: context,
+        initialDate: _startDate,
+        firstDate: DateTime(2017, 1),
+        lastDate: DateTime(2022, 7),
+        helpText: 'الرجاء أختيار الوقت',
+      );
+      _startDate = newDate!;
+      print(_startDate);
+    }
+    if (!type) {
+      final DateTime? newDate = await showDatePicker(
+        context: context,
+        initialDate: _endDate,
+        firstDate: DateTime(2017, 1),
+        lastDate: DateTime(2022, 7),
+        helpText: 'الرجاء أختيار الوقت',
+      );
+      _endDate = newDate!;
+      print(_endDate);
+    }
+  }
+
+  Widget newDrawer() {
+    return new Drawer(
+      child: new ListView(
+        children: <Widget>[
+          new Container(
+            child: new DrawerHeader(
+                child: new CircleAvatar(
+              backgroundColor: navbar,
+              // child: Image.asset('asesst/Images/Logo.png')
+            )),
+            color: Colors.white,
+          ),
+          new Container(
+              color: Colors.white30,
+              child: Center(
+                child: new Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(''),
+                      leading: new Icon(Icons.account_circle),
+                      onTap: () {
+                        // Update the state of the app.//feas
+                        // ...
+                      },
+                    ),
+                    ListTile(
+                      title: Text('userPhone'),
+                      leading: new Icon(Icons.phone),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                      },
+                    ),
+                    ListTile(
+                      title: Text(''),
+                      leading: new Icon(Icons.location_on_outlined),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                      },
+                    ),
+                    ListTile(
+                      leading: new Icon(Icons.online_prediction_outlined),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                      },
+                    ),
+                  ],
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+
+  Widget newEndDrawer() {
+    return Directionality(
+        textDirection: TextDirection.rtl,
+        child: Drawer(
+          child: new ListView(
+            children: [
+              Column(
+                children: <Widget>[
+                  ListTile(
+                      title: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "البحث",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ))),
+                  Divider(
+                    color: Color(navbar.hashCode),
+                    thickness: 1,
+                    endIndent: 90,
+                    indent: 90,
+                    height: 1,
+                  ),
+                  ListTile(
+                    title: Text(
+                      "الوقت",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                      "تاريخ البداية",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    leading: InkWell(
+                      child: Icon(Icons.calendar_today_outlined),
+                      onTap: () {
+                        _selectDate(true);
+                      },
+                    ),
+                    subtitle: Text('تاريخ البداية المطلوب'),
+                  ),
+                  ListTile(
+                    title: Text(
+                      "تاريخ النهاية",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    leading: InkWell(
+                      child: Icon(Icons.calendar_today_outlined),
+                      onTap: () {
+                        _selectDate(true);
+                      },
+                    ),
+                    subtitle: Text('تاريح النهاية المطلوب'),
+                  ),
+                  Divider(
+                    color: Color(navbar.hashCode),
+                    thickness: 1,
+                    endIndent: 50,
+                    indent: 8.5,
+                    height: 1,
+                  ),
+                  ListTile(
+                    title: Text(
+                      "المدينة",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Column(children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: MultiSelectDialogField(
+                          items: cities
+                              .map((list citiesname) => MultiSelectItem<list?>(
+                                  citiesname, citiesname.name))
+                              .toList(),
+                          title: Text("المدن"),
+                          selectedColor: Color(navbar.hashCode),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Color(navbar.hashCode),
+                              width: 2,
+                            ),
+                          ),
+                          buttonIcon: Icon(
+                            Icons.location_on_outlined,
+                            color: Color(navbar.hashCode),
+                          ),
+                          buttonText: Text(
+                            "أختيار المدينة",
+                            style: TextStyle(
+                              color: Color(Colors.black.hashCode),
+                              fontSize: 16,
+                            ),
+                          ),
+                          onConfirm: (results) {
+                            selectedcities.add(results);
+                          },
+                        ),
+                      )
+                    ]),
+                  ),
+                  ListTile(
+                    title: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: Color(navbar.hashCode),
+                          alignment: Alignment.center),
+                      child: Text('البحث'),
+                      onPressed: () {
+                        print(_startDate);
+                        print(_endDate);
+                        print(selectedcities);
+                        // borssaBloc.add(AllCitiesList());
+                      },
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey[300],
-        body: BlocListener<PostBloc, PostState>(
-          listener: (context, state) {
-            if (state is PostLoadingInProgress) {
-              print(state);
-            } else if (state is PostsLoadedSuccess) {
-              if (post.isEmpty) {
-                post = state.posts.posts;
-                totalpost = state.posts.total;
-              } else if (post.isNotEmpty) {
-                post.addAll(state.posts.posts);
-              } else {
-                print(state);
-              }
-            } else if (state is PostsLoadingError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('خطأ في التحميل'),
-                  action: SnackBarAction(
-                    label: 'تنبيه',
-                    onPressed: () {},
-                  ),
-                ),
-              );
-            }
-          },
+        drawer: newDrawer(),
+        endDrawer: newEndDrawer(),
+        appBar: AppBar(
+          title: Center(
+            child: Text('البورصة المركزية'),
+          ),
+          actions: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: InkWell(
+                  child: Icon(Icons.notification_add_outlined), onTap: () {}),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: InkWell(
+                child: Icon(Icons.search),
+                onTap: () {
+                  showSearch(context: context, delegate: CitySearch());
+                },
+              ),
+            ),
+            Builder(
+              builder: (context) => IconButton(
+                icon: Icon(Icons.filter_alt_sharp),
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
+                tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+              ),
+            ),
+          ],
+          backgroundColor: Color(navbar.hashCode),
+        ),
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<PostBloc, PostState>(
+              listener: (context, state) {
+                if (state is PostLoadingInProgress) {
+                  print(state);
+                } else if (state is PostsLoadedSuccess) {
+                  if (post.isEmpty) {
+                    post = state.posts.posts;
+                    totalpost = state.posts.total;
+                  } else if (post.isNotEmpty) {
+                    post.addAll(state.posts.posts);
+                  } else {
+                    print(state);
+                  }
+                } else if (state is PostsLoadingError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('خطأ في التحميل'),
+                      action: SnackBarAction(
+                        label: 'تنبيه',
+                        onPressed: () {},
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+            BlocListener<BorssaBloc, BorssaState>(
+              listener: (context, state) {
+                if (state is AllCitiesLoading) {
+                  print(state);
+                } else if (state is AllCitiesLoaded) {
+                  print(state);
+                  cities.clear();
+                  cities = state.cities;
+                  print(cities);
+                  setState(() {
+                    // isloading = false;
+                  });
+                } else if (state is AllCitiesLoadingError) {
+                  print(state);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('خطأ في التحميل'),
+                      action: SnackBarAction(
+                        label: 'تنبيه',
+                        onPressed: () {},
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
           child: Container(
             height: double.infinity,
             child: SmartRefresher(

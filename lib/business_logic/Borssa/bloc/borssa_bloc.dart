@@ -14,22 +14,32 @@ class BorssaBloc extends Bloc<BorssaEvent, BorssaState> {
   Stream<BorssaState> mapEventToState(
     BorssaEvent event,
   ) async* {
+    //All City in Borssa
     if (event is AllCity) {
-      yield BorssaReloadingState();
-
       final allCititesResponse = await cityrepository.allCity();
       yield* allCititesResponse.fold((l) async* {
         print(l);
         yield BorssaErrorLoading();
         print('error');
       }, (r) async* {
+        yield BorssaReloadingState();
         yield GetAllCityState(cities: r);
         print('get all');
       });
     }
-    // else if (event is UpdatePriceEvent) {
-    //   final updatePriceResponse = await cityrepository.updatePrice(
-    //       event.id, event.buy, event.sell, event.status);
-    // }
+    //Filter All Posts
+    else if (event is AllCitiesList) {
+      final allCititesResponse = await cityrepository.allCityName();
+      yield* allCititesResponse.fold((l) async* {
+        print(l);
+        print('from error');
+        yield AllCitiesLoadingError();
+      }, (r) async* {
+        yield AllCitiesLoading();
+        print(r);
+        yield AllCitiesLoaded(cities: r);
+        print('get all');
+      });
+    }
   }
 }

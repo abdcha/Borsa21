@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'package:central_borssa/data/model/City.dart';
+
 class BorssaEvent extends Equatable {
   const BorssaEvent();
 
@@ -11,15 +13,4 @@ class StartBorssaEvent extends BorssaEvent {}
 
 class AllCity extends BorssaEvent {}
 
-// class UpdatePriceEvent extends BorssaEvent {
-//   late final int id;
-//   late final int buy;
-//   late final int sell;
-//   late final String status;
-//   UpdatePriceEvent({
-//     required this.id,
-//     required this.buy,
-//     required this.sell,
-//     required this.status,
-//   });
-// }
+class AllCitiesList extends BorssaEvent {}

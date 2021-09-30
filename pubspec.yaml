@@ -31,12 +31,14 @@ dependencies:
   flutter_bloc: ^7.1.0
   flutter_offline: ^2.0.0
   image_picker: ^0.8.4
+  multi_select_flutter: ^4.0.0
   my_flutter_pusher: ^1.0.0
   pull_to_refresh: ^2.0.0
   readmore: ^2.1.0
   rxdart: ^0.27.1
   shared_preferences: ^2.0.7
   syncfusion_flutter_charts: ^19.2.62
+  syncfusion_flutter_datepicker: ^19.2.62
   url_launcher: ^6.0.4
 
 dev_dependencies:

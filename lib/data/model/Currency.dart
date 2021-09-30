@@ -42,8 +42,8 @@ class Data {
 
 class CurrencyPrice {
   late int id;
-  late int buy;
-  late int sell;
+  late double buy;
+  late double sell;
   late String sellStatus;
   late int createdBy;
   late int cityId;
@@ -54,8 +54,8 @@ class CurrencyPrice {
 
   CurrencyPrice.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    buy = json['buy'];
-    sell = json['sell'];
+    buy = json['buy'].toDouble();
+    sell = json['sell'].toDouble(); 
     sellStatus = json['sell_status'];
     createdBy = json['created_by'];
     cityId = json['city_id'];

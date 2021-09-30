@@ -1,4 +1,5 @@
 import 'package:central_borssa/data/model/Currency.dart';
+import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:equatable/equatable.dart';
 
 class BorssaState extends Equatable {
@@ -29,3 +30,16 @@ class UpdateBorssaLoading extends BorssaState {}
 class UpdateBorssaError extends BorssaState {}
 
 class UpdateBorssaSuccess extends BorssaState {}
+
+//Filter All Posts
+
+class AllCitiesLoading extends BorssaState {}
+
+class AllCitiesLoadingError extends BorssaState {}
+
+class AllCitiesLoaded extends BorssaState {
+  late final List<list> cities;
+  AllCitiesLoaded({
+    required this.cities,
+  });
+}

@@ -70,18 +70,8 @@ class MyApp extends StatelessWidget {
                     print('hi 2');
                     return HomeOfApp();
                   }
-                } else if (snapshot.hasData) {
-                  // print('no data');
-                  print('hi 3');
-
+                } else
                   return HomeOfApp();
-                } else if (!snapshot.hasData) {
-                  // print('else data');
-                  print(snapshot.data);
-                  return Loginpage();
-                } else {
-                  return HomeOfApp();
-                }
               }),
         ));
   }
