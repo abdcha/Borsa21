@@ -1,6 +1,8 @@
 import 'package:central_borssa/constants/url.dart';
 import 'package:central_borssa/data/model/Post/CompanyPost.dart';
 import 'package:dartz/dartz.dart';
+import 'package:central_borssa/data/model/Post/Cities.dart';
+
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +23,25 @@ class CompanyRepository {
       var data = new Data.fromJson(companyPostResponse.data['data']);
       if (data != null) {
         return Right(data);
+      } else {
+        return Left('error');
+      }
+      // print(data.posts);
+    } catch (e) {
+      return Left('error');
+    }
+  }
+
+  Future<Either<String, dynamic>> getAllCompanyName() async {
+    try {
+      SharedPreferences _pref = await SharedPreferences.getInstance();
+      var token = _pref.get('token');
+      _dio.options.headers['authorization'] = 'Bearer $token';
+      var companyNameResponse = await _dio.get(allCompany);
+      print(companyNameResponse.data['data']);
+      var response = data.fromJson(companyNameResponse.data['data']);
+      if (companyNameResponse.data['status'] == 'success') {
+        return Right(response.lists);
       } else {
         return Left('error');
       }

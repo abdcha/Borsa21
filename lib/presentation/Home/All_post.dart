@@ -4,7 +4,7 @@ import 'package:central_borssa/business_logic/Borssa/bloc/borssa_event.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
 import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:central_borssa/presentation/Company/company.dart';
-import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
+import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,18 +18,21 @@ import 'package:central_borssa/business_logic/Post/bloc/post_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Post/GetPost.dart';
 import 'package:central_borssa/presentation/Post/add_Post.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AllPost extends StatefulWidget {
   AllPostPage createState() => AllPostPage();
 }
 
+late List<list> _companiesname = [];
+
 class AllPostPage extends State<AllPost> {
   final List<String> imagesList = [
     'assest/Images/slider3.jpg',
     'assest/Images/slider3.jpg'
   ];
-  late PostBloc bloc;
+  late PostBloc postbloc;
   late BorssaBloc borssaBloc;
   late CompanyBloc companybloc;
   late List<Posts> post = [];
@@ -39,21 +42,27 @@ class AllPostPage extends State<AllPost> {
   late String? location;
   int currentPage = 1;
   late int countItemPerpage = 3;
-  late List<Object> selectedcities= [];
+  late List<list?> selectedcities = [];
   final RefreshController refreshController =
       RefreshController(initialRefresh: true);
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
+  logout() async {
+    print('from');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
 
   Future<bool> postloading({bool isRefresh = false}) async {
-    bloc.add(GetAllPost(page: currentPage, CountItemPerpage: countItemPerpage));
+    postbloc
+        .add(GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
     currentPage++;
 
     if (post.isNotEmpty &&
         (totalpost / countItemPerpage).round() >= currentPage) {
       print('not upper');
-      bloc.add(
-          GetAllPost(page: currentPage, CountItemPerpage: countItemPerpage));
+      postbloc.add(
+          GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
       currentPage++;
 
       print('Not Empty');
@@ -75,13 +84,13 @@ class AllPostPage extends State<AllPost> {
     super.dispose();
   }
 
-  late final _citiesname;
-
   @override
   void initState() {
     post.clear();
-    bloc = BlocProvider.of<PostBloc>(context);
+    postbloc = BlocProvider.of<PostBloc>(context);
     borssaBloc = BlocProvider.of<BorssaBloc>(context);
+    companybloc = BlocProvider.of<CompanyBloc>(context);
+    companybloc.add(GetAllCompanies());
     borssaBloc.add(AllCitiesList());
 
     postloading();
@@ -315,34 +324,6 @@ class AllPostPage extends State<AllPost> {
     );
   }
 
-  late DateTime _startDate = DateTime.now();
-  late DateTime _endDate = DateTime.now();
-
-  void _selectDate(bool type) async {
-    if (type) {
-      final DateTime? newDate = await showDatePicker(
-        context: context,
-        initialDate: _startDate,
-        firstDate: DateTime(2017, 1),
-        lastDate: DateTime(2022, 7),
-        helpText: 'الرجاء أختيار الوقت',
-      );
-      _startDate = newDate!;
-      print(_startDate);
-    }
-    if (!type) {
-      final DateTime? newDate = await showDatePicker(
-        context: context,
-        initialDate: _endDate,
-        firstDate: DateTime(2017, 1),
-        lastDate: DateTime(2022, 7),
-        helpText: 'الرجاء أختيار الوقت',
-      );
-      _endDate = newDate!;
-      print(_endDate);
-    }
-  }
-
   Widget newDrawer() {
     return new Drawer(
       child: new ListView(
@@ -391,6 +372,17 @@ class AllPostPage extends State<AllPost> {
                         // ...
                       },
                     ),
+                    ListTile(
+                      title: Text('تسجيل الخروج'),
+                      leading: new Icon(Icons.logout_sharp),
+                      onTap: () {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) {
+                          logout();
+                          return Loginpage();
+                        }));
+                      },
+                    ),
                   ],
                 ),
               ))
@@ -422,50 +414,6 @@ class AllPostPage extends State<AllPost> {
                     thickness: 1,
                     endIndent: 90,
                     indent: 90,
-                    height: 1,
-                  ),
-                  ListTile(
-                    title: Text(
-                      "الوقت",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  ListTile(
-                    title: Text(
-                      "تاريخ البداية",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    leading: InkWell(
-                      child: Icon(Icons.calendar_today_outlined),
-                      onTap: () {
-                        _selectDate(true);
-                      },
-                    ),
-                    subtitle: Text('تاريخ البداية المطلوب'),
-                  ),
-                  ListTile(
-                    title: Text(
-                      "تاريخ النهاية",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    leading: InkWell(
-                      child: Icon(Icons.calendar_today_outlined),
-                      onTap: () {
-                        _selectDate(true);
-                      },
-                    ),
-                    subtitle: Text('تاريح النهاية المطلوب'),
-                  ),
-                  Divider(
-                    color: Color(navbar.hashCode),
-                    thickness: 1,
-                    endIndent: 50,
-                    indent: 8.5,
                     height: 1,
                   ),
                   ListTile(
@@ -506,25 +454,35 @@ class AllPostPage extends State<AllPost> {
                               fontSize: 16,
                             ),
                           ),
-                          onConfirm: (results) {
-                            selectedcities.add(results);
+                          onConfirm: (List<list?> results) {
+                            setState(() {
+                              print(results);
+                              selectedcities = results;
+                              print(selectedcities);
+                            });
                           },
                         ),
                       )
                     ]),
                   ),
                   ListTile(
-                    title: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Color(navbar.hashCode),
-                          alignment: Alignment.center),
-                      child: Text('البحث'),
-                      onPressed: () {
-                        print(_startDate);
-                        print(_endDate);
-                        print(selectedcities);
-                        // borssaBloc.add(AllCitiesList());
-                      },
+                    title: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Color(navbar.hashCode),
+                            alignment: Alignment.center),
+                        child: Text('البحث'),
+                        onPressed: () {
+                          // selectedcities.clear();
+                          print(selectedcities);
+                          postbloc.add(GetPostByCityName(
+                              postscityName: selectedcities,
+                              page: 1,
+                              countItemPerpage: 5,
+                              sortby: "desc"));
+                        },
+                      ),
                     ),
                   )
                 ],
@@ -555,7 +513,7 @@ class AllPostPage extends State<AllPost> {
               child: InkWell(
                 child: Icon(Icons.search),
                 onTap: () {
-                  showSearch(context: context, delegate: CitySearch());
+                  showSearch(context: context, delegate: CitySearchPage());
                 },
               ),
             ),
@@ -624,6 +582,34 @@ class AllPostPage extends State<AllPost> {
                 }
               },
             ),
+            BlocListener<CompanyBloc, CompanyState>(
+              listener: (context, state) {
+                if (state is CompanyNameIsLodaing) {
+                  print(state);
+                } else if (state is CompanyNameIsLoaded) {
+                  print(state);
+                  _companiesname.clear();
+                  _companiesname = state.companies;
+                  print('from company');
+                  print(_companiesname);
+                  setState(() {
+                    // isloading = false;
+                  });
+                } else if (state is CompanyNameError) {
+                  print(state);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('خطأ في التحميل'),
+                      action: SnackBarAction(
+                        label: 'تنبيه',
+                        onPressed: () {},
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
           ],
           child: Container(
             height: double.infinity,
@@ -664,4 +650,110 @@ class AllPostPage extends State<AllPost> {
               }));
             }));
   }
+}
+
+class CitySearchPage extends SearchDelegate<String> {
+  @override
+  List<Widget> buildActions(BuildContext context) => [
+        IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            if (query.isEmpty) {
+              close(context, '');
+            } else {
+              query = '';
+              showSuggestions(context);
+            }
+          },
+        )
+      ];
+
+  @override
+  Widget buildLeading(BuildContext context) => IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () => close(context, ''),
+      );
+
+  @override
+  Widget buildResults(BuildContext context) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.location_city, size: 120),
+            const SizedBox(height: 48),
+            Text(
+              query,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 64,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      );
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggestions = query.isEmpty
+        ? _companiesname
+        : _companiesname.where((city) {
+            final cityLower = city.name.toLowerCase();
+            final queryLower = query.toLowerCase();
+
+            return cityLower.startsWith(queryLower);
+          }).toList();
+
+    return buildSuggestionsSuccess(suggestions);
+  }
+
+  Widget buildSuggestionsSuccess(List<list> suggestions) => ListView.builder(
+        itemCount: suggestions.length,
+        itemBuilder: (context, index) {
+          final suggestion = suggestions[index];
+          final queryText = suggestion.name.substring(0, query.length);
+          final remainingText = suggestion.name.substring(query.length);
+
+          return ListTile(
+            onTap: () {
+              query = suggestion.name;
+
+              // 1. Show Results
+              showResults(context);
+
+              // 2. Close Search & Return Result
+              // close(context, suggestion);
+
+              // 3. Navigate to Result Page
+              //  Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (BuildContext context) => ResultPage(suggestion),
+              //   ),
+              // );
+            },
+            leading: Icon(Icons.location_city),
+            // title: Text(suggestion),
+            title: RichText(
+              text: TextSpan(
+                text: queryText,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+                children: [
+                  TextSpan(
+                    text: remainingText,
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
 }

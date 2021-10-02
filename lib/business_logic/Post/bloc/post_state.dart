@@ -18,6 +18,21 @@ class PostsLoadedSuccess extends PostState {
   });
 }
 
+//Get Post By City Name Start
+
+class GetPostByCityNameLoading extends PostState {}
+
+class GetPostByCityNameError extends PostState {}
+
+class GetPostByCityNameLoaded extends PostState {
+   late final PostGet posts;
+  GetPostByCityNameLoaded({
+    required this.posts,
+  });
+}
+
+//Get Post By City Name End
+
 class PostLoadingInProgress extends PostState {}
 
 class AddPostSuccess extends PostState {}

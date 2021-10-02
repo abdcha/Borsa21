@@ -20,6 +20,18 @@ class GetAllInformationLoaded extends CompanyState {
   });
 }
 
+//Companies All
+class CompanyNameIsLodaing extends CompanyState {}
+
+class CompanyNameError extends CompanyState {}
+
+class CompanyNameIsLoaded extends CompanyState {
+  late final List<list> companies;
+  CompanyNameIsLoaded({
+    required this.companies,
+  });
+}
+
 class FollowInProgress extends CompanyState {}
 
 class FollowError extends CompanyState {}

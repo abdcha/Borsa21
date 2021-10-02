@@ -12,6 +12,7 @@ import 'package:central_borssa/data/repositroy/PostRepository.dart';
 import 'package:central_borssa/data/repositroy/loginRepository.dart';
 import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
+import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
@@ -23,16 +24,42 @@ void main() {
   runApp(MyApp());
 }
 
-Future<String?> getValue() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  var stringValue = prefs.getString('token');
-
-  // prefs.clear();
-  // print(stringValue);
-  return stringValue;
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyHomePage(),
+    );
+  }
 }
 
-class MyApp extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  late Future test;
+  late String token = "";
+  Future<String?> getValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // prefs.clear();
+    setState(() {
+      if (prefs.getString('token') != null) {
+        token = prefs.getString('token').toString();
+      } else {
+        token = 'error';
+      }
+    });
+    return token;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    test = getValue();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -57,22 +84,40 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
-          home: FutureBuilder(
-              future: getValue(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  print(snapshot.data);
+            home: FutureBuilder(
+          future: test,
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                print('HomeOfApp');
 
-                  if (snapshot.data == null) {
-                    print('hi 1');
-                    return Loginpage();
-                  } else {
-                    print('hi 2');
-                    return HomeOfApp();
-                  }
-                } else
+                return HomeOfApp();
+              case ConnectionState.waiting:
+                print('waiting');
+                return Welcome();
+              case ConnectionState.active:
+                print('active');
+
+                return Loginpage();
+              case ConnectionState.done:
+                print('done');
+                if (token == "" || token == 'error') {
+                  print('hi $token');
+                  return Loginpage();
+                } else {
                   return HomeOfApp();
-              }),
-        ));
+                }
+                // ignore: dead_code
+                break;
+              default:
+                print('default');
+
+                return Container(
+                    child: Center(
+                  child: CircularProgressIndicator(),
+                ));
+            }
+          },
+        )));
   }
 }

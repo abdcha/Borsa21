@@ -1,44 +1,7 @@
 import 'package:flutter/material.dart';
 
-
-class Search extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () async {
-                showSearch(context: context, delegate: CitySearch());
-
-                // final results = await
-                //     showSearch(context: context, delegate: CitySearch());
-
-                // print('Result: $results');
-              },
-            )
-          ],
-          backgroundColor: Colors.purple,
-        ),
-        body: Container(
-          color: Colors.black,
-          child: Center(
-            child: Text(
-              'Local Weather Search',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 64,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-      );
-}
-
-class CitySearch extends SearchDelegate<String> {
+class CitySearchPage extends SearchDelegate<String> {
+  
   final cities = [
     'Berlin',
     'Paris',

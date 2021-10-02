@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:central_borssa/data/model/Post/GetPost.dart';
 import 'package:central_borssa/data/repositroy/PostRepository.dart';
 import 'package:equatable/equatable.dart';
@@ -31,11 +32,23 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } else if (event is GetAllPost) {
       yield PostLoadingInProgress();
       var getAllPostResponse =
-          await postRepository.getAllPost(event.page, event.CountItemPerpage);
+          await postRepository.getAllPost(event.page, event.countItemPerpage);
       yield* getAllPostResponse.fold((l) async* {
         yield PostsLoadingError();
       }, (r) async* {
         yield PostsLoadedSuccess(posts: r);
+      });
+    } else if (event is GetPostByCityName) {
+      var getAllPostResponse = await postRepository.getAllPostByCityName(
+          event.postscityName,
+          event.sortby,
+          event.page,
+          event.countItemPerpage);
+      yield* getAllPostResponse.fold((l) async* {
+        yield GetPostByCityNameError();
+      }, (r) async* {
+        yield GetPostByCityNameLoading();
+        yield GetPostByCityNameLoaded(posts: r);
       });
     }
   }

@@ -36,11 +36,24 @@ class DeletePost extends PostEvent {
   });
 }
 
+class GetPostByCityName extends PostEvent {
+  late final List<list?> postscityName;
+  late final int page;
+  late final int countItemPerpage;
+  late final String sortby;
+  GetPostByCityName({
+    required this.postscityName,
+    required this.page,
+    required this.countItemPerpage,
+    required this.sortby,
+  });
+}
+
 class GetAllPost extends PostEvent {
   late final int page;
-  late final int CountItemPerpage;
+  late final int countItemPerpage;
   GetAllPost({
     required this.page,
-    required this.CountItemPerpage,
+    required this.countItemPerpage,
   });
 }

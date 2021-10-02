@@ -8,4 +8,6 @@ final allCompanyPost = 'https://ferasalhallak.online/api/posts/company/';
 final chartUrl = 'https://ferasalhallak.online/api/currencyChart?city_id=';
 final allCities = 'https://ferasalhallak.online/api/lists/cities';
 final allCompany = 'https://ferasalhallak.online/api/lists/companies';
+final allPostByCityName =
+    'https://ferasalhallak.online/api/companyFilter?city_id=';
 final followUrl = 'https://ferasalhallak.online/api/followCompany?company_id=';

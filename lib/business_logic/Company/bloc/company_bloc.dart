@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:central_borssa/data/model/Post/CompanyPost.dart';
 import 'package:central_borssa/data/repositroy/CompanyRepository.dart';
 import 'package:equatable/equatable.dart';
@@ -30,6 +31,16 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
         print('we are here');
         yield GetAllInformationLoading();
         yield GetAllInformationLoaded(data: r);
+      });
+    } else if (event is GetAllCompanies) {
+      var getAllCompanyInformationsResponse =
+          await companyRepository.getAllCompanyName();
+      yield* getAllCompanyInformationsResponse.fold((l) async* {
+        yield CompanyNameError();
+      }, (r) async* {
+        print('we are here');
+        yield CompanyNameIsLodaing();
+        yield CompanyNameIsLoaded(companies: r);
       });
     } else if (event is FollowEvent) {
       var getAllCompanyInformationsResponse =

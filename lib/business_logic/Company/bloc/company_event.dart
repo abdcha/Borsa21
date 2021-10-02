@@ -23,6 +23,8 @@ class GetAllCompanyInformationsEvent extends CompanyEvent {
   });
 }
 
+class GetAllCompanies extends CompanyEvent {}
+
 class FollowEvent extends CompanyEvent {
   late final int id;
   FollowEvent({
