@@ -1,3 +1,4 @@
+import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +22,7 @@ class home_page extends State<HomeOfApp>
   late String userPhone = "";
   late String userLocation = "";
   late String userType = "";
+  late List<String> userPermissions = [];
   int companyuser = 0;
 
   @override
@@ -29,39 +31,63 @@ class home_page extends State<HomeOfApp>
   //test
 
   callBody(int value) {
-    switch (value) {
-      case 0:
-        return AllPost();
-      case 1:
-        return Chat();
-      case 2:
-        return CentralBorssa();
-      case 3:
-        return CompanyProfile();
-        // ignore: dead_code
-        break;
-      default:
+    if (userPermissions.contains('Chat_Permission')) {
+      switch (value) {
+        case 0:
+          return AllPost();
+        case 1:
+          return CentralBorssa();
+        case 2:
+          return Chat();
+        case 3:
+          return CompanyProfile();
+          // ignore: dead_code
+          break;
+        default:
+      }
+    } else if (userPermissions.contains('Trader_Permission')) {
+      switch (value) {
+        case 0:
+          return CentralBorssa();
+        case 1:
+          return CompanyProfile();
+          // ignore: dead_code
+          break;
+        default:
+      }
+    } else if (userPermissions.contains('Update_Auction_Price_Permission')) {
+      switch (value) {
+        case 0:
+          return CentralBorssa();
+        case 1:
+          return Chat();
+          // ignore: dead_code
+          break;
+        default:
+      }
     }
   }
 
+  late Future navbarbottom;
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.get('username').toString();
     userPhone = prefs.get('userphone').toString();
     print(userPhone);
-
     userLocation = "Empty";
+    userPermissions = prefs.getStringList('permissions')!.toList();
+    var y = userPermissions.contains('Update_Auction_Price_Permission');
+    print('user permission$y');
     print(userLocation);
     companyuser = int.parse(prefs.get('companyid').toString());
     print(companyuser);
-
     userType = prefs.get('roles').toString();
     setState(() {});
   }
 
   @override
   void initState() {
-    sharedValue();
+    navbarbottom = sharedValue();
     super.initState();
   }
 
@@ -73,136 +99,110 @@ class home_page extends State<HomeOfApp>
     }
   }
 
-  Widget newDrawer() {
-    return new Drawer(
-      child: new ListView(
-        children: <Widget>[
-          new Container(
-            child: new DrawerHeader(
-                child: new CircleAvatar(
-              backgroundColor: navbar,
-              // child: Image.asset('asesst/Images/Logo.png')
-            )),
-            color: Colors.white,
-          ),
-          new Container(
-              color: Colors.white30,
-              child: Center(
-                child: new Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(userName),
-                      leading: new Icon(Icons.account_circle),
-                      onTap: () {
-                        // Update the state of the app.//feas
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      title: Text(userPhone),
-                      leading: new Icon(Icons.phone),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      title: Text(userLocation),
-                      leading: new Icon(Icons.location_on_outlined),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      title: userActive != 0 ? Text('فعال') : Text('غير فعال'),
-                      leading: new Icon(Icons.online_prediction_outlined),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
-                    ),
-                  ],
-                ),
-              ))
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     final GlobalKey<ScaffoldState> _scaffoldKey =
         new GlobalKey<ScaffoldState>();
-    return Scaffold(
-        key: _scaffoldKey,
-        drawer: newDrawer(),
-        appBar: selectedPage == 1
-            ? AppBar(
-                title: Center(
-                  child: Text('البورصة المركزية'),
-                ),
-                actions: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4),
-                    child: InkWell(
-                        child: Icon(Icons.notification_add_outlined),
-                        onTap: () {}),
-                  ),
-                  // selectedPage == 0
-                  //     ? Padding(
-                  //         padding: EdgeInsets.symmetric(horizontal: 4),
-                  //         child: InkWell(
-                  //           child: Icon(Icons.search),
-                  //           onTap: () {
-                  //             showSearch(
-                  //                 context: context, delegate: CitySearch());
-                  //           },
-                  //         ),
-                  //       )
-                  //     : Container(),
-                  Builder(
-                    builder: (context) => IconButton(
-                      icon: Icon(Icons.filter_alt_sharp),
-                      onPressed: () => Scaffold.of(context).openEndDrawer(),
-                      tooltip: MaterialLocalizations.of(context)
-                          .openAppDrawerTooltip,
-                    ),
-                  ),
-                ],
-                backgroundColor: Color(navbar.hashCode),
-              )
-            : null,
-        body: callBody(selectedPage),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Color(navbar.hashCode),
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white.withOpacity(.60),
-          selectedFontSize: 14,
-          unselectedFontSize: 14,
-          currentIndex: selectedPage,
-          onTap: choosePage,
-          items: [
-            BottomNavigationBarItem(
-              label: 'الأساسية',
-              icon: Icon(Icons.home),
-            ),
-            BottomNavigationBarItem(
-              label: 'المحادثة',
-              icon: Icon(Icons.chat_outlined),
-            ),
-            BottomNavigationBarItem(
-              label: 'مزاد الحواللات',
-              icon: Icon(Icons.attach_money),
-            ),
-            BottomNavigationBarItem(
-              label: 'الشخصية',
-              icon: Icon(Icons.person_rounded),
-            ),
-          ],
-        ));
+    return FutureBuilder(
+        future: navbarbottom,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return Welcome();
+            case ConnectionState.none:
+              return Welcome();
+            case ConnectionState.active:
+              return Welcome();
+            case ConnectionState.done:
+              return Scaffold(
+                  key: _scaffoldKey,
+                  body: callBody(selectedPage),
+                  bottomNavigationBar: BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
+                    backgroundColor: Color(navbar.hashCode),
+                    selectedItemColor: Colors.white,
+                    unselectedItemColor: Colors.white.withOpacity(.60),
+                    selectedFontSize: 14,
+                    unselectedFontSize: 14,
+                    currentIndex: selectedPage,
+                    onTap: choosePage,
+                    items: [
+                      if (userPermissions.contains('Chat_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'الأساسية',
+                          icon: Icon(Icons.home),
+                        ),
+                      if (userPermissions.contains('Chat_Permission') ||
+                          userPermissions.contains('Trader_Permission') ||
+                          userPermissions
+                              .contains('Update_Auction_Price_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'مزاد العملات',
+                          icon: Icon(Icons.attach_money),
+                        ),
+                      if (userPermissions.contains('Chat_Permission') ||
+                          userPermissions
+                              .contains('Update_Auction_Price_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'المحادثة',
+                          icon: Icon(Icons.chat_outlined),
+                        ),
+                      if (userPermissions.contains('Chat_Permission') ||
+                          userPermissions.contains('Trader_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'الشخصية',
+                          icon: Icon(Icons.person_rounded),
+                        ),
+                    ],
+                  ));
+
+              // ignore: dead_code
+              break;
+            default:
+              return Scaffold(
+                  key: _scaffoldKey,
+                  body: callBody(selectedPage),
+                  bottomNavigationBar: BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
+                    backgroundColor: Color(navbar.hashCode),
+                    selectedItemColor: Colors.white,
+                    unselectedItemColor: Colors.white.withOpacity(.60),
+                    selectedFontSize: 14,
+                    unselectedFontSize: 14,
+                    currentIndex: selectedPage,
+                    onTap: choosePage,
+                    items: [
+                      if (userPermissions.contains('Chat_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'الأساسية',
+                          icon: Icon(Icons.home),
+                        ),
+                      if (userPermissions.contains('Chat_Permission') ||
+                          userPermissions.contains('Trader_Permission') ||
+                          userPermissions
+                              .contains('Update_Auction_Price_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'مزاد العملات',
+                          icon: Icon(Icons.attach_money),
+                        ),
+                      if (userPermissions.contains('Chat_Permission') ||
+                          userPermissions
+                              .contains('Update_Auction_Price_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'المحادثة',
+                          icon: Icon(Icons.chat_outlined),
+                        ),
+                      if (userPermissions.contains('Chat_Permission') ||
+                          userPermissions.contains('Trader_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'الشخصية',
+                          icon: Icon(Icons.person_rounded),
+                        ),
+                    ],
+                  ));
+          }
+        });
   }
 }

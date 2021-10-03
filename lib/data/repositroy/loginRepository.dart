@@ -9,23 +9,23 @@ import 'package:dartz/dartz.dart';
 class LoginRepository {
   Future<Either<String, dynamic>> login(String phone, String password) async {
     Dio _dio = Dio();
-    // late List<Permissions> userpermissions = [];
+    late List<Permissions> userpermissions = [];
     //Start Login evaluation
-    print('from here teest');
-    print(baseUrl);
+    // print('from here teest');
+    // print(baseUrl);
     var loginResponse = await _dio.post(baseUrl,
         data: jsonEncode(({"phone": phone, "password": password})));
-    print(loginResponse);
+    // print(loginResponse);
     if (loginResponse.data['status'] == "success") {
       //Start store token
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       var _responsetoken = loginResponse.data['data']['token'];
       _prefs.setString('token', _responsetoken);
-      print('from permisiions');
+
       //User Informations
       _dio.options.headers['authorization'] = 'Bearer $_responsetoken';
       var permissionResponse = await _dio.get(permissionUrl);
-      print(permissionResponse);
+      // print(permissionResponse);
       var userInformations =
           new UserPermission.fromJson(permissionResponse.data['data']);
       await _prefs.setString('username', userInformations.user.name);
@@ -34,12 +34,15 @@ class LoginRepository {
       await _prefs.setInt('userid', userInformations.user.id);
       await _prefs.setInt('companyid', userInformations.user.companyid);
 
-      print(userInformations);
       //permissions
-      // userInformations.premissions
-      //     .map((ourpermision) => userpermissions.add(ourpermision));
-      // print(userpermissions);
-      // await _prefs.setStringList('permissions', userpermissions);
+
+      late List<String> permissions = [];
+      for (var i = 0; i < userInformations.permission.length; i++) {
+        permissions.add(userInformations.permission[i].name);
+      }
+      await _prefs.setStringList('permissions', permissions);
+      print(permissions);
+
       //User Type
       await _prefs.setString('roles', userInformations.roles.first);
 
