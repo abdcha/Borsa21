@@ -1,4 +1,6 @@
 import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
+import 'package:central_borssa/constants/string.dart';
+import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +11,7 @@ import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
+import 'dart:ui' as ui;
 
 class CompanyProfile extends StatefulWidget {
   CompanyProfilePage createState() => CompanyProfilePage();
@@ -77,79 +80,68 @@ class CompanyProfilePage extends State<CompanyProfile> {
                   // Slider Images
                   Container(
                     margin: const EdgeInsets.only(bottom: 10, top: 6),
-                    child: Card(
-                      elevation: 5.0,
-                      shadowColor: Colors.black,
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.circular(30.0),
-                      // ),
-                      // clipBehavior: Clip.antiAlias,
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(
-                              bottom: 15,
-                              top: 20,
-                            ),
-                            height: 150,
-                            width: 150,
-                            child: CircleAvatar(
-                              radius: 30.0,
-                              backgroundColor: Colors.transparent,
-                              backgroundImage: NetworkImage(
-                                companypost[index].company.image,
-                              ),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(
+                            bottom: 15,
+                            top: 20,
+                          ),
+                          height: 150,
+                          width: 150,
+                          child: CircleAvatar(
+                            radius: 30.0,
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: NetworkImage(
+                              companypost[index].company.image,
                             ),
                           ),
-                          Container(
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: Text(
+                            companypost[index].company.name,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                        ),
+                        Container(
                             margin: const EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              companypost[index].company.name,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ),
-                          Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: InkWell(
-                                        onTap: () {
-                                          whatsappSender(
-                                              message: "hi",
-                                              number: '+9647716600999');
-                                        },
-                                        child: Image.asset(
-                                          'assest/Images/whatsapp.png',
-                                          width: 25,
-                                          height: 25,
-                                        ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        whatsappSender(
+                                            message: "hi",
+                                            number: '+9647716600999');
+                                      },
+                                      child: Image.asset(
+                                        'assest/Images/whatsapp.png',
+                                        width: 25,
+                                        height: 25,
                                       ),
                                     ),
-                                    // Padding(
-                                    //   padding: const EdgeInsets.all(8.0),
-                                    //   child: InkWell(
-                                    //       onTap: () {},
-                                    //       child: Icon(
-                                    //           Icons.subscriptions_outlined)),
-                                    // ),
-                                  ],
-                                ),
-                              )),
-                        ],
-                      ),
+                                  ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.all(8.0),
+                                  //   child: InkWell(
+                                  //       onTap: () {},
+                                  //       child: Icon(
+                                  //           Icons.subscriptions_outlined)),
+                                  // ),
+                                ],
+                              ),
+                            )),
+                      ],
                     ),
                   ),
                 Card(
                   elevation: 5.0,
                   shadowColor: Colors.black,
-                  // shape: RoundedRectangleBorder(
-                  //   borderRadius: BorderRadius.circular(30.0),
-                  // ),
                   clipBehavior: Clip.antiAlias,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -157,7 +149,6 @@ class CompanyProfilePage extends State<CompanyProfile> {
                       Row(
                         mainAxisAlignment:
                             MainAxisAlignment.end, //change here don't //worked
-
                         children: [
                           Container(
                               margin: const EdgeInsets.only(
@@ -263,8 +254,9 @@ class CompanyProfilePage extends State<CompanyProfile> {
               ],
             );
           },
-          separatorBuilder: (BuildContext context, int index) =>
-              const Divider(),
+          separatorBuilder: (BuildContext context, int index) => const Divider(
+            height: 1,
+          ),
         ),
       ),
     );
@@ -281,12 +273,108 @@ class CompanyProfilePage extends State<CompanyProfile> {
     bloc = BlocProvider.of<CompanyBloc>(context);
     companypost.clear();
     postloading();
+    sharedValue();
     super.initState();
+  }
+
+  late List<String> userPermissions = [];
+  late String userName = "";
+  late String userPhone = "";
+  late String userType = "";
+  late String userActive = "";
+
+  sharedValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userName = prefs.get('username').toString();
+    userPhone = prefs.get('userphone').toString();
+    userPermissions = prefs.getStringList('permissions')!.toList();
+    companyuser = int.parse(prefs.get('companyid').toString());
+    userType = prefs.get('roles').toString();
+    if (prefs.get('end_at') != null) {
+      userActive = prefs.get('end_at').toString();
+    }
+    setState(() {});
+  }
+
+  logout() async {
+    print('from');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+
+  Widget newDrawer() {
+    return new Drawer(
+      child: new ListView(
+        children: <Widget>[
+          new Container(
+            child: new DrawerHeader(
+                child: new CircleAvatar(
+              backgroundColor: navbar,
+              // child: Image.asset('asesst/Images/Logo.png')
+            )),
+            color: Colors.grey[300],
+          ),
+          new Container(
+              color: Colors.white30,
+              child: Center(
+                child: new Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(userName),
+                      leading: new Icon(Icons.account_circle),
+                      onTap: () {
+                        // Update the state of the app.//feas
+                        // ...
+                      },
+                    ),
+                    ListTile(
+                      title: Text(userPhone),
+                      leading: new Icon(Icons.phone),
+                    ),
+                    ListTile(
+                      title: Text(userActive),
+                      leading: new Icon(Icons.wifi_tethering_outlined),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                      },
+                    ),
+                    ListTile(
+                      title: Text('تسجيل الخروج'),
+                      leading: new Icon(Icons.logout_sharp),
+                      onTap: () {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) {
+                          logout();
+                          return Loginpage();
+                        }));
+                      },
+                    ),
+                  ],
+                ),
+              ))
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: newDrawer(),
+      appBar: AppBar(
+        title: Center(
+          child: Text('البورصة المركزية'),
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: InkWell(
+                child: Icon(Icons.notification_add_outlined), onTap: () {}),
+          ),
+        ],
+        backgroundColor: Color(navbar.hashCode),
+      ),
       backgroundColor: Colors.grey[300],
       body: BlocListener<CompanyBloc, CompanyState>(
         listener: (context, state) {

@@ -1,3 +1,4 @@
+import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,16 +19,32 @@ class HomeOfApp extends StatefulWidget {
 class home_page extends State<HomeOfApp>
     with AutomaticKeepAliveClientMixin<HomeOfApp> {
   int selectedPage = 0;
+
+  late List<String> userPermissions = [];
   late String userName = "";
   late String userPhone = "";
   late String userLocation = "";
   late String userType = "";
-  late List<String> userPermissions = [];
   int companyuser = 0;
+  late int userActive = 0;
+  sharedValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userName = prefs.get('username').toString();
+    userPhone = prefs.get('userphone').toString();
+    print(userPhone);
+    userLocation = "Empty";
+    userPermissions = prefs.getStringList('permissions')!.toList();
+    var y = userPermissions.contains('Update_Auction_Price_Permission');
+    print('user permission$y');
+    print(userLocation);
+    companyuser = int.parse(prefs.get('companyid').toString());
+    print(companyuser);
+    userType = prefs.get('roles').toString();
+    setState(() {});
+  }
 
   @override
   bool get wantKeepAlive => true;
-  late int userActive = 0;
   //test
 
   callBody(int value) {
@@ -69,21 +86,6 @@ class home_page extends State<HomeOfApp>
   }
 
   late Future navbarbottom;
-  sharedValue() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userName = prefs.get('username').toString();
-    userPhone = prefs.get('userphone').toString();
-    print(userPhone);
-    userLocation = "Empty";
-    userPermissions = prefs.getStringList('permissions')!.toList();
-    var y = userPermissions.contains('Update_Auction_Price_Permission');
-    print('user permission$y');
-    print(userLocation);
-    companyuser = int.parse(prefs.get('companyid').toString());
-    print(companyuser);
-    userType = prefs.get('roles').toString();
-    setState(() {});
-  }
 
   @override
   void initState() {
@@ -97,6 +99,79 @@ class home_page extends State<HomeOfApp>
         selectedPage = index;
       });
     }
+  }
+
+  logout() async {
+    print('from');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+
+  Widget newDrawer() {
+    return new Drawer(
+      child: new ListView(
+        children: <Widget>[
+          new Container(
+            child: new DrawerHeader(
+                child: new CircleAvatar(
+              backgroundColor: navbar,
+              // child: Image.asset('asesst/Images/Logo.png')
+            )),
+            color: Colors.white,
+          ),
+          new Container(
+              color: Colors.white30,
+              child: Center(
+                child: new Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(''),
+                      leading: new Icon(Icons.account_circle),
+                      onTap: () {
+                        // Update the state of the app.//feas
+                        // ...
+                      },
+                    ),
+                    ListTile(
+                      title: Text('userPhone'),
+                      leading: new Icon(Icons.phone),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                      },
+                    ),
+                    ListTile(
+                      title: Text(''),
+                      leading: new Icon(Icons.location_on_outlined),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                      },
+                    ),
+                    ListTile(
+                      leading: new Icon(Icons.online_prediction_outlined),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                      },
+                    ),
+                    ListTile(
+                      title: Text('تسجيل الخروج'),
+                      leading: new Icon(Icons.logout_sharp),
+                      onTap: () {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) {
+                          logout();
+                          return Loginpage();
+                        }));
+                      },
+                    ),
+                  ],
+                ),
+              ))
+        ],
+      ),
+    );
   }
 
   @override
@@ -117,6 +192,7 @@ class home_page extends State<HomeOfApp>
               return Welcome();
             case ConnectionState.done:
               return Scaffold(
+                  drawer: newDrawer(),
                   key: _scaffoldKey,
                   body: callBody(selectedPage),
                   bottomNavigationBar: BottomNavigationBar(
@@ -162,6 +238,7 @@ class home_page extends State<HomeOfApp>
               break;
             default:
               return Scaffold(
+                  drawer: newDrawer(),
                   key: _scaffoldKey,
                   body: callBody(selectedPage),
                   bottomNavigationBar: BottomNavigationBar(

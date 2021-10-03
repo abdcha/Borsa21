@@ -43,6 +43,12 @@ class LoginRepository {
       await _prefs.setStringList('permissions', permissions);
       print(permissions);
 
+      //Active subscribtions
+      if (userInformations.user.endSubscription != null) {
+        await _prefs.setString(
+            'end_at', userInformations.user.endSubscription!.endAt.toString());
+      }
+
       //User Type
       await _prefs.setString('roles', userInformations.roles.first);
 

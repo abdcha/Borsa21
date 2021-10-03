@@ -20,6 +20,8 @@ import 'package:central_borssa/data/model/Post/GetPost.dart';
 import 'package:central_borssa/presentation/Post/add_Post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
+import 'dart:ui' as ui;
 
 class AllPost extends StatefulWidget {
   AllPostPage createState() => AllPostPage();
@@ -47,10 +49,30 @@ class AllPostPage extends State<AllPost> {
       RefreshController(initialRefresh: true);
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
-  logout() async {
-    print('from');
+  // logout() async {
+  //   print('from');
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.clear();
+  // }
+  late List<String> userPermissions = [];
+  late String userName = "";
+  late String userPhone = "";
+  late String userLocation = "";
+  late String userType = "";
+  int companyuser = 0;
+  late String userActive = "";
+
+  sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    userName = prefs.get('username').toString();
+    userPhone = prefs.get('userphone').toString();
+    userPermissions = prefs.getStringList('permissions')!.toList();
+    companyuser = int.parse(prefs.get('companyid').toString());
+    userType = prefs.get('roles').toString();
+    if (prefs.get('end_at') != null) {
+      userActive = prefs.get('end_at').toString();
+    }
+    setState(() {});
   }
 
   Future<bool> postloading({bool isRefresh = false}) async {
@@ -92,7 +114,7 @@ class AllPostPage extends State<AllPost> {
     companybloc = BlocProvider.of<CompanyBloc>(context);
     companybloc.add(GetAllCompanies());
     borssaBloc.add(AllCitiesList());
-
+    sharedValue();
     postloading();
     super.initState();
   }
@@ -111,6 +133,7 @@ class AllPostPage extends State<AllPost> {
               if (index == 0)
                 // Slider Images
                 Container(
+                  margin: const EdgeInsets.only(bottom: 10, top: 10),
                   child: Card(
                     child: CarouselSlider(
                       options: CarouselOptions(
@@ -200,12 +223,8 @@ class AllPostPage extends State<AllPost> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(right: 6),
-                                    child: Text(
-                                        // DateFormat.Hm().format(
-                                        //   DateTime.parse(
-                                        // post[index].createdAt
-                                        // ))
-                                        'time'),
+                                    child: Text(DateFormat.Hm().format(
+                                        DateTime.parse(post[index].createdAt))),
                                   ),
                                   Text(
                                     post[index].user.name,
@@ -319,81 +338,83 @@ class AllPostPage extends State<AllPost> {
             ],
           );
         },
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
+        separatorBuilder: (BuildContext context, int index) => const Divider(
+          height: 1,
+        ),
       ),
     );
   }
 
-  Widget newDrawer() {
-    return new Drawer(
-      child: new ListView(
-        children: <Widget>[
-          new Container(
-            child: new DrawerHeader(
-                child: new CircleAvatar(
-              backgroundColor: navbar,
-              // child: Image.asset('asesst/Images/Logo.png')
-            )),
-            color: Colors.white,
-          ),
-          new Container(
-              color: Colors.white30,
-              child: Center(
-                child: new Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(''),
-                      leading: new Icon(Icons.account_circle),
-                      onTap: () {
-                        // Update the state of the app.//feas
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      title: Text('userPhone'),
-                      leading: new Icon(Icons.phone),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      title: Text(''),
-                      leading: new Icon(Icons.location_on_outlined),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      leading: new Icon(Icons.online_prediction_outlined),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      title: Text('تسجيل الخروج'),
-                      leading: new Icon(Icons.logout_sharp),
-                      onTap: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          logout();
-                          return Loginpage();
-                        }));
-                      },
-                    ),
-                  ],
-                ),
-              ))
-        ],
-      ),
-    );
-  }
+  // Widget newDrawer() {
+  //   return new Drawer(
+  //     child: new ListView(
+  //       children: <Widget>[
+  //         new Container(
+  //           child: new DrawerHeader(
+  //               child: new CircleAvatar(
+  //             backgroundColor: navbar,
+  //             // child: Image.asset('asesst/Images/Logo.png')
+  //           )),
+  //           color: Colors.white,
+  //         ),
+  //         new Container(
+  //             color: Colors.white30,
+  //             child: Center(
+  //               child: new Column(
+  //                 children: <Widget>[
+  //                   ListTile(
+  //                     title: Text(''),
+  //                     leading: new Icon(Icons.account_circle),
+  //                     onTap: () {
+  //                       // Update the state of the app.//feas
+  //                       // ...
+  //                     },
+  //                   ),
+  //                   ListTile(
+  //                     title: Text('userPhone'),
+  //                     leading: new Icon(Icons.phone),
+  //                     onTap: () {
+  //                       // Update the state of the app.
+  //                       // ...
+  //                     },
+  //                   ),
+  //                   ListTile(
+  //                     title: Text(''),
+  //                     leading: new Icon(Icons.location_on_outlined),
+  //                     onTap: () {
+  //                       // Update the state of the app.
+  //                       // ...
+  //                     },
+  //                   ),
+  //                   ListTile(
+  //                     leading: new Icon(Icons.online_prediction_outlined),
+  //                     onTap: () {
+  //                       // Update the state of the app.
+  //                       // ...
+  //                     },
+  //                   ),
+  //                   ListTile(
+  //                     title: Text('تسجيل الخروج'),
+  //                     leading: new Icon(Icons.logout_sharp),
+  //                     onTap: () {
+  //                       Navigator.pushReplacement(context,
+  //                           MaterialPageRoute(builder: (context) {
+  //                         logout();
+  //                         return Loginpage();
+  //                       }));
+  //                     },
+  //                   ),
+  //                 ],
+  //               ),
+  //             ))
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget newEndDrawer() {
     return Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection: ui.TextDirection.rtl,
         child: Drawer(
           child: new ListView(
             children: [
@@ -490,6 +511,68 @@ class AllPostPage extends State<AllPost> {
             ],
           ),
         ));
+  }
+
+  logout() async {
+    print('from');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+
+  Widget newDrawer() {
+    return new Drawer(
+      child: new ListView(
+        children: <Widget>[
+          new Container(
+            child: new DrawerHeader(
+                child: new CircleAvatar(
+              backgroundColor: navbar,
+              // child: Image.asset('asesst/Images/Logo.png')
+            )),
+            color: Colors.grey[300],
+          ),
+          new Container(
+              color: Colors.white30,
+              child: Center(
+                child: new Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(userName),
+                      leading: new Icon(Icons.account_circle),
+                      onTap: () {
+                        // Update the state of the app.//feas
+                        // ...
+                      },
+                    ),
+                    ListTile(
+                      title: Text(userPhone),
+                      leading: new Icon(Icons.phone),
+                    ),
+                    ListTile(
+                      title: Text(userActive),
+                      leading: new Icon(Icons.wifi_tethering_outlined),
+                      onTap: () {
+                        // Update the state of the app.
+                        // ...
+                      },
+                    ),
+                    ListTile(
+                      title: Text('تسجيل الخروج'),
+                      leading: new Icon(Icons.logout_sharp),
+                      onTap: () {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) {
+                          logout();
+                          return Loginpage();
+                        }));
+                      },
+                    ),
+                  ],
+                ),
+              ))
+        ],
+      ),
+    );
   }
 
   @override
