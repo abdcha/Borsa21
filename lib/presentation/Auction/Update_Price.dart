@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UpdatePrice extends StatefulWidget {
   late final int id;
-  late final int buy;
-  late final int sell;
+  late final double buy;
+  late final double sell;
   UpdatePrice({
     Key? key,
     required this.id,
@@ -127,7 +127,7 @@ class UpdatePricePage extends State<UpdatePrice> {
                                     textAlign: TextAlign.right,
                                     cursorColor: Colors.black,
                                     controller: buyTextEdit,
-                                    maxLength: 4,
+                                    // maxLength: 4,
                                     keyboardType: TextInputType.number,
                                     style: TextStyle(color: Colors.black),
                                     validator: (String? value) {
@@ -172,7 +172,7 @@ class UpdatePricePage extends State<UpdatePrice> {
                                     textAlign: TextAlign.right,
                                     cursorColor: Colors.black,
                                     keyboardType: TextInputType.number,
-                                    maxLength: 4,
+                                    // maxLength: 4,
                                     controller: sellTextEdit,
                                     style: TextStyle(color: Colors.black),
                                     validator: (String? value) {
@@ -209,8 +209,8 @@ class UpdatePricePage extends State<UpdatePrice> {
                           onPressed: () {
                             currencybloc.add(UpdatePriceEvent(
                                 id: widget.id,
-                                buy: int.parse(buyTextEdit.text),
-                                sell: int.parse(sellTextEdit.text),
+                                buy: double.parse(buyTextEdit.text),
+                                sell: double.parse(sellTextEdit.text),
                                 status: "up"));
                           },
                           style: ElevatedButton.styleFrom(

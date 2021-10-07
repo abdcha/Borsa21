@@ -51,7 +51,7 @@ class CompanyRepository {
     }
   }
 
-  Future<Either<String, dynamic>> Follow(int companyId) async {
+  Future<Either<bool, bool>> Follow(int companyId) async {
     try {
       SharedPreferences _pref = await SharedPreferences.getInstance();
       var token = _pref.get('token');
@@ -61,12 +61,31 @@ class CompanyRepository {
       print(companyPostResponse.data['data']);
       var data = companyPostResponse.data['status'];
       if (data == "success") {
-        return Right(data);
+        return Right(true);
       } else {
-        return Left('error');
+        return Left(false);
       }
     } catch (e) {
-      return Left('error');
+      return Left(false);
+    }
+  }
+
+  Future<Either<bool, bool>> UnFollow(int companyId) async {
+    try {
+      SharedPreferences _pref = await SharedPreferences.getInstance();
+      var token = _pref.get('token');
+      _dio.options.headers['authorization'] = 'Bearer $token';
+      String urledit = '$unfollowUrl$companyId';
+      var companyPostResponse = await _dio.get(urledit);
+      print(companyPostResponse.data['data']);
+      var data = companyPostResponse.data['status'];
+      if (data == "success") {
+        return Right(true);
+      } else {
+        return Left(false);
+      }
+    } catch (e) {
+      return Left(false);
     }
   }
 }

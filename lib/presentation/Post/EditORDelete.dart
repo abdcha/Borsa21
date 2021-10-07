@@ -10,11 +10,22 @@ import 'package:central_borssa/business_logic/Post/bloc/post_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Home/All_post.dart';
 
-class AddPost extends StatefulWidget {
-  AddPostPage createState() => AddPostPage();
+class EditORDelete extends StatefulWidget {
+  final String body;
+  final String image;
+  final int id;
+  final String type;
+  const EditORDelete({
+    Key? key,
+    required this.body,
+    required this.image,
+    required this.type,
+    required this.id,
+  }) : super(key: key);
+  EditORDeletePostPage createState() => EditORDeletePostPage();
 }
 
-class AddPostPage extends State<AddPost> {
+class EditORDeletePostPage extends State<EditORDelete> {
   final ImagePicker _picker = ImagePicker();
   final postTextInpput = TextEditingController();
   late final String postValue;
@@ -53,6 +64,8 @@ class AddPostPage extends State<AddPost> {
   @override
   void initState() {
     _postBloc = BlocProvider.of<PostBloc>(context);
+    postTextInpput.text = widget.body;
+    encodeImage = widget.image;
     super.initState();
   }
 
@@ -60,9 +73,7 @@ class AddPostPage extends State<AddPost> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: new AppBar(
-          title: Center(
-            child: Text('تحديث الأسعار'),
-          ),
+          title: Center(),
           backgroundColor: Color(navbar.hashCode),
         ),
         body: BlocListener<PostBloc, PostState>(
@@ -229,7 +240,7 @@ class AddPostPage extends State<AddPost> {
                                             top: 20.0, left: 0.0, right: 20.0),
                                         child: Card(
                                             child: mainFile == null
-                                                ? Icon(Icons.camera_alt_rounded)
+                                                ? Image.network(encodeImage)
                                                 : Image.file(
                                                     File(mainFile!.path))),
                                       ),
@@ -242,15 +253,21 @@ class AddPostPage extends State<AddPost> {
                           margin: const EdgeInsets.all(25.0),
                           child: ElevatedButton(
                             onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                _postBloc.add(AddNewPost(
+                              if (widget.type == "حذف المنشور") {
+                                _postBloc.add(UpdatePost(
+                                    id: widget.id,
+                                    body: postTextInpput.text,
+                                    image: encodeImage));
+                              } else if(widget.type == "تعديل المنشور"){
+                                _postBloc.add(DeletePost(
+                                    id: widget.id,
                                     body: postTextInpput.text,
                                     image: encodeImage));
                               }
                             },
                             style: ElevatedButton.styleFrom(
                                 primary: Color(navbar.hashCode)),
-                            child: Text("إضافة المنشور"),
+                            child: Text(widget.type),
                           ),
                         ),
                       ],

@@ -25,7 +25,7 @@ class GetPostByCityNameLoading extends PostState {}
 class GetPostByCityNameError extends PostState {}
 
 class GetPostByCityNameLoaded extends PostState {
-   late final PostGet posts;
+  late final PostGet posts;
   GetPostByCityNameLoaded({
     required this.posts,
   });
@@ -37,10 +37,28 @@ class PostLoadingInProgress extends PostState {}
 
 class AddPostSuccess extends PostState {}
 
-class EditPostSuccess extends PostState {}
+//Edit Post Start
 
-class DeletePostSuccess extends PostState {}
+class EditPostLoading extends PostState {}
 
-class PostError extends PostState {}
+class EditPostError extends PostState {}
 
-class PostInProgress extends PostState {}
+class EditPostLoaded extends PostState {
+  late final String status;
+  EditPostLoaded({
+    required this.status,
+  });
+}
+
+//Delete Post
+
+class DeletePostLoading extends PostState {}
+
+class DeletePostError extends PostState {}
+
+class DeletePostLoaded extends PostState {
+  late final String status;
+  DeletePostLoaded({
+    required this.status,
+  });
+}

@@ -31,3 +31,10 @@ class FollowEvent extends CompanyEvent {
     required this.id,
   });
 }
+
+class UnFollowEvent extends CompanyEvent {
+  late final int id;
+  UnFollowEvent({
+    required this.id,
+  });
+}

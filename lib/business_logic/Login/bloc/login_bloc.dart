@@ -18,7 +18,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (event is StartEvent) {
       yield LoginInitialState();
     } else if (event is LoginSubmite) {
-      print('from here');
+      print('Login bloc');
       var data = await repository.login(event.phone, event.password);
       yield* data.fold((l) async* {
         print(l);

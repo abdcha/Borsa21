@@ -9,7 +9,6 @@ import 'package:dartz/dartz.dart';
 class LoginRepository {
   Future<Either<String, dynamic>> login(String phone, String password) async {
     Dio _dio = Dio();
-    late List<Permissions> userpermissions = [];
     //Start Login evaluation
     // print('from here teest');
     // print(baseUrl);

@@ -11,16 +11,16 @@ import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
 import 'package:central_borssa/data/model/Post/CompanyPost.dart';
 import 'package:intl/intl.dart';
 
-class anyCompanyProfile extends StatefulWidget {
+class AnyCompanyProfile extends StatefulWidget {
   final int id;
-  const anyCompanyProfile({
+  const AnyCompanyProfile({
     Key? key,
     required this.id,
   }) : super(key: key);
   CompanyPage createState() => CompanyPage();
 }
 
-class CompanyPage extends State<anyCompanyProfile> {
+class CompanyPage extends State<AnyCompanyProfile> {
   void whatsappSender({@required number, @required message}) async {
     final String url = "https://api.whatsapp.com/send?phone=$number";
     await launch(url);
@@ -35,6 +35,8 @@ class CompanyPage extends State<anyCompanyProfile> {
 
   late CompanyBloc bloc;
   late List<Posts> companypost = [];
+  late bool followStatus;
+  int? isFollowed;
   late int companyuser = 0;
   late int totalpost;
   late String? location;
@@ -83,71 +85,83 @@ class CompanyPage extends State<anyCompanyProfile> {
                   // Slider Images
                   Container(
                     margin: const EdgeInsets.only(bottom: 10, top: 6),
-                    child: Card(
-                      elevation: 5.0,
-                      shadowColor: Colors.black,
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.circular(30.0),
-                      // ),
-                      // clipBehavior: Clip.antiAlias,
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(
-                              bottom: 15,
-                              top: 20,
-                            ),
-                            height: 150,
-                            width: 150,
-                            child: CircleAvatar(
-                              radius: 30.0,
-                              backgroundColor: Colors.transparent,
-                              backgroundImage: NetworkImage(
-                                companypost[index].company.image,
-                              ),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(
+                            bottom: 15,
+                            top: 20,
+                          ),
+                          height: 150,
+                          width: 150,
+                          child: CircleAvatar(
+                            radius: 30.0,
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: NetworkImage(
+                              companypost[index].company.image,
                             ),
                           ),
-                          Container(
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: Text(
+                            companypost[index].company.name,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                        ),
+                        Container(
                             margin: const EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              companypost[index].company.name,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ),
-                          Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: InkWell(
-                                        onTap: () {
-                                          whatsappSender(
-                                              message: "hi",
-                                              number: '+9647716600999');
-                                        },
-                                        child: Image.asset(
-                                          'assest/Images/whatsapp.png',
-                                          width: 25,
-                                          height: 25,
-                                        ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        whatsappSender(
+                                            message: "hi",
+                                            number: '+9647716600999');
+                                      },
+                                      child: Image.asset(
+                                        'assest/Images/whatsapp.png',
+                                        width: 25,
+                                        height: 25,
                                       ),
                                     ),
-                                    // Padding(
-                                    //   padding: const EdgeInsets.all(8.0),
-                                    //   child: InkWell(
-                                    //       onTap: () {},
-                                    //       child: Icon(
-                                    //           Icons.subscriptions_outlined)),
-                                    // ),
-                                  ],
-                                ),
-                              )),
-                        ],
-                      ),
+                                  ),
+                                  (isFollowed =
+                                              companypost[index].isFollowed) ==
+                                          1
+                                      ? Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: InkWell(
+                                              onTap: () {
+                                                bloc.add(UnFollowEvent(
+                                                    id: companypost[index]
+                                                        .companyId));
+                                              },
+                                              child: Icon(
+                                                Icons.subscriptions_outlined,
+                                                color: Colors.blue[400],
+                                              )),
+                                        )
+                                      : Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: InkWell(
+                                              onTap: () {
+                                                bloc.add(FollowEvent(
+                                                    id: companypost[index]
+                                                        .companyId));
+                                              },
+                                              child: Icon(Icons
+                                                  .subscriptions_outlined)),
+                                        )
+                                ],
+                              ),
+                            )),
+                      ],
                     ),
                   ),
                 Card(
@@ -263,14 +277,55 @@ class CompanyPage extends State<anyCompanyProfile> {
                                 // height: 200,
                               ),
                       ),
+                      Container(
+                        margin: const EdgeInsets.only(
+                            bottom: 15, left: 15, top: 15, right: 15),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      whatsappSender(
+                                          message: "hi",
+                                          number: '+9647716600999');
+                                    },
+                                    child: Image.asset(
+                                      'assest/Images/whatsapp.png',
+                                      width: 25,
+                                      height: 25,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      launch("tel://+9647716600999");
+                                    },
+                                    child: Icon(
+                                      Icons.add_ic_call,
+                                      color: Color(navbar.hashCode),
+                                    ),
+                                  ),
+                                ),
+                                Spacer()
+                              ],
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
               ],
             );
           },
-          separatorBuilder: (BuildContext context, int index) =>
-              const Divider(),
+          separatorBuilder: (BuildContext context, int index) => const Divider(
+            height: 1,
+          ),
         ),
       ),
     );
@@ -300,35 +355,91 @@ class CompanyPage extends State<anyCompanyProfile> {
         backgroundColor: Color(navbar.hashCode),
       ),
       backgroundColor: Colors.grey[300],
-      body: BlocListener<CompanyBloc, CompanyState>(
-        listener: (context, state) {
-          if (state is GetAllInformationLoading) {
-            print(state);
-          }
-          if (state is GetAllInformationLoaded) {
-            if (companypost.isEmpty) {
-              print('length$currentPage');
-              companypost = state.data.posts;
-              totalpost = state.data.total;
-            } else if (companypost.isNotEmpty) {
-              print('from addall');
-              companypost.addAll(state.data.posts);
-            } else {
-              print(state);
-            }
-          } else if (state is GetAllInformationError) {
-            print(state);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('خطأ في التحميل'),
-                action: SnackBarAction(
-                  label: 'تنبيه',
-                  onPressed: () {},
-                ),
-              ),
-            );
-          }
-        },
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<CompanyBloc, CompanyState>(
+            listener: (context, state) {
+              if (state is GetAllInformationLoading) {
+                print(state);
+              }
+              if (state is GetAllInformationLoaded) {
+                if (companypost.isEmpty) {
+                  print('length');
+                  companypost = state.data.posts;
+                  totalpost = state.data.total;
+                } else if (companypost.isNotEmpty) {
+                  print('from addall');
+                  companypost.addAll(state.data.posts);
+                } else {
+                  print(state);
+                }
+              } else if (state is GetAllInformationError) {
+                print(state);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('خطأ في التحميل'),
+                    action: SnackBarAction(
+                      label: 'تنبيه',
+                      onPressed: () {},
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+          BlocListener<CompanyBloc, CompanyState>(
+            listener: (context, state) {
+              if (state is FollowIsLoading) {
+                print(state);
+              }
+              if (state is FollowIsLoaded) {
+                print(state);
+                followStatus = state.status;
+                setState(() {
+                  isFollowed = 1;
+                  companypost[0].isFollowed = 1;
+                });
+              } else if (state is FollowError) {
+                print(state);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('خطأ في التحميل'),
+                    action: SnackBarAction(
+                      label: 'تنبيه',
+                      onPressed: () {},
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+          BlocListener<CompanyBloc, CompanyState>(
+            listener: (context, state) {
+              if (state is UnFollowIsLoading) {
+                print(state);
+              }
+              if (state is UnFollowIsLoaded) {
+                print(state);
+                followStatus = state.status;
+                setState(() {
+                  isFollowed = 0;
+                  companypost[0].isFollowed = 0;
+                });
+              } else if (state is UnFollowError) {
+                print(state);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('خطأ في التحميل'),
+                    action: SnackBarAction(
+                      label: 'تنبيه',
+                      onPressed: () {},
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
         child: Container(
           height: double.infinity,
           child: SmartRefresher(

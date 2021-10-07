@@ -31,8 +31,12 @@ class UpdatePost extends PostEvent {
 
 class DeletePost extends PostEvent {
   late final int id;
+  late final String body;
+  late final String image;
   DeletePost({
     required this.id,
+    required this.body,
+    required this.image,
   });
 }
 

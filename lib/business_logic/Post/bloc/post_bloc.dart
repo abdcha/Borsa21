@@ -50,6 +50,24 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         yield GetPostByCityNameLoading();
         yield GetPostByCityNameLoaded(posts: r);
       });
+    } else if (event is UpdatePost) {
+      var getAllPostResponse =
+          await postRepository.editPost(event.body, event.image, event.id);
+      yield* getAllPostResponse.fold((l) async* {
+        yield EditPostError();
+      }, (r) async* {
+        yield EditPostLoading();
+        yield EditPostLoaded(status: r);
+      });
+    } else if (event is DeletePost) {
+      var getAllPostResponse = await postRepository.deletePost(event.id);
+
+      yield* getAllPostResponse.fold((l) async* {
+        yield DeletePostError();
+      }, (r) async* {
+        yield DeletePostLoading();
+        yield DeletePostLoaded(status: r);
+      });
     }
   }
 }

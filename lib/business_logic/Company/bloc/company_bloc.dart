@@ -49,8 +49,18 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
         yield FollowError();
       }, (r) async* {
         print('we are here');
-        yield FollowInProgress();
-        yield FollowIsDone();
+        yield FollowIsLoading();
+        yield FollowIsLoaded(status: r);
+      });
+    } else if (event is UnFollowEvent) {
+      var getAllCompanyInformationsResponse =
+          await companyRepository.UnFollow(event.id);
+      yield* getAllCompanyInformationsResponse.fold((l) async* {
+        yield UnFollowError();
+      }, (r) async* {
+        print('we are here');
+        yield UnFollowIsLoading();
+        yield UnFollowIsLoaded(status: r);
       });
     }
   }

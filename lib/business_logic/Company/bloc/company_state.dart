@@ -32,8 +32,26 @@ class CompanyNameIsLoaded extends CompanyState {
   });
 }
 
-class FollowInProgress extends CompanyState {}
+//Follow Company
+class FollowIsLoading extends CompanyState {}
 
 class FollowError extends CompanyState {}
 
-class FollowIsDone extends CompanyState {}
+class FollowIsLoaded extends CompanyState {
+  late final bool status;
+  FollowIsLoaded({
+    required this.status,
+  });
+}
+
+//UnFollow Company
+class UnFollowIsLoading extends CompanyState {}
+
+class UnFollowError extends CompanyState {}
+
+class UnFollowIsLoaded extends CompanyState {
+  late final bool status;
+  UnFollowIsLoaded({
+    required this.status,
+  });
+}

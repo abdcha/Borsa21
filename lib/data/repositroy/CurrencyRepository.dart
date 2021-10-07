@@ -10,36 +10,39 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CurrencyRepository {
   Dio _dio = Dio();
   Future<Either<String, String>> updatePrice(
-      int id, int buy, int sell, String status) async {
-    try {
-      SharedPreferences _prefs = await SharedPreferences.getInstance();
-      var _token = _prefs.get('token');
-      _dio.options.headers['authorization'] = 'Bearer $_token';
-      if (buy > sell) {
-        status = "up";
-      } else {
-        status = "down";
-      }
-      String completeUrl = '$currencyUpdateUrl$id';
-      print(id);
-      var updateResponse = await _dio.put(completeUrl,
-          data: jsonEncode({
-            "sell_status": status,
-            "buy": buy,
-            "sell": sell,
-            "buy_status": "down"
-          }));
-      var mystatus = updateResponse.data['status'];
-      if (mystatus == "success") {
-        return Right(mystatus);
-      }
-      if (mystatus == "error") {
-        return Left(mystatus);
-      } else {
-        return Left(mystatus);
-      }
-    } catch (e) {
-      return Left("some error");
+      int id, double buy, double sell, String status) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    print(id);
+
+    print(buy);
+    print(sell);
+    print(status);
+    var _token = _prefs.get('token');
+    _dio.options.headers['authorization'] = 'Bearer $_token';
+    if (buy > sell) {
+      status = "up";
+    } else {
+      status = "down";
+    }
+    String completeUrl = '$currencyUpdateUrl$id';
+    print(completeUrl);
+    var updateResponse = await _dio.put(completeUrl,
+        data: jsonEncode({
+          "sell_status": "down",
+          "buy": buy,
+          "sell": sell,
+          "buy_status": "down"
+        }));
+    var mystatus = updateResponse.data['status'];
+    print(updateResponse);
+
+    if (mystatus == "success") {
+      return Right(mystatus);
+    }
+    if (mystatus == "error") {
+      return Left(mystatus);
+    } else {
+      return Left(mystatus);
     }
   }
 
@@ -54,10 +57,10 @@ class CurrencyRepository {
     var newFormat = DateFormat("yyyy-MM-dd");
     endFromdate = newFormat.format(now);
     if (fromdate == 'منذ يوم') {
-      print('day');
       endFromdate = new DateTime(now.year, now.month, now.day, now.hour - 24,
               now.second, now.minute)
           .toString();
+      print('day');
       print(endFromdate);
       print(todate);
       String completeUrl =
@@ -65,13 +68,28 @@ class CurrencyRepository {
       var chartResponse = await _dio.get(
         completeUrl,
       );
-      print(chartResponse);
+      print(chartResponse.data);
       if (chartResponse.data['status'] == "success") {
         var response = Data.fromJson(chartResponse.data['data']);
         return Right(response.dataChanges);
       } else {
         return Left('error');
       }
+
+      // print(endFromdate);
+      // print(todate);
+      // String completeUrl =
+      //     '$chartUrl$cityid&from_date=$endFromdate&to_date=$todate';
+      // var chartResponse = await _dio.get(
+      //   completeUrl,
+      // );
+      // print(chartResponse);
+      // if (chartResponse.data['status'] == "success") {
+      //   var response = Data.fromJson(chartResponse.data['data']);
+      //   return Right(response.dataChanges);
+      // } else {
+      //   return Left('error');
+      // }
     } else if (fromdate == 'منذ ثلاثة أيام') {
       print('weak');
       print(endFromdate);
@@ -134,6 +152,9 @@ class CurrencyRepository {
         return Left('error');
       }
     } else {
+      print(fromdate);
+      print(todate);
+
       String completeUrl =
           '$chartUrl$cityid&from_date=$fromdate&to_date=$todate';
       var chartResponse = await _dio.get(

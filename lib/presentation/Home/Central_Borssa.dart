@@ -1,5 +1,8 @@
+import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
+import 'package:central_borssa/data/repositroy/CurrencyRepository.dart';
 import 'package:central_borssa/presentation/Auction/Price_Chart.dart';
+import 'package:central_borssa/presentation/Auction/Update_Price.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +14,7 @@ import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
 import 'package:central_borssa/data/model/Currency.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'dart:ui' as ui;
 
 class CentralBorssa extends StatefulWidget {
   CentralBorssaPage createState() => CentralBorssaPage();
@@ -38,14 +42,11 @@ class CentralBorssaPage extends State<CentralBorssa> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.get('username').toString();
     userPhone = prefs.get('userphone').toString();
-    print(userPhone);
     userLocation = "Empty";
     userPermissions = prefs.getStringList('permissions')!.toList();
     var y = userPermissions.contains('Update_Auction_Price_Permission');
     print('user permission$y');
-    print(userLocation);
     companyuser = int.parse(prefs.get('companyid').toString());
-    print(companyuser);
     userType = prefs.get('roles').toString();
     setState(() {});
   }
@@ -56,13 +57,11 @@ class CentralBorssaPage extends State<CentralBorssa> {
     var now = DateTime.now();
     var newFormat = DateFormat("yyyy-MM-dd");
     String updatedDt = newFormat.format(now);
-    startpoint = '$updatedDt 10:00:00.00';
+    startpoint = '$updatedDt 1:00:00.00';
     endpoint = DateTime.now().toString();
     bloc.add(AllCity());
-    print(startpoint);
-    print(endpoint);
     currencyprice.clear();
-
+    sharedValue();
     pusherTerster();
     super.initState();
   }
@@ -99,60 +98,60 @@ class CentralBorssaPage extends State<CentralBorssa> {
   }
 
   Widget dataTable() {
-    return DataTable(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DataTable(
 
-        // dataRowHeight: 30,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: const Color(0xff505D6E),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0x29000000),
-              offset: Offset(0, 3),
-              blurRadius: 6,
+          // dataRowHeight: 30,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xff505D6E),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0x29000000),
+                offset: Offset(0, 3),
+                blurRadius: 6,
+              ),
+            ],
+          ),
+          columnSpacing: 40,
+          headingRowColor: MaterialStateColor.resolveWith(
+            (states) => Color(0xff7d8a99),
+          ),
+          columns: [
+            DataColumn(
+              label: Text(
+                'العرض',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: const Color(0xffffffff),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ],
-        ),
-        sortColumnIndex: 0,
-        sortAscending: true,
-        columnSpacing: 70,
-        headingRowColor: MaterialStateColor.resolveWith(
-          (states) => Color(0xff7d8a99),
-        ),
-        columns: [
-          DataColumn(
-            label: Text(
-              'العرض',
+            DataColumn(
+                label: Text(
+              'الطلب',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 14,
                 color: const Color(0xffffffff),
                 fontWeight: FontWeight.bold,
               ),
-            ),
-          ),
-          DataColumn(
-              label: Text(
-            'الطلب',
-            style: TextStyle(
-              fontSize: 18,
-              color: const Color(0xffffffff),
-              fontWeight: FontWeight.bold,
-            ),
-          )),
-          DataColumn(
-              label: Text(
-            'المدينة',
-            style: TextStyle(
-              fontSize: 18,
-              color: const Color(0xffffffff),
-              fontWeight: FontWeight.bold,
-            ),
-          )),
-        ],
-        rows: [
-          for (int i = 0; i < currencyprice.length; i++)
-            DataRow(cells: [
-              DataCell(
+            )),
+            DataColumn(
+                label: Text(
+              'المدينة',
+              style: TextStyle(
+                fontSize: 14,
+                color: const Color(0xffffffff),
+                fontWeight: FontWeight.bold,
+              ),
+            )),
+          ],
+          rows: [
+            for (int i = 0; i < currencyprice.length; i++)
+              DataRow(cells: [
+                DataCell(
                   Row(
                     children: [
                       currencyprice[i].buyStatus == "down"
@@ -164,8 +163,68 @@ class CentralBorssaPage extends State<CentralBorssa> {
                               Icons.arrow_circle_down,
                               color: Colors.red[700],
                             ),
+                      userPermissions
+                              .contains('Update_Auction_Price_Permission')
+                          ? InkWell(
+                              onTap: () {
+                                var route = new MaterialPageRoute(
+                                    builder: (BuildContext contex) =>
+                                        new BlocProvider(
+                                          create: (context) => CurrencyBloc(
+                                              CurrencyInitial(),
+                                              CurrencyRepository()),
+                                          child: UpdatePrice(
+                                            id: currencyprice[i].id,
+                                            buy: currencyprice[i].buy,
+                                            sell: currencyprice[i].sell,
+                                          ),
+                                        ));
+
+                                BlocProvider(
+                                    create: (context) => CurrencyBloc(
+                                        CurrencyInitial(),
+                                        CurrencyRepository()));
+                                Navigator.of(context).push(route);
+                              },
+                              child: Text(
+                                currencyprice[i].buy.toString(),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            )
+                          : InkWell(
+                              child: Text(
+                                currencyprice[i].buy.toString(),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            )
+                    ],
+                  ),
+
+                  // }
+                ),
+                DataCell(
+                  Row(
+                    children: [
+                      currencyprice[i].sellStatus == "down"
+                          ? Icon(
+                              Icons.arrow_circle_up,
+                              color: Colors.green[700],
+                            )
+                          : Icon(
+                              Icons.arrow_circle_down,
+                              color: Colors.red[700],
+                            ),
                       Text(
-                        currencyprice[i].buy.toString(),
+                        currencyprice[i].sell.toStringAsFixed(2),
+                        maxLines: 1,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.white,
@@ -173,81 +232,46 @@ class CentralBorssaPage extends State<CentralBorssa> {
                         ),
                       ),
                     ],
-                  ), onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PriceChart(
-                        cityid: currencyprice[i].city.id,
-                        fromdate: startpoint,
-                        todate: endpoint),
                   ),
-                );
-              }
-                  //     showEditIcon:
-                  //         test!.toLowerCase() == "admin"
-                  //             ? true
-                  //             : false, onTap: () {
-                  //   var route = new MaterialPageRoute(
-                  //       builder: (BuildContext contex) =>
-                  //           new BlocProvider(
-                  //             create: (context) => CurrencyBloc(
-                  //                 CurrencyInitial(),
-                  //                 CurrencyRepository()),
-                  //             child: UpdatePrice(
-                  //               id: currencyprice[i].id,
-                  //               buy: currencyprice[i].buy,
-                  //               sell: currencyprice[i].sell,
-                  //             ),
-                  //           ));
-
-                  //   BlocProvider(
-                  //       create: (context) => CurrencyBloc(
-                  //           CurrencyInitial(),
-                  //           CurrencyRepository()));
-                  //   Navigator.of(context).push(route);
-                  //   // Navigator.push(
-                  //   //   context,
-                  //   //   MaterialPageRoute(
-                  //   //       builder: (context) => UpdatePrice()),
-                  //   // );
-                  // }
-                  ),
-              DataCell(
-                Row(
-                  children: [
-                    currencyprice[i].sellStatus == "down"
-                        ? Icon(
-                            Icons.arrow_circle_up,
-                            color: Colors.green[700],
-                          )
-                        : Icon(
-                            Icons.arrow_circle_down,
-                            color: Colors.red[700],
+                ),
+                DataCell(Container(
+                  child: Row(
+                    children: [
+                      InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.remove_red_eye_rounded,
+                            color: Colors.white,
                           ),
-                    Text(
-                      currencyprice[i].sell.toStringAsFixed(2),
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PriceChart(
+                                  cityid: currencyprice[i].city.id,
+                                  fromdate: startpoint,
+                                  todate: endpoint),
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              DataCell(Text(
-                currencyprice[i].city.name,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: const Color(0xffffffff),
-                  fontWeight: FontWeight.w400,
-                ),
-              ))
-            ]),
-        ]);
+                      Text(
+                        currencyprice[i].city.name,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: const Color(0xffffffff),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ))
+              ]),
+          ]),
+    );
   }
 
   logout() async {
@@ -266,7 +290,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
               backgroundColor: navbar,
               // child: Image.asset('asesst/Images/Logo.png')
             )),
-            color: Colors.white,
+            color: Colors.grey[300],
           ),
           new Container(
               color: Colors.white30,
@@ -274,7 +298,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                 child: new Column(
                   children: <Widget>[
                     ListTile(
-                      title: Text(''),
+                      title: Text(userName),
                       leading: new Icon(Icons.account_circle),
                       onTap: () {
                         // Update the state of the app.//feas
@@ -282,28 +306,17 @@ class CentralBorssaPage extends State<CentralBorssa> {
                       },
                     ),
                     ListTile(
-                      title: Text('userPhone'),
+                      title: Text(userPhone),
                       leading: new Icon(Icons.phone),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
                     ),
-                    ListTile(
-                      title: Text(''),
-                      leading: new Icon(Icons.location_on_outlined),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      leading: new Icon(Icons.online_prediction_outlined),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
-                    ),
+                    // ListTile(
+                    //   title: Text(userActive),
+                    //   leading: new Icon(Icons.wifi_tethering_outlined),
+                    //   onTap: () {
+                    //     // Update the state of the app.
+                    //     // ...
+                    //   },
+                    // ),
                     ListTile(
                       title: Text('تسجيل الخروج'),
                       leading: new Icon(Icons.logout_sharp),
@@ -365,23 +378,19 @@ class CentralBorssaPage extends State<CentralBorssa> {
           }
         },
         child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                isloading
-                    ? Container(
-                        child: Center(child: CircularProgressIndicator()),
-                      )
-                    : Container(
-                        width: double.infinity,
-                        child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: dataTable()),
-                      )
-              ],
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              isloading
+                  ? Container(
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : Container(
+                      width: double.infinity,
+                      child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal, child: dataTable()),
+                    ),
+            ],
           ),
         ),
       ),

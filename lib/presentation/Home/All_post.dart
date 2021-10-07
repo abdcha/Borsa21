@@ -32,6 +32,7 @@ late List<list> _companiesname = [];
 class AllPostPage extends State<AllPost> {
   final List<String> imagesList = [
     'assest/Images/slider3.jpg',
+    'assest/Images/slider3.jpg',
     'assest/Images/slider3.jpg'
   ];
   late PostBloc postbloc;
@@ -119,6 +120,10 @@ class AllPostPage extends State<AllPost> {
     super.initState();
   }
 
+  //Carousel tools Start
+  int _current = 0;
+  final CarouselController _controller = CarouselController();
+  //Carousel tools End
   Widget ourListview() {
     return Container(
       child: ListView.separated(
@@ -134,45 +139,77 @@ class AllPostPage extends State<AllPost> {
                 // Slider Images
                 Container(
                   margin: const EdgeInsets.only(bottom: 10, top: 10),
-                  child: Card(
-                    child: CarouselSlider(
-                      options: CarouselOptions(
-                        autoPlay: true,
-                      ),
-                      items: imagesList
-                          .map(
-                            (item) => Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Card(
-                                margin: EdgeInsets.only(
-                                  top: 15.0,
-                                  bottom: 15.0,
-                                ),
-                                elevation: 5.0,
-                                shadowColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(30.0),
-                                  ),
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Image.asset(
-                                        item,
-                                        fit: BoxFit.fill,
-                                        width: double.infinity,
-                                        height: double.infinity,
+                  child: Column(
+                    children: [
+                      Card(
+                        child: CarouselSlider(
+                          carouselController: _controller,
+                          options: CarouselOptions(
+                              autoPlay: true,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  print(index);
+                                  _current = index;
+                                });
+                              }),
+                          items: imagesList
+                              .map(
+                                (item) => Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Card(
+                                    margin: EdgeInsets.only(
+                                      top: 15.0,
+                                      bottom: 15.0,
+                                    ),
+                                    elevation: 5.0,
+                                    shadowColor: Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(30.0),
                                       ),
-                                    ],
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Image.asset(
+                                            item,
+                                            fit: BoxFit.fill,
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: imagesList.asMap().entries.map((entry) {
+                          return GestureDetector(
+                            onTap: () => _controller.animateToPage(entry.key),
+                            child: Container(
+                              width: 12.0,
+                              height: 12.0,
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 4.0),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: (Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Color(navbar.hashCode)
+                                          : Colors.black)
+                                      .withOpacity(
+                                          _current == entry.key ? 0.9 : 0.4)),
                             ),
-                          )
-                          .toList(),
-                    ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
                   ),
                 ),
               Card(
@@ -243,7 +280,7 @@ class AllPostPage extends State<AllPost> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => anyCompanyProfile(
+                                    builder: (context) => AnyCompanyProfile(
                                           id: post[index].companyId,
                                         )),
                               );
@@ -344,73 +381,6 @@ class AllPostPage extends State<AllPost> {
       ),
     );
   }
-
-  // Widget newDrawer() {
-  //   return new Drawer(
-  //     child: new ListView(
-  //       children: <Widget>[
-  //         new Container(
-  //           child: new DrawerHeader(
-  //               child: new CircleAvatar(
-  //             backgroundColor: navbar,
-  //             // child: Image.asset('asesst/Images/Logo.png')
-  //           )),
-  //           color: Colors.white,
-  //         ),
-  //         new Container(
-  //             color: Colors.white30,
-  //             child: Center(
-  //               child: new Column(
-  //                 children: <Widget>[
-  //                   ListTile(
-  //                     title: Text(''),
-  //                     leading: new Icon(Icons.account_circle),
-  //                     onTap: () {
-  //                       // Update the state of the app.//feas
-  //                       // ...
-  //                     },
-  //                   ),
-  //                   ListTile(
-  //                     title: Text('userPhone'),
-  //                     leading: new Icon(Icons.phone),
-  //                     onTap: () {
-  //                       // Update the state of the app.
-  //                       // ...
-  //                     },
-  //                   ),
-  //                   ListTile(
-  //                     title: Text(''),
-  //                     leading: new Icon(Icons.location_on_outlined),
-  //                     onTap: () {
-  //                       // Update the state of the app.
-  //                       // ...
-  //                     },
-  //                   ),
-  //                   ListTile(
-  //                     leading: new Icon(Icons.online_prediction_outlined),
-  //                     onTap: () {
-  //                       // Update the state of the app.
-  //                       // ...
-  //                     },
-  //                   ),
-  //                   ListTile(
-  //                     title: Text('تسجيل الخروج'),
-  //                     leading: new Icon(Icons.logout_sharp),
-  //                     onTap: () {
-  //                       Navigator.pushReplacement(context,
-  //                           MaterialPageRoute(builder: (context) {
-  //                         logout();
-  //                         return Loginpage();
-  //                       }));
-  //                     },
-  //                   ),
-  //                 ],
-  //               ),
-  //             ))
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget newEndDrawer() {
     return Directionality(
@@ -800,20 +770,22 @@ class CitySearchPage extends SearchDelegate<String> {
           return ListTile(
             onTap: () {
               query = suggestion.name;
-
+              print('show image');
               // 1. Show Results
-              showResults(context);
+              // showResults(context);
 
               // 2. Close Search & Return Result
               // close(context, suggestion);
 
               // 3. Navigate to Result Page
-              //  Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (BuildContext context) => ResultPage(suggestion),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => AnyCompanyProfile(
+                    id: suggestion.id,
+                  ),
+                ),
+              );
             },
             leading: Icon(Icons.location_city),
             // title: Text(suggestion),

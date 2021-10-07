@@ -1,6 +1,8 @@
 import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
+import 'package:central_borssa/presentation/Post/EditORDelete.dart';
+import 'package:central_borssa/presentation/Post/add_Post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -152,13 +154,61 @@ class CompanyProfilePage extends State<CompanyProfile> {
                         children: [
                           Container(
                               margin: const EdgeInsets.only(
-                                  bottom: 10, left: 25, top: 10, right: 10),
-                              child: Column(
-                                children: [
-                                  Icon(Icons.location_on_outlined),
-                                  Text(companypost[index].user.city.name),
-                                ],
+                                  bottom: 20, left: 10, right: 10),
+                              child: Directionality(
+                                textDirection: ui.TextDirection.rtl,
+                                child: PopupMenuButton(
+                                  icon: Icon(Icons.more_horiz),
+                                  itemBuilder: (BuildContext context) =>
+                                      <PopupMenuEntry>[
+                                    PopupMenuItem(
+                                      child: ListTile(
+                                        leading: Icon(Icons.delete),
+                                        title: Text('حذف المنشور'),
+                                        onTap: () {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return EditORDelete(
+                                              id: companypost[index].id,
+                                              type: 'حذف المنشور',
+                                              image: companypost[index].image,
+                                              body: companypost[index].body,
+                                            );
+                                          }));
+                                        },
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      child: ListTile(
+                                        leading: Icon(Icons.edit),
+                                        title: Text('تعديل المنشور'),
+                                        onTap: () {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return EditORDelete(
+                                              id: companypost[index].id,
+                                              type: 'تعديل المنشور',
+                                              image: companypost[index].image,
+                                              body: companypost[index].body,
+                                            );
+                                          }));
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               )),
+                          // Container(
+                          //     margin: const EdgeInsets.only(
+                          //         bottom: 10, left: 2, top: 10, right: 10),
+                          //     child: Column(
+                          //       children: [
+                          //         Icon(Icons.location_on_outlined),
+                          //         Text(companypost[index].user.city.name),
+                          //       ],
+                          //     )),
                           Spacer(),
                           Container(
                             child: Column(
