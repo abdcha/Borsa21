@@ -5,7 +5,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
-import 'package:central_borssa/data/model/Chat.dart';
+import 'package:central_borssa/data/model/Chart.dart';
 
 class PriceChart extends StatefulWidget {
   final int cityid;

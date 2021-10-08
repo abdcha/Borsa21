@@ -54,6 +54,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
   @override
   void initState() {
     bloc = BlocProvider.of<BorssaBloc>(context);
+
     var now = DateTime.now();
     var newFormat = DateFormat("yyyy-MM-dd");
     String updatedDt = newFormat.format(now);
@@ -98,11 +99,19 @@ class CentralBorssaPage extends State<CentralBorssa> {
   }
 
   Widget dataTable() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.all(12),
       child: DataTable(
-
-          // dataRowHeight: 30,
+          dataTextStyle: TextStyle(
+            fontSize: 12,
+            fontStyle: FontStyle.italic,
+          ),
+          headingRowHeight: 28,
+          horizontalMargin: 5.5,
+          dividerThickness: 2,
+          dataRowHeight: 30,
+          columnSpacing: 3,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: const Color(0xff505D6E),
@@ -114,18 +123,24 @@ class CentralBorssaPage extends State<CentralBorssa> {
               ),
             ],
           ),
-          columnSpacing: 40,
           headingRowColor: MaterialStateColor.resolveWith(
             (states) => Color(0xff7d8a99),
           ),
+          headingTextStyle: TextStyle(
+            inherit: false,
+          ),
           columns: [
             DataColumn(
-              label: Text(
-                'العرض',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: const Color(0xffffffff),
-                  fontWeight: FontWeight.bold,
+              tooltip: 'سعر الصرف',
+              label: Center(
+                child: Align(
+                  child: Text(
+                    'العرض',
+                    style: TextStyle(
+                      color: const Color(0xffffffff),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -133,7 +148,6 @@ class CentralBorssaPage extends State<CentralBorssa> {
                 label: Text(
               'الطلب',
               style: TextStyle(
-                fontSize: 14,
                 color: const Color(0xffffffff),
                 fontWeight: FontWeight.bold,
               ),
@@ -141,8 +155,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
             DataColumn(
                 label: Text(
               'المدينة',
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14,
                 color: const Color(0xffffffff),
                 fontWeight: FontWeight.bold,
               ),
@@ -153,6 +167,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
               DataRow(cells: [
                 DataCell(
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       currencyprice[i].buyStatus == "down"
                           ? Icon(
@@ -188,6 +203,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                               },
                               child: Text(
                                 currencyprice[i].buy.toString(),
+                                textAlign: TextAlign.start,
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.white,
@@ -212,6 +228,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                 ),
                 DataCell(
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       currencyprice[i].sellStatus == "down"
                           ? Icon(
@@ -235,11 +252,26 @@ class CentralBorssaPage extends State<CentralBorssa> {
                   ),
                 ),
                 DataCell(Container(
+                  // width: 195,
                   child: Row(
-                    children: [
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text(
+                        currencyprice[i].city.name,
+                        maxLines: 1,
+                        textWidthBasis: TextWidthBasis.parent,
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: const Color(0xffffffff),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                       InkWell(
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(right: 4, left: 4),
                           child: Icon(
                             Icons.remove_red_eye_rounded,
                             color: Colors.white,
@@ -256,15 +288,6 @@ class CentralBorssaPage extends State<CentralBorssa> {
                             ),
                           );
                         },
-                      ),
-                      Text(
-                        currencyprice[i].city.name,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: const Color(0xffffffff),
-                          fontWeight: FontWeight.w400,
-                        ),
                       ),
                     ],
                   ),
@@ -377,21 +400,16 @@ class CentralBorssaPage extends State<CentralBorssa> {
             );
           }
         },
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              isloading
-                  ? Container(
-                      child: Center(child: CircularProgressIndicator()),
-                    )
-                  : Container(
-                      width: double.infinity,
-                      child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal, child: dataTable()),
-                    ),
-            ],
-          ),
+        child: Column(
+          children: <Widget>[
+            isloading
+                ? Container(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : Container(
+                    child: dataTable(),
+                  ),
+          ],
         ),
       ),
     );

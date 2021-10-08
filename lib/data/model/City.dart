@@ -12,9 +12,7 @@ class City {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
-    if (this.data != null) {
-      data['data'] = this.data.toJson();
-    }
+    data['data'] = this.data.toJson();
     return data;
   }
 }
@@ -35,9 +33,7 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.cities != null) {
-      data['cities'] = this.cities.map((v) => v.toJson()).toList();
-    }
+    data['cities'] = this.cities.map((v) => v.toJson()).toList();
     return data;
   }
 

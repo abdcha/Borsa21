@@ -9,9 +9,7 @@ class Currency {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.data != null) {
-      data['data'] = this.data.toJson();
-    }
+    data['data'] = this.data.toJson();
     return data;
   }
 }
@@ -32,10 +30,7 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.currencyPrice != null) {
-      data['CurrencyPrice'] =
-          this.currencyPrice.map((v) => v.toJson()).toList();
-    }
+    data['CurrencyPrice'] = this.currencyPrice.map((v) => v.toJson()).toList();
     return data;
   }
 }
@@ -55,7 +50,7 @@ class CurrencyPrice {
   CurrencyPrice.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     buy = json['buy'].toDouble();
-    sell = json['sell'].toDouble(); 
+    sell = json['sell'].toDouble();
     sellStatus = json['sell_status'];
     createdBy = json['created_by'];
     cityId = json['city_id'];
@@ -76,9 +71,7 @@ class CurrencyPrice {
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['buy_status'] = this.buyStatus;
-    if (this.city != null) {
-      data['city'] = this.city.toJson();
-    }
+    data['city'] = this.city.toJson();
     return data;
   }
 }

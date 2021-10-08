@@ -14,8 +14,6 @@ class EmptyPage extends StatefulWidget {
 class EmptyPage_page extends State<EmptyPage> {
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey =
-        new GlobalKey<ScaffoldState>();
     return MultiBlocProvider(
       providers: [
         BlocProvider(

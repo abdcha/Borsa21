@@ -39,12 +39,8 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.user != null) {
-      data['user'] = this.user.toJson();
-    }
-    if (this.premissions != null) {
-      data['premissions'] = this.premissions.map((v) => v.toJson()).toList();
-    }
+    data['user'] = this.user.toJson();
+    data['premissions'] = this.premissions.map((v) => v.toJson()).toList();
     data['roles'] = this.roles;
     return data;
   }
@@ -115,9 +111,7 @@ class Premissions {
     data['guard_name'] = this.guardName;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-    if (this.pivot != null) {
-      data['pivot'] = this.pivot.toJson();
-    }
+    data['pivot'] = this.pivot.toJson();
     return data;
   }
 }

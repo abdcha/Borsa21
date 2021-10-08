@@ -44,7 +44,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       });
     } else if (event is FollowEvent) {
       var getAllCompanyInformationsResponse =
-          await companyRepository.Follow(event.id);
+          await companyRepository.follow(event.id);
       yield* getAllCompanyInformationsResponse.fold((l) async* {
         yield FollowError();
       }, (r) async* {
@@ -54,7 +54,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       });
     } else if (event is UnFollowEvent) {
       var getAllCompanyInformationsResponse =
-          await companyRepository.UnFollow(event.id);
+          await companyRepository.unFollow(event.id);
       yield* getAllCompanyInformationsResponse.fold((l) async* {
         yield UnFollowError();
       }, (r) async* {

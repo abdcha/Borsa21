@@ -146,39 +146,42 @@ class AddPostPage extends State<AddPost> {
                                     focusColor: Colors.red),
                                 child: Directionality(
                                     textDirection: TextDirection.rtl,
-                                    child: TextFormField(
-                                      textAlign: TextAlign.right,
-                                      maxLines: null,
-                                      cursorColor: Colors.black,
-                                      controller: postTextInpput,
-                                      maxLength: 512,
-                                      keyboardType: TextInputType.text,
-                                      style: TextStyle(color: Colors.black),
-                                      validator: (String? value) {
-                                        if (value!.isEmpty) {
-                                          return 'الرجاء إدخال المنشور الجديد';
-                                        }
-                                        return null;
-                                      },
-                                      onSaved: (String? value) {
-                                        postValue = value ?? "";
-                                      },
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            EdgeInsets.fromLTRB(0, 0, 40, 35),
-                                        labelText: 'المنشور',
-                                        labelStyle: TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                        fillColor: Colors.red,
-                                        border: OutlineInputBorder(),
-                                        enabledBorder: new OutlineInputBorder(
-                                            borderSide: new BorderSide(
-                                                color: Color(navbar.hashCode))),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 3,
-                                              color: Color(navbar.hashCode)),
+                                    child: Expanded(
+                                      flex: 3,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.right,
+                                        cursorColor: Colors.black,
+                                        maxLines: null,
+                                        controller: postTextInpput,
+                                        keyboardType: TextInputType.text,
+                                        style: TextStyle(color: Colors.black),
+                                        validator: (String? value) {
+                                          if (value!.isEmpty) {
+                                            return 'الرجاء إدخال المنشور الجديد';
+                                          }
+                                          return null;
+                                        },
+                                        onSaved: (String? value) {
+                                          postValue = value ?? "";
+                                        },
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              EdgeInsets.fromLTRB(0, 0, 40, 35),
+                                          labelText: 'المنشور',
+                                          labelStyle: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                          fillColor: Colors.red,
+                                          border: OutlineInputBorder(),
+                                          enabledBorder: new OutlineInputBorder(
+                                              borderSide: new BorderSide(
+                                                  color:
+                                                      Color(navbar.hashCode))),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 3,
+                                                color: Color(navbar.hashCode)),
+                                          ),
                                         ),
                                       ),
                                     )))),

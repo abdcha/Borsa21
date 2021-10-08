@@ -1,5 +1,5 @@
 import 'package:central_borssa/constants/url.dart';
-import 'package:central_borssa/data/model/Chat.dart';
+import 'package:central_borssa/data/model/Chart.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
@@ -46,7 +46,7 @@ class CurrencyRepository {
     }
   }
 
-  Future<Either<String, List<DataChanges>>> DrawChart(
+  Future<Either<String, List<DataChanges>>> drawChart(
       int cityid, String fromdate, String todate) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var _token = _prefs.get('token');

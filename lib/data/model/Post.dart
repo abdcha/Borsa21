@@ -9,9 +9,7 @@ class Post {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.data != null) {
-      data['data'] = this.data.toJson();
-    }
+    data['data'] = this.data.toJson();
     return data;
   }
 }
@@ -34,9 +32,7 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.posts != null) {
-      data['posts'] = this.posts.map((v) => v.toJson()).toList();
-    }
+    data['posts'] = this.posts.map((v) => v.toJson()).toList();
     data['total'] = this.total;
     return data;
   }

@@ -27,7 +27,7 @@ class AllPost extends StatefulWidget {
   AllPostPage createState() => AllPostPage();
 }
 
-late List<list> _companiesname = [];
+late List<list> _companiesName = [];
 
 class AllPostPage extends State<AllPost> {
   final List<String> imagesList = [
@@ -40,28 +40,22 @@ class AllPostPage extends State<AllPost> {
   late CompanyBloc companybloc;
   late List<Posts> post = [];
   late List<list> cities = [];
-
-  late int totalpost;
-  late String? location;
-  int currentPage = 1;
-  late int countItemPerpage = 3;
   late List<list?> selectedcities = [];
+  late List<String> userPermissions = [];
+
   final RefreshController refreshController =
       RefreshController(initialRefresh: true);
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
-  // logout() async {
-  //   print('from');
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.clear();
-  // }
-  late List<String> userPermissions = [];
+  late int countItemPerpage = 5;
+  late int totalpost = 0;
   late String userName = "";
   late String userPhone = "";
   late String userLocation = "";
   late String userType = "";
-  int companyuser = 0;
   late String userActive = "";
+  int companyuser = 0;
+  int currentPage = 1;
 
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -77,27 +71,23 @@ class AllPostPage extends State<AllPost> {
   }
 
   Future<bool> postloading({bool isRefresh = false}) async {
-    postbloc
-        .add(GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
-    currentPage++;
-
-    if (post.isNotEmpty &&
-        (totalpost / countItemPerpage).round() >= currentPage) {
-      print('not upper');
+    if (isRefresh) {
+      print('test');
+      post.clear();
       postbloc.add(
           GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
       currentPage++;
-
-      print('Not Empty');
     }
-
-    print(currentPage);
+    if (post.length != totalpost && isRefresh == false) {
+      postbloc.add(
+          GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
+      currentPage++;
+    }
     return true;
   }
 
   void whatsappSender({@required number, @required message}) async {
     final String url = "https://api.whatsapp.com/send?phone=$number";
-
     await launch(url);
   }
 
@@ -109,14 +99,13 @@ class AllPostPage extends State<AllPost> {
 
   @override
   void initState() {
-    post.clear();
     postbloc = BlocProvider.of<PostBloc>(context);
     borssaBloc = BlocProvider.of<BorssaBloc>(context);
     companybloc = BlocProvider.of<CompanyBloc>(context);
+    postloading();
+    sharedValue();
     companybloc.add(GetAllCompanies());
     borssaBloc.add(AllCitiesList());
-    sharedValue();
-    postloading();
     super.initState();
   }
 
@@ -148,7 +137,7 @@ class AllPostPage extends State<AllPost> {
                               autoPlay: true,
                               onPageChanged: (index, reason) {
                                 setState(() {
-                                  print(index);
+                                  // print(index);
                                   _current = index;
                                 });
                               }),
@@ -447,9 +436,9 @@ class AllPostPage extends State<AllPost> {
                           ),
                           onConfirm: (List<list?> results) {
                             setState(() {
-                              print(results);
+                              // print(results);
                               selectedcities = results;
-                              print(selectedcities);
+                              // print(selectedcities);
                             });
                           },
                         ),
@@ -466,7 +455,7 @@ class AllPostPage extends State<AllPost> {
                         child: Text('البحث'),
                         onPressed: () {
                           // selectedcities.clear();
-                          print(selectedcities);
+                          // print(selectedcities);
                           postbloc.add(GetPostByCityName(
                               postscityName: selectedcities,
                               page: 1,
@@ -484,7 +473,7 @@ class AllPostPage extends State<AllPost> {
   }
 
   logout() async {
-    print('from');
+    // print('from');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
   }
@@ -584,10 +573,13 @@ class AllPostPage extends State<AllPost> {
           listeners: [
             BlocListener<PostBloc, PostState>(
               listener: (context, state) {
-                if (state is PostLoadingInProgress) {
+                if (state is AddPostSuccess) {
+                  setState(() {});
+                } else if (state is PostLoadingInProgress) {
                   print(state);
                 } else if (state is PostsLoadedSuccess) {
                   if (post.isEmpty) {
+                    print(state);
                     post = state.posts.posts;
                     totalpost = state.posts.total;
                   } else if (post.isNotEmpty) {
@@ -641,13 +633,9 @@ class AllPostPage extends State<AllPost> {
                   print(state);
                 } else if (state is CompanyNameIsLoaded) {
                   print(state);
-                  _companiesname.clear();
-                  _companiesname = state.companies;
-                  print('from company');
-                  print(_companiesname);
-                  setState(() {
-                    // isloading = false;
-                  });
+                  _companiesName.clear();
+                  _companiesName = state.companies;
+                  setState(() {});
                 } else if (state is CompanyNameError) {
                   print(state);
 
@@ -682,8 +670,8 @@ class AllPostPage extends State<AllPost> {
                 refreshController.refreshCompleted();
               },
               onLoading: () async {
-                await Future.delayed(Duration(milliseconds: 180));
-                postloading();
+                await Future.delayed(Duration(milliseconds: 5000));
+                postloading(isRefresh: false);
                 if (mounted) setState(() {});
                 if (mounted) setState(() {});
 
@@ -749,8 +737,8 @@ class CitySearchPage extends SearchDelegate<String> {
   @override
   Widget buildSuggestions(BuildContext context) {
     final suggestions = query.isEmpty
-        ? _companiesname
-        : _companiesname.where((city) {
+        ? _companiesName
+        : _companiesName.where((city) {
             final cityLower = city.name.toLowerCase();
             final queryLower = query.toLowerCase();
 
@@ -770,7 +758,7 @@ class CitySearchPage extends SearchDelegate<String> {
           return ListTile(
             onTap: () {
               query = suggestion.name;
-              print('show image');
+              // print('show image');
               // 1. Show Results
               // showResults(context);
 

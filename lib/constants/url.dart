@@ -14,3 +14,5 @@ final allPostByCityName =
 final followUrl = 'https://ferasalhallak.online/api/followCompany?company_id=';
 final unfollowUrl =
     'https://ferasalhallak.online/api/unfollowCompany?company_id=';
+
+final allMessagesUrl = 'https://ferasalhallak.online/api/message?page=';

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:central_borssa/data/model/Chat.dart';
+import 'package:central_borssa/data/model/Chart.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:central_borssa/data/repositroy/CurrencyRepository.dart';
@@ -32,7 +32,7 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
         yield UpdateBorssaSuccess();
       });
     } else if (event is ChartEvent) {
-      final chatResponse = await currencyRepository.DrawChart(
+      final chatResponse = await currencyRepository.drawChart(
           event.cityid, event.fromdate, event.todate);
       yield* chatResponse.fold((l) async* {
         print(l);

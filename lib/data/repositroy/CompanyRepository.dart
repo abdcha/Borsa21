@@ -21,7 +21,7 @@ class CompanyRepository {
       var companyPostResponse = await _dio.get(urledit);
       print(companyPostResponse.data['data']);
       var data = new Data.fromJson(companyPostResponse.data['data']);
-      if (data != null) {
+      if (data != "") {
         return Right(data);
       } else {
         return Left('error');
@@ -51,7 +51,7 @@ class CompanyRepository {
     }
   }
 
-  Future<Either<bool, bool>> Follow(int companyId) async {
+  Future<Either<bool, bool>> follow(int companyId) async {
     try {
       SharedPreferences _pref = await SharedPreferences.getInstance();
       var token = _pref.get('token');
@@ -70,7 +70,7 @@ class CompanyRepository {
     }
   }
 
-  Future<Either<bool, bool>> UnFollow(int companyId) async {
+  Future<Either<bool, bool>> unFollow(int companyId) async {
     try {
       SharedPreferences _pref = await SharedPreferences.getInstance();
       var token = _pref.get('token');

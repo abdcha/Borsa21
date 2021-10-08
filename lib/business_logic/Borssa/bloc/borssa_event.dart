@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:central_borssa/data/model/City.dart';
 
 class BorssaEvent extends Equatable {
   const BorssaEvent();

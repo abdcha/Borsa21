@@ -16,9 +16,7 @@ class PostGet {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.posts != null) {
-      data['posts'] = this.posts.map((v) => v.toJson()).toList();
-    }
+    data['posts'] = this.posts.map((v) => v.toJson()).toList();
     data['total'] = this.total;
     return data;
   }
@@ -63,12 +61,8 @@ class Posts {
     data['user_id'] = this.userId;
     data['company_id'] = this.companyId;
     data['is_followed'] = this.isFollowed;
-    if (this.company != null) {
-      data['company'] = this.company.toJson();
-    }
-    if (this.user != null) {
-      data['user'] = this.user.toJson();
-    }
+    data['company'] = this.company.toJson();
+    data['user'] = this.user.toJson();
     return data;
   }
 }
@@ -97,9 +91,7 @@ class User {
     data['name'] = this.name;
     data['id'] = this.id;
     data['city_id'] = this.cityId;
-    if (this.city != null) {
-      data['city'] = this.city.toJson();
-    }
+    data['city'] = this.city.toJson();
     return data;
   }
 }

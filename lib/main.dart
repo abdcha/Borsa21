@@ -18,7 +18,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'business_logic/Chat/bloc/chat_bloc.dart';
 import 'business_logic/Login/bloc/login_bloc.dart';
+import 'data/repositroy/ChatRepository.dart';
 
 void main() {
   runApp(MyApp());
@@ -81,6 +83,9 @@ class _MyHomePageState extends State<MyHomePage> {
           BlocProvider(
             create: (context) =>
                 CurrencyBloc(CurrencyInitial(), CurrencyRepository()),
+          ),
+          BlocProvider(
+            create: (context) => ChatBloc(ChatInitial(), ChatRepository()),
           ),
         ],
         child: MaterialApp(

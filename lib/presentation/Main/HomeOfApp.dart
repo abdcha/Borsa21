@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Home/Central_Borssa.dart';
 
-import '..//Home/Chat.dart';
+import '..//Home/MainChat.dart';
 import '../Home/All_post.dart';
 import '../Home/Company_Profile.dart';
 
@@ -55,7 +55,7 @@ class home_page extends State<HomeOfApp>
         case 1:
           return CentralBorssa();
         case 2:
-          return Chat();
+          return MainChat();
         case 3:
           return CompanyProfile();
           // ignore: dead_code
@@ -77,7 +77,7 @@ class home_page extends State<HomeOfApp>
         case 0:
           return CentralBorssa();
         case 1:
-          return Chat();
+          return MainChat();
           // ignore: dead_code
           break;
         default:
