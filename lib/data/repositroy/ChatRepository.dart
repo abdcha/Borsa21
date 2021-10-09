@@ -12,25 +12,21 @@ class ChatRepository {
   Future<Either<String, Data>> allMessages(int page, int pageSize) async {
     messages.clear();
 
-    try {
-      SharedPreferences _prefs = await SharedPreferences.getInstance();
-      var _token = _prefs.getString('token');
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var _token = _prefs.getString('token');
 
-      _dio..options.headers['authorization'] = 'Bearer $_token';
+    _dio..options.headers['authorization'] = 'Bearer $_token';
 
-      var response = await _dio.get('$allMessagesUrl$page&pageSize=$pageSize');
-      print(response);
-      var status = response.data['status'];
-      var allcurrency = Data.fromJson(response.data['data']);
-      print(allcurrency);
+    var response = await _dio.get('$allMessagesUrl$page&pageSize=$pageSize');
+    print(response.data['status']);
+    var status = response.data['status'];
+    var allcurrency = Data.fromJson(response.data['data']);
+    // print(allcurrency);
 
-      print(allcurrency);
-      if (status == "success") {
-        return Right(allcurrency);
-      } else {
-        return Left("error");
-      }
-    } catch (e) {
+    // print(allcurrency);
+    if (status == "success") {
+      return Right(allcurrency);
+    } else {
       return Left("error");
     }
   }

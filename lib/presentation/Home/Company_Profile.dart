@@ -34,7 +34,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
   late CompanyBloc bloc;
   late List<Posts> companypost = [];
   late int companyuser = 0;
-  late int totalpost;
+  late int totalpost = 0;
   late String? location;
   bool isEmpty = true;
 
@@ -51,8 +51,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
       currentPage++;
     }
     print(companypost.length);
-    if (companypost.isNotEmpty &&
-        (totalpost / countItemPerpage).round() >= currentPage) {
+    if (totalpost != companypost.length) {
       bloc.add(GetAllCompanyInformationsEvent(
           id: companyuser,
           pageSize: countItemPerpage,

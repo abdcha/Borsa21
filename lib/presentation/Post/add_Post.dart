@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -71,6 +72,7 @@ class AddPostPage extends State<AddPost> {
               print(state);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
+                  duration: Duration(milliseconds: 12),
                   content: const Text('تم التعديل بنجاح'),
                   action: SnackBarAction(
                     label: 'تنبيه',
@@ -80,8 +82,9 @@ class AddPostPage extends State<AddPost> {
                   ),
                 ),
               );
+
               Navigator.pop(context, MaterialPageRoute(builder: (context) {
-                return AllPost();
+                return HomeOfApp();
               }));
             }
             if (state is PostsLoadingError) {
@@ -146,42 +149,38 @@ class AddPostPage extends State<AddPost> {
                                     focusColor: Colors.red),
                                 child: Directionality(
                                     textDirection: TextDirection.rtl,
-                                    child: Expanded(
-                                      flex: 3,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.right,
-                                        cursorColor: Colors.black,
-                                        maxLines: null,
-                                        controller: postTextInpput,
-                                        keyboardType: TextInputType.text,
-                                        style: TextStyle(color: Colors.black),
-                                        validator: (String? value) {
-                                          if (value!.isEmpty) {
-                                            return 'الرجاء إدخال المنشور الجديد';
-                                          }
-                                          return null;
-                                        },
-                                        onSaved: (String? value) {
-                                          postValue = value ?? "";
-                                        },
-                                        decoration: InputDecoration(
-                                          contentPadding:
-                                              EdgeInsets.fromLTRB(0, 0, 40, 35),
-                                          labelText: 'المنشور',
-                                          labelStyle: TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                          fillColor: Colors.red,
-                                          border: OutlineInputBorder(),
-                                          enabledBorder: new OutlineInputBorder(
-                                              borderSide: new BorderSide(
-                                                  color:
-                                                      Color(navbar.hashCode))),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                width: 3,
-                                                color: Color(navbar.hashCode)),
-                                          ),
+                                    child: TextFormField(
+                                      textAlign: TextAlign.right,
+                                      cursorColor: Colors.black,
+                                      maxLines: null,
+                                      controller: postTextInpput,
+                                      keyboardType: TextInputType.text,
+                                      style: TextStyle(color: Colors.black),
+                                      validator: (String? value) {
+                                        if (value!.isEmpty) {
+                                          return 'الرجاء إدخال المنشور الجديد';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (String? value) {
+                                        postValue = value ?? "";
+                                      },
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            EdgeInsets.fromLTRB(0, 0, 40, 35),
+                                        labelText: 'المنشور',
+                                        labelStyle: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                        fillColor: Colors.red,
+                                        border: OutlineInputBorder(),
+                                        enabledBorder: new OutlineInputBorder(
+                                            borderSide: new BorderSide(
+                                                color: Color(navbar.hashCode))),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 3,
+                                              color: Color(navbar.hashCode)),
                                         ),
                                       ),
                                     )))),

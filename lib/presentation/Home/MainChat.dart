@@ -28,12 +28,12 @@ class CompanyProfilePage extends State<MainChat> {
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
   int currentPage = 1;
-  late int countItemPerpage = 5;
+  late int countItemPerpage = 3;
 
   late ChatBloc bloc;
   late List<MessageOfChat.Message> companypost = [];
   late int companyuser = 0;
-  late int totalpost;
+  late int totalpost = 1;
   late String? location;
   bool isEmpty = true;
 
@@ -41,15 +41,15 @@ class CompanyProfilePage extends State<MainChat> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     companyuser = int.parse(prefs.get('companyid').toString());
 
-    if (isRefresh) {
-      print('is refresh');
-      bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
-      currentPage++;
-    }
+    // if (isRefresh) {
+    //   currentPage = 0;
+    //   print('is refresh');
+    //   bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
+    //   currentPage++;
+    // }
     print(companypost.length);
-    if (companypost.isNotEmpty &&
-        (totalpost / countItemPerpage).round() >= currentPage) {
-      bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
+    if (companypost.length != totalpost) {
+      bloc.add(GetAllMessagesEvent(pageSize: 2, page: currentPage));
       print('Not Empty');
       currentPage++;
     }
@@ -100,6 +100,7 @@ class CompanyProfilePage extends State<MainChat> {
         key: _contentKey,
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
+        reverse: true,
         padding: const EdgeInsets.all(2),
         itemCount: companypost.length,
         itemBuilder: (BuildContext context, int index) {
@@ -329,11 +330,12 @@ class CompanyProfilePage extends State<MainChat> {
           if (state is GetAllMessagesIsLoaded) {
             print(state);
             if (companypost.isEmpty) {
-              companypost = state.data.message;
+              companypost = state.data.message.reversed.toList();
               totalpost = state.data.total;
+              print(companypost);
               print(totalpost);
             } else if (companypost.isNotEmpty) {
-              // companypost.addAll(state.data.message);
+              companypost.addAll(state.data.message.reversed.toList());
             } else {
               print(state);
             }
@@ -367,15 +369,13 @@ class CompanyProfilePage extends State<MainChat> {
               if (mounted) setState(() {});
               refreshController.refreshCompleted();
             },
-            onLoading: () async {
-              await Future.delayed(Duration(milliseconds: 180));
-              postloading();
-              if (mounted) setState(() {});
-              refreshController.loadFailed();
-            },
-            child: Column(
-              children: [Expanded(child: ourListview()), _sendMessageArea()],
-            ),
+            // onLoading: () async {
+            //   // await Future.delayed(Duration(milliseconds: 180));
+            //   // postloading();
+            //   // if (mounted) setState(() {});
+            //   // refreshController.loadFailed();
+            // },
+            child: ourListview(),
           ),
         ),
       ),

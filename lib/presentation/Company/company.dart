@@ -38,7 +38,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
   late bool followStatus;
   int? isFollowed;
   late int companyuser = 0;
-  late int totalpost;
+  late int totalpost = 0;
   late String? location;
   bool isEmpty = true;
 
@@ -55,8 +55,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
       currentPage++;
     }
     print(companypost.length);
-    if (companypost.isNotEmpty &&
-        (totalpost / countItemPerpage).round() >= currentPage) {
+    if (companypost.length != totalpost) {
       bloc.add(GetAllCompanyInformationsEvent(
           id: widget.id,
           pageSize: countItemPerpage,

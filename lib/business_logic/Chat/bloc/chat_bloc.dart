@@ -15,6 +15,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (event is InitialChatEvent) {
       yield ChatInitial();
     } else if (event is GetAllMessagesEvent) {
+      yield GetAllMessagesIsLoading();
       var getAllCompanyInformationsResponse =
           await chatRepository.allMessages(event.page, event.pageSize);
       yield* getAllCompanyInformationsResponse.fold((l) async* {
@@ -22,7 +23,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       }, (r) async* {
         print('we are in message');
         print(r);
-        yield GetAllMessagesIsLoading();
         yield GetAllMessagesIsLoaded(data: r);
       });
     }

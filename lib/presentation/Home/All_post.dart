@@ -70,8 +70,15 @@ class AllPostPage extends State<AllPost> {
     setState(() {});
   }
 
+  reload() async {
+    print('main reload');
+    postloading(isRefresh: true);
+    await Future.delayed(Duration(milliseconds: 1000));
+  }
+
   Future<bool> postloading({bool isRefresh = false}) async {
     if (isRefresh) {
+      currentPage = 1;
       print('test');
       post.clear();
       postbloc.add(
@@ -574,7 +581,9 @@ class AllPostPage extends State<AllPost> {
             BlocListener<PostBloc, PostState>(
               listener: (context, state) {
                 if (state is AddPostSuccess) {
-                  setState(() {});
+                  print(state);
+                  print('from add');
+                  reload();
                 } else if (state is PostLoadingInProgress) {
                   print(state);
                 } else if (state is PostsLoadedSuccess) {

@@ -126,41 +126,69 @@ class CentralBorssaPage extends State<CentralBorssa> {
           headingRowColor: MaterialStateColor.resolveWith(
             (states) => Color(0xff7d8a99),
           ),
-          headingTextStyle: TextStyle(
+          headingTextStyle: const TextStyle(
             inherit: false,
           ),
           columns: [
             DataColumn(
-              tooltip: 'سعر الصرف',
-              label: Center(
-                child: Align(
-                  child: Text(
-                    'العرض',
-                    style: TextStyle(
-                      color: const Color(0xffffffff),
-                      fontWeight: FontWeight.bold,
+                label: Expanded(
+              child: Container(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Text(
+                      'العرض',
+                      style: TextStyle(
+                        color: const Color(0xffffffff),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                  )
+                ],
+              )),
+            )),
+            DataColumn(
+                label: Expanded(
+              child: Container(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Text(
+                      'الطلب',
+                      style: TextStyle(
+                        color: const Color(0xffffffff),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                ],
+              )),
+            )),
+            DataColumn(
+                label: Expanded(
+              child: Container(
+                // color: Colors.red,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Text(
+                        'المدينة',
+                        style: TextStyle(
+                          color: const Color(0xffffffff),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
-            ),
-            DataColumn(
-                label: Text(
-              'الطلب',
-              style: TextStyle(
-                color: const Color(0xffffffff),
-                fontWeight: FontWeight.bold,
-              ),
-            )),
-            DataColumn(
-                label: Text(
-              'المدينة',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: const Color(0xffffffff),
-                fontWeight: FontWeight.bold,
-              ),
-            )),
+            ))
           ],
           rows: [
             for (int i = 0; i < currencyprice.length; i++)
@@ -252,10 +280,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                   ),
                 ),
                 DataCell(Container(
-                  // width: 195,
                   child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       Text(
