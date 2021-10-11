@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:central_borssa/constants/url.dart';
 import 'package:central_borssa/data/model/Chat.dart';
 
@@ -26,6 +28,29 @@ class ChatRepository {
     // print(allcurrency);
     if (status == "success") {
       return Right(allcurrency);
+    } else {
+      return Left("error");
+    }
+  }
+
+  Future<Either<String, String>> sendMessages(String message) async {
+    messages.clear();
+
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var _token = _prefs.getString('token');
+
+    _dio..options.headers['authorization'] = 'Bearer $_token';
+
+    var response =
+        await _dio.post(sendMessageUrl, data: jsonEncode({"message": message}));
+    print(response.data['status']);
+    var status = response.data['status'];
+    // var allcurrency = Data.fromJson(response.data['data']);
+    // print(allcurrency);
+
+    // print(allcurrency);
+    if (status == "success") {
+      return Right(status);
     } else {
       return Left("error");
     }

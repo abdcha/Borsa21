@@ -5,9 +5,9 @@ import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_flutter_pusher/pusher.dart';
 
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
@@ -28,32 +28,68 @@ class CompanyProfilePage extends State<MainChat> {
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
   int currentPage = 1;
-  late int countItemPerpage = 3;
-
+  late int countItemPerpage = 100;
+  final messagebody = TextEditingController();
+  bool isbottom = true;
   late ChatBloc bloc;
-  late List<MessageOfChat.Message> companypost = [];
+  late List<MessageOfChat.Message> messages = [];
   late int companyuser = 0;
   late int totalpost = 1;
   late String? location;
   bool isEmpty = true;
+  late Channel _ourChannel;
+  late String? test;
+  Future<void> pusherTerster() async {
+    try {
+      SharedPreferences _pref = await SharedPreferences.getInstance();
+      test = _pref.get('roles').toString();
+      // print(test);
+      await Pusher.init(
+          'borsa_app',
+          PusherOptions(
+              cluster: 'mt1',
+              host: 'www.ferasalhallak.online',
+              encrypted: false,
+              port: 6001));
+    } catch (e) {
+      print(e);
+    }
+    Pusher.connect(onConnectionStateChange: (val) {
+      print('1');
+      print(val!.currentState);
+    }, onError: (error) {
+      print('2');
+      print(error!.message);
+    });
+
+    //Subscribe
+    _ourChannel = await Pusher.subscribe('MessageChannel');
+
+    //Bind
+    _ourChannel.bind('newMessage', (onEvent) {
+      print('fromhere');
+      print(onEvent!.data);
+      bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
+    });
+  }
 
   Future<bool> postloading({bool isRefresh = false}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     companyuser = int.parse(prefs.get('companyid').toString());
 
-    // if (isRefresh) {
-    //   currentPage = 0;
-    //   print('is refresh');
-    //   bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
+    currentPage = 0;
+    messages.clear();
+    print('is refresh');
+    bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
+    setState(() {});
+    currentPage++;
+    // print(companypost.length);
+    // else if (messages.length != totalpost) {
+    //   bloc.add(GetAllMessagesEvent(pageSize: 100, page: currentPage));
+    //   print('Not Empty');
     //   currentPage++;
     // }
-    print(companypost.length);
-    if (companypost.length != totalpost) {
-      bloc.add(GetAllMessagesEvent(pageSize: 2, page: currentPage));
-      print('Not Empty');
-      currentPage++;
-    }
-    print(currentPage);
+    // print(currentPage);
     return true;
   }
 
@@ -62,7 +98,7 @@ class CompanyProfilePage extends State<MainChat> {
       textDirection: ui.TextDirection.rtl,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8),
-        height: 70,
+        height: 45,
         color: Colors.white,
         child: Row(
           children: <Widget>[
@@ -74,10 +110,12 @@ class CompanyProfilePage extends State<MainChat> {
             // ),
             Expanded(
               child: TextField(
+                controller: messagebody,
                 maxLines: null,
                 expands: true,
+                textAlign: TextAlign.right,
                 decoration: InputDecoration.collapsed(
-                  hintText: 'الرسالة',
+                  hintText: '???????',
                 ),
                 textCapitalization: TextCapitalization.sentences,
               ),
@@ -86,7 +124,13 @@ class CompanyProfilePage extends State<MainChat> {
               icon: Icon(Icons.send),
               iconSize: 25,
               color: Theme.of(context).primaryColor,
-              onPressed: () {},
+              onPressed: () {
+                bloc.add(SendMessageEvent(message: messagebody.text));
+                setState(() {
+                  print('pusher terster');
+                  pusherTerster();
+                });
+              },
             ),
           ],
         ),
@@ -96,113 +140,177 @@ class CompanyProfilePage extends State<MainChat> {
 
   Widget ourListview() {
     return SingleChildScrollView(
-      child: ListView.separated(
-        key: _contentKey,
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        reverse: true,
-        padding: const EdgeInsets.all(2),
-        itemCount: companypost.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Directionality(
-            textDirection: ui.TextDirection.rtl,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              elevation: 5.0,
-              shadowColor: Colors.black,
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.end, //change here don't //worked
-                    children: [
-                      Container(),
-                      // Container(
-                      //     margin: const EdgeInsets.only(
-                      //         bottom: 10, left: 2, top: 10, right: 10),
-                      //     child: Column(
-                      //       children: [
-                      //         Icon(Icons.location_on_outlined),
-                      //         Text(companypost[index].user.city.name),
-                      //       ],
-                      //     )),
-                      Spacer(),
-                      Container(
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  's',
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
-                                ),
-                              ],
+      child: Container(
+        // constraints: const BoxConstraints(maxWidth: 340, minWidth: 100),
+        child: ListView.separated(
+          key: _contentKey,
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          // reverse: true,
+          padding: const EdgeInsets.all(2),
+          itemCount: messages.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Directionality(
+              textDirection: userName != messages[index].username
+                  ? ui.TextDirection.rtl
+                  : ui.TextDirection.ltr,
+              child: Container(
+                color: Colors.blueAccent[300],
+                // constraints: const BoxConstraints(
+                //   maxWidth: 100,
+                // ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8, top: 8),
+                      child: Container(
+                          child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Text(
+                              messages[index].username,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
                             ),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 6),
-                                  child: Text(DateFormat.Hm().format(
-                                      DateTime.parse(
-                                          companypost[index].createdAt))),
-                                ),
-                                Text(
-                                  companypost[index].username,
-                                  textAlign: TextAlign.end,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        child: InkWell(
-                          onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) =>
-                            //         CompanyProfile(id: post[index].companyId),
-                            //   ),
-                            // );
-                          },
-                          child: CircleAvatar(
-                            radius: 30.0,
-                            backgroundColor: Colors.transparent,
-                            // backgroundImage: NetworkImage(
-                            //   'https://ferasalhallak.online$companypost[index].companyImage',
-                            // ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 10.0,
+                            ),
+                            child: CircleAvatar(
+                              backgroundColor: navbar,
+                              // child: Image.asset('asesst/Images/Logo.png')
+                            ),
+                          ),
+                        ],
+                      )),
+                    ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
                       ),
-                    ],
-                  ),
-                  Container(
-                      child: ReadMoreText(
-                    companypost[index].message,
-                    trimLines: 2,
-                    trimCollapsedText: 'قرائة المزيد',
-                    trimExpandedText: 'قرائة الأقل',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(0.6),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  )),
-                ],
+                      elevation: 5.0,
+                      shadowColor: Colors.black,
+                      clipBehavior: Clip.antiAlias,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .end, //change here don't //worked
+                            children: [
+                              // Container(),
+                              // Container(
+                              //     margin: const EdgeInsets.only(
+                              //         bottom: 10, left: 2, top: 10, right: 10),
+                              //     child: Column(
+                              //       children: [
+                              //         Icon(Icons.location_on_outlined),
+                              //         Text(companypost[index].user.city.name),
+                              //       ],
+                              //     )),
+                              // Container(
+                              //   child: Column(
+                              //     children: [
+                              //       Row(
+                              //         children: [
+                              //           Text(
+                              //             's',
+                              //             textAlign: TextAlign.right,
+                              //             style: TextStyle(
+                              //                 fontWeight: FontWeight.bold,
+                              //                 fontSize: 18),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //       Row(
+                              //         children: [
+                              //           Padding(
+                              //             padding: const EdgeInsets.only(right: 6),
+                              //             child: Text(DateFormat.Hm().format(
+                              //                 DateTime.parse(
+                              //                     messages[index].createdAt))),
+                              //           ),
+                              //           Text(
+                              //             messages[index].username,
+                              //             textAlign: TextAlign.end,
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
+                              // Container(
+                              //   child: InkWell(
+                              //     onTap: () {
+                              //       // Navigator.push(
+                              //       //   context,
+                              //       //   MaterialPageRoute(
+                              //       //     builder: (context) =>
+                              //       //         CompanyProfile(id: post[index].companyId),
+                              //       //   ),
+                              //       // );
+                              //     },
+                            ],
+                          ),
+                          Container(
+                              color: Colors.red,
+                              // constraints: BoxConstraints(
+                              //   minWidth:
+                              //       messages[index].message.length.toDouble(),
+                              // ),
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 25, bottom: 15, right: 25, top: 15),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            messages[index].message,
+                                            style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.6),
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            DateFormat.jm().format(
+                                                DateTime.parse(
+                                                    messages[index].createdAt)),
+                                            style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.6),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ))),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) => const Divider(
-          height: 1,
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) => const Divider(
+            height: 1,
+          ),
         ),
       ),
     );
@@ -217,9 +325,12 @@ class CompanyProfilePage extends State<MainChat> {
   @override
   void initState() {
     bloc = BlocProvider.of<ChatBloc>(context);
-    // companypost.clear();
+    messages.clear();
+
     postloading();
+    pusherTerster();
     sharedValue();
+    setState(() {});
     super.initState();
   }
 
@@ -286,7 +397,7 @@ class CompanyProfilePage extends State<MainChat> {
                       },
                     ),
                     ListTile(
-                      title: Text('تسجيل الخروج'),
+                      title: Text('????? ??????'),
                       leading: new Icon(Icons.logout_sharp),
                       onTap: () {
                         Navigator.pushReplacement(context,
@@ -310,7 +421,7 @@ class CompanyProfilePage extends State<MainChat> {
       drawer: newDrawer(),
       appBar: AppBar(
         title: Center(
-          child: Text('البورصة المركزية'),
+          child: Text('??????? ????????'),
         ),
         actions: [
           Padding(
@@ -322,60 +433,64 @@ class CompanyProfilePage extends State<MainChat> {
         backgroundColor: Color(navbar.hashCode),
       ),
       backgroundColor: Colors.grey[300],
-      body: BlocListener<ChatBloc, ChatState>(
-        listener: (context, state) {
-          if (state is GetAllMessagesIsLoading) {
-            print(state);
-          }
-          if (state is GetAllMessagesIsLoaded) {
-            print(state);
-            if (companypost.isEmpty) {
-              companypost = state.data.message.reversed.toList();
-              totalpost = state.data.total;
-              print(companypost);
-              print(totalpost);
-            } else if (companypost.isNotEmpty) {
-              companypost.addAll(state.data.message.reversed.toList());
-            } else {
-              print(state);
-            }
-          } else if (state is GetAllMessagesError) {
-            print(state);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('خطأ في التحميل'),
-                action: SnackBarAction(
-                  label: 'تنبيه',
-                  onPressed: () {},
-                ),
-              ),
-            );
-          }
-        },
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<ChatBloc, ChatState>(
+            listener: (context, state) {
+              if (state is GetAllMessagesIsLoading) {
+                print(state);
+              } else if (state is GetAllMessagesIsLoaded) {
+                print(state);
+                messages = state.data.message.reversed.toList();
+                totalpost = state.data.total;
+                setState(() {
+                  print('get all message');
+                });
+                print(messages);
+                print(totalpost);
+              } else if (state is GetAllMessagesError) {
+                print(state);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('??? ?? ???????'),
+                    action: SnackBarAction(
+                      label: '?????',
+                      onPressed: () {},
+                    ),
+                  ),
+                );
+              } else if (state is SendMessageIsLoading) {
+                print(state);
+              }
+              if (state is SendMessageIsLoaded) {
+                print(state);
+                pusherTerster();
+                print('loadded');
+                setState(() {});
+              } else if (state is SendMessageError) {
+                print(state);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('??? ?? ???????'),
+                    action: SnackBarAction(
+                      label: '?????',
+                      onPressed: () {},
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
         child: Container(
           height: double.infinity,
-          child: SmartRefresher(
-            key: _refresherKey,
-            controller: refreshController,
-            enablePullUp: true,
-            physics: BouncingScrollPhysics(),
-            footer: ClassicFooter(
-              loadStyle: LoadStyle.ShowWhenLoading,
-              completeDuration: Duration(milliseconds: 500),
-            ),
-            onRefresh: () async {
-              postloading(isRefresh: true);
-              await Future.delayed(Duration(milliseconds: 1000));
-              if (mounted) setState(() {});
-              refreshController.refreshCompleted();
-            },
-            // onLoading: () async {
-            //   // await Future.delayed(Duration(milliseconds: 180));
-            //   // postloading();
-            //   // if (mounted) setState(() {});
-            //   // refreshController.loadFailed();
-            // },
-            child: ourListview(),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ourListview(),
+              ),
+            ],
           ),
         ),
       ),

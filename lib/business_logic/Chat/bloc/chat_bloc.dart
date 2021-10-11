@@ -25,6 +25,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         print(r);
         yield GetAllMessagesIsLoaded(data: r);
       });
+    } else if (event is SendMessageEvent) {
+      yield SendMessageIsLoading();
+      var getAllCompanyInformationsResponse =
+          await chatRepository.sendMessages(event.message);
+      yield* getAllCompanyInformationsResponse.fold((l) async* {
+        yield SendMessageError();
+      }, (r) async* {
+        print('we are in message');
+        print(r);
+        yield SendMessageIsLoaded(status: r);
+      });
     }
   }
 }

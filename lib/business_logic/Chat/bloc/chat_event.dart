@@ -9,7 +9,12 @@ abstract class ChatEvent extends Equatable {
 
 class InitialChatEvent extends ChatEvent {}
 
-class SendMessageEvent extends ChatEvent {}
+class SendMessageEvent extends ChatEvent {
+  final String message;
+  SendMessageEvent({
+    required this.message,
+  });
+}
 
 class GetAllMessagesEvent extends ChatEvent {
   final int page;

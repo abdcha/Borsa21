@@ -16,3 +16,5 @@ final unfollowUrl =
     'https://ferasalhallak.online/api/unfollowCompany?company_id=';
 
 final allMessagesUrl = 'https://ferasalhallak.online/api/message?page=';
+
+final sendMessageUrl = 'https://ferasalhallak.online/api/message';

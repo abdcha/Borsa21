@@ -256,12 +256,13 @@ class AllPostPage extends State<AllPost> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(right: 6),
-                                    child: Text(DateFormat.Hm().format(
+                                    child: Text(DateFormat.jm().format(
                                         DateTime.parse(post[index].createdAt))),
                                   ),
                                   Text(
                                     post[index].user.name,
                                     textAlign: TextAlign.end,
+                                    
                                   ),
                                 ],
                               ),

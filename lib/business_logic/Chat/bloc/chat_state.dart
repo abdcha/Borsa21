@@ -21,3 +21,16 @@ class GetAllMessagesIsLoaded extends ChatState {
     required this.data,
   });
 }
+
+//Send message
+
+class SendMessageIsLoading extends ChatState {}
+
+class SendMessageError extends ChatState {}
+
+class SendMessageIsLoaded extends ChatState {
+  final String status;
+  SendMessageIsLoaded({
+    required this.status,
+  });
+}
