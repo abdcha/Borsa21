@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late String token = "";
   Future<String?> getValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    // prefs.clear();
     setState(() {
       if (prefs.getString('token') != null) {
         token = prefs.getString('token').toString();

@@ -97,27 +97,24 @@ class CompanyProfilePage extends State<MainChat> {
     return Directionality(
       textDirection: ui.TextDirection.rtl,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8),
+        // padding: EdgeInsets.symmetric(horizontal: 8),
+
         height: 45,
         color: Colors.white,
         child: Row(
           children: <Widget>[
-            // IconButton(
-            //   icon: Icon(Icons.photo),
-            //   iconSize: 25,
-            //   color: Theme.of(context).primaryColor,
-            //   onPressed: () {},
-            // ),
             Expanded(
-              child: TextField(
-                controller: messagebody,
-                maxLines: null,
-                expands: true,
-                textAlign: TextAlign.right,
-                decoration: InputDecoration.collapsed(
-                  hintText: '???????',
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(bottom: 8, left: 0, right: 8, top: 8),
+                child: TextField(
+                  controller: messagebody,
+                  maxLines: null,
+                  expands: true,
+                  textAlign: TextAlign.right,
+                  decoration: InputDecoration.collapsed(hintText: 'الرسالة'),
+                  textCapitalization: TextCapitalization.sentences,
                 ),
-                textCapitalization: TextCapitalization.sentences,
               ),
             ),
             IconButton(
@@ -125,11 +122,23 @@ class CompanyProfilePage extends State<MainChat> {
               iconSize: 25,
               color: Theme.of(context).primaryColor,
               onPressed: () {
-                bloc.add(SendMessageEvent(message: messagebody.text));
-                setState(() {
-                  print('pusher terster');
-                  pusherTerster();
-                });
+                if (messagebody.text.isNotEmpty) {
+                  bloc.add(SendMessageEvent(message: messagebody.text));
+                  setState(() {
+                    print('pusher terster');
+                    pusherTerster();
+                  });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('الرجاء إدخال الرسالة'),
+                      action: SnackBarAction(
+                        label: 'تنبيه',
+                        onPressed: () {},
+                      ),
+                    ),
+                  );
+                }
               },
             ),
           ],
@@ -139,180 +148,166 @@ class CompanyProfilePage extends State<MainChat> {
   }
 
   Widget ourListview() {
-    return SingleChildScrollView(
-      child: Container(
-        // constraints: const BoxConstraints(maxWidth: 340, minWidth: 100),
-        child: ListView.separated(
-          key: _contentKey,
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          // reverse: true,
-          padding: const EdgeInsets.all(2),
-          itemCount: messages.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Directionality(
-              textDirection: userName != messages[index].username
-                  ? ui.TextDirection.rtl
-                  : ui.TextDirection.ltr,
-              child: Container(
-                color: Colors.blueAccent[300],
-                // constraints: const BoxConstraints(
-                //   maxWidth: 100,
-                // ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8, top: 8),
-                      child: Container(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Text(
-                              messages[index].username,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 10.0,
-                            ),
-                            child: CircleAvatar(
-                              backgroundColor: navbar,
-                              // child: Image.asset('asesst/Images/Logo.png')
-                            ),
-                          ),
-                        ],
-                      )),
-                    ),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      elevation: 5.0,
-                      shadowColor: Colors.black,
-                      clipBehavior: Clip.antiAlias,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .end, //change here don't //worked
+    return Column(
+      children: [
+        Container(
+          child: Expanded(
+            child: Container(
+              margin: const EdgeInsets.only(
+                  bottom: 5,
+                  left: 10,
+                  // top: 10,
+                  right:
+                      10), // constraints: const BoxConstraints(maxWidth: 340, minWidth: 100),
+              child: SingleChildScrollView(
+                child: ListView.separated(
+                  key: _contentKey,
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  // primary: false,
+                  // reverse: true,
+                  padding: const EdgeInsets.all(2),
+                  itemCount: messages.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Directionality(
+                      textDirection: userName != messages[index].username
+                          ? ui.TextDirection.rtl
+                          : ui.TextDirection.ltr,
+                      child: SingleChildScrollView(
+                        child: Container(
+                          color: Colors.blueAccent[300],
+                          // constraints: const BoxConstraints(
+                          //   maxWidth: 100,
+                          // ),
+                          child: Column(
                             children: [
-                              // Container(),
-                              // Container(
-                              //     margin: const EdgeInsets.only(
-                              //         bottom: 10, left: 2, top: 10, right: 10),
-                              //     child: Column(
-                              //       children: [
-                              //         Icon(Icons.location_on_outlined),
-                              //         Text(companypost[index].user.city.name),
-                              //       ],
-                              //     )),
-                              // Container(
-                              //   child: Column(
-                              //     children: [
-                              //       Row(
-                              //         children: [
-                              //           Text(
-                              //             's',
-                              //             textAlign: TextAlign.right,
-                              //             style: TextStyle(
-                              //                 fontWeight: FontWeight.bold,
-                              //                 fontSize: 18),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //       Row(
-                              //         children: [
-                              //           Padding(
-                              //             padding: const EdgeInsets.only(right: 6),
-                              //             child: Text(DateFormat.Hm().format(
-                              //                 DateTime.parse(
-                              //                     messages[index].createdAt))),
-                              //           ),
-                              //           Text(
-                              //             messages[index].username,
-                              //             textAlign: TextAlign.end,
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              // Container(
-                              //   child: InkWell(
-                              //     onTap: () {
-                              //       // Navigator.push(
-                              //       //   context,
-                              //       //   MaterialPageRoute(
-                              //       //     builder: (context) =>
-                              //       //         CompanyProfile(id: post[index].companyId),
-                              //       //   ),
-                              //       // );
-                              //     },
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8, top: 8),
+                                child: Container(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Text(
+                                        messages[index].username,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        right: 10.0,
+                                      ),
+                                      child: CircleAvatar(
+                                        backgroundColor: navbar,
+                                        child: Text(
+                                          messages[index]
+                                              .username
+                                              .characters
+                                              .first
+                                              .toUpperCase(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                              ),
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                elevation: 5.0,
+                                shadowColor: Colors.black,
+                                clipBehavior: Clip.antiAlias,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .end, //change here don't //worked
+                                      children: [],
+                                    ),
+                                    Container(
+                                        color: Colors.white,
+                                        // constraints: BoxConstraints(
+                                        //   minWidth:
+                                        //       messages[index].message.length.toDouble(),
+                                        // ),
+                                        alignment:
+                                            AlignmentDirectional.centerEnd,
+                                        child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 25,
+                                                bottom: 15,
+                                                right: 25,
+                                                top: 15),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      messages[index].message,
+                                                      style: TextStyle(
+                                                        color: Colors.black
+                                                            .withOpacity(0.6),
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      DateFormat.jm().format(
+                                                          DateTime.parse(
+                                                              messages[index]
+                                                                  .createdAt)),
+                                                      style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.6),
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ))),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
-                          Container(
-                              color: Colors.red,
-                              // constraints: BoxConstraints(
-                              //   minWidth:
-                              //       messages[index].message.length.toDouble(),
-                              // ),
-                              alignment: AlignmentDirectional.centerEnd,
-                              child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 25, bottom: 15, right: 25, top: 15),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            messages[index].message,
-                                            style: TextStyle(
-                                                color: Colors.black
-                                                    .withOpacity(0.6),
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            DateFormat.jm().format(
-                                                DateTime.parse(
-                                                    messages[index].createdAt)),
-                                            style: TextStyle(
-                                                color: Colors.black
-                                                    .withOpacity(0.6),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ))),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const Divider(
+                    height: 1,
+                  ),
                 ),
               ),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) => const Divider(
-            height: 1,
+            ),
           ),
         ),
-      ),
+        Container(
+          child: _sendMessageArea(),
+        )
+      ],
     );
   }
 
@@ -397,7 +392,7 @@ class CompanyProfilePage extends State<MainChat> {
                       },
                     ),
                     ListTile(
-                      title: Text('????? ??????'),
+                      title: Text('تسجيل الخروج'),
                       leading: new Icon(Icons.logout_sharp),
                       onTap: () {
                         Navigator.pushReplacement(context,
@@ -421,7 +416,7 @@ class CompanyProfilePage extends State<MainChat> {
       drawer: newDrawer(),
       appBar: AppBar(
         title: Center(
-          child: Text('??????? ????????'),
+          child: Text('البورصه المركزيه'),
         ),
         actions: [
           Padding(
