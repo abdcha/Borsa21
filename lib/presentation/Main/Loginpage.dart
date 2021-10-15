@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Loginpage extends StatefulWidget {
   @override
@@ -22,12 +26,37 @@ class _MyHomePageState extends State<Loginpage> {
   final passwordTextEdit = TextEditingController();
 
   late LoginBloc authloginBloc;
+  Future<String?> getValue() async {
+    // prefs.clear();
+    // FirebaseMessaging messaging = FirebaseMessaging.instance;
+    // String token2 = await messaging.getToken();
+    // String? token2 = await FirebaseMessaging.instance.getAPNSToken();
+    // print('my Firebase cloud token$token2');
 
+    // _firebaseMessaging.getToken().then((String? token) {
+    //   print(token);
+    // });
+    print('fire base');
+    String? token = await FirebaseMessaging.instance.getToken();
+    print(token);
+  }
+
+  late FirebaseMessaging firebaseMessaging;
   @override
   void initState() {
     authloginBloc = BlocProvider.of<LoginBloc>(context);
+    getValue();
     super.initState();
   }
+
+  // void iOS_Permission() {
+  //   _firebaseMessaging.requestNotificationPermissions(
+  //       IosNotificationSettings(sound: true, badge: true, alert: true));
+  //   _firebaseMessaging.onIosSettingsRegistered
+  //       .listen((IosNotificationSettings settings) {
+  //     print("Settings registered: $settings");
+  //   });
+  // }
 
   void passwordView() {
     setState(() {
@@ -216,6 +245,7 @@ class _MyHomePageState extends State<Loginpage> {
                                           authloginBloc.add(LoginSubmite(
                                               phone: phoneNumberTextEdit.text,
                                               password: passwordTextEdit.text));
+                                          getValue();
                                         }
                                       },
                                       child: Text("تسجيل الدخول"),

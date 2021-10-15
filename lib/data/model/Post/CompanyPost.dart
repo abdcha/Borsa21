@@ -85,6 +85,9 @@ class Company {
   late String name;
   late int id;
   late String image;
+  late String? email;
+  late String? address;
+  late String phone;
 
   Company({required this.name, required this.id, required this.image});
 
@@ -92,6 +95,9 @@ class Company {
     name = json['name'];
     id = json['id'];
     image = json['image'];
+    email = json['email'];
+    address = json['address'];
+    phone = json['phone'];
   }
 
   Map<String, dynamic> toJson() {
@@ -99,6 +105,9 @@ class Company {
     data['name'] = this.name;
     data['id'] = this.id;
     data['image'] = this.image;
+    data['email'] = this.email;
+    data['address'] = this.address;
+    data['phone'] = this.phone;
     return data;
   }
 }

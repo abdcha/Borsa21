@@ -26,6 +26,8 @@ dependencies:
   dartz: ^0.10.0
   dio: ^4.0.0
   equatable: ^2.0.3
+  firebase_core: ^1.7.0
+  firebase_messaging: ^10.0.8 
   flutter:
     sdk: flutter
   flutter_bloc: ^7.1.0

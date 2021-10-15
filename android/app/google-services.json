@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "286141248419",
+    "project_id": "borsa-5bfca",
+    "storage_bucket": "borsa-5bfca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286141248419:android:d3bb5c450359e527886016",
+        "android_client_info": {
+          "package_name": "com.example.central_borssa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "286141248419-8muga47nr898av4l8ib6bng7q1ttvssv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAycDKTu3nW3Jc3Lao8VcJxaUAGiPsl_UQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "286141248419-8muga47nr898av4l8ib6bng7q1ttvssv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

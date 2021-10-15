@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:central_borssa/constants/url.dart';
 import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:central_borssa/data/model/Post/GetPost.dart';
+import 'package:central_borssa/presentation/Home/All_post.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PostRepository {
@@ -44,16 +46,29 @@ class PostRepository {
     var token = _pref.get('token');
     dio.options.headers['authorization'] = 'Bearer $token';
     var postResponse;
-    if (image != "https://ferasalhallak.online/uploads/placeholder.jpg" &&
-        image != "https://ferasalhallak.onlineno_image") {
-      postResponse = await dio.put('$editanddeletePost$id',
-          data: jsonEncode(({"body": body, "image": image})));
-    } else {
+    if (image == "") {
+      print('from  null else');
       postResponse = await dio.put('$editanddeletePost$id',
           data: jsonEncode(({"body": body})));
+    } else if (image != null && image != "") {
+      print('from not null');
+      if (image != "https://ferasalhallak.online/uploads/placeholder.jpg" &&
+          image != "https://ferasalhallak.onlineno_image") {
+        print('from not null if');
+
+        print(image);
+        postResponse = await dio.put('$editanddeletePost$id',
+            data: jsonEncode(({"body": body, "image": image})));
+      } else {
+        print('from not null else');
+
+        postResponse = await dio.put('$editanddeletePost$id',
+            data: jsonEncode(({"body": body, "image": image})));
+      }
     }
 
-    print(postResponse);
+    print(postResponse.data);
+    // print(postResponse);
     if (postResponse.data['status'] == "success") {
       print('from here');
       return Right('success');
@@ -70,7 +85,9 @@ class PostRepository {
       var token = _pref.get('token');
       dio.options.headers['authorization'] = 'Bearer $token';
       var postResponse;
-      postResponse = await dio.put('editanddeletePost$id');
+      String url = 'https://ferasalhallak.online/api/posts/$id';
+      postResponse = await dio.delete(url);
+      print(postResponse);
 
       print(postResponse);
       if (postResponse.data['status'] == "success") {
@@ -103,15 +120,19 @@ class PostRepository {
   }
 
   Future<Either<String, PostGet>> getAllPostByCityName(
-      List<list?> citiesName, String sortby, int pageSize, int page) async {
+      List<CityId?> citiesid, String sortby, int pageSize, int page) async {
     try {
-      String jsonTutorial = jsonEncode(citiesName);
-      print(jsonTutorial);
+      var cities;
+      if (citiesid.isNotEmpty) {
+        cities = jsonEncode(citiesid);
+        print(cities);
+      }
       SharedPreferences _pref = await SharedPreferences.getInstance();
       var token = _pref.get('token');
+
       dio.options.headers['authorization'] = 'Bearer $token';
       String fullUrl =
-          "$allPostByCityName$page&date=$sortby&pageSize=$pageSize&page=$page";
+          "$allPostByCityName&page=$page&sort=$sortby&pageSize=$pageSize&city_id=$cities";
       var getallPost = await dio.get(fullUrl);
       print(getallPost.data);
       var data = new PostGet.fromJson(getallPost.data['data']);
@@ -121,4 +142,24 @@ class PostRepository {
       return Left('error');
     }
   }
+
+// Future<Either<String, PostGet>> getAllPostByCityName(
+//       List<list?> citiesName, String sortby, int pageSize, int page) async {
+//     try {
+//       String jsonTutorial = jsonEncode(citiesName);
+//       print(jsonTutorial);
+//       SharedPreferences _pref = await SharedPreferences.getInstance();
+//       var token = _pref.get('token');
+//       dio.options.headers['authorization'] = 'Bearer $token';
+//       String fullUrl =
+//           "$allPostByCityName$page&date=$sortby&pageSize=$pageSize&page=$page";
+//       var getallPost = await dio.get(fullUrl);
+//       print(getallPost.data);
+//       var data = new PostGet.fromJson(getallPost.data['data']);
+
+//       return Right(data);
+//     } catch (e) {
+//       return Left('error');
+//     }
+//   }
 }

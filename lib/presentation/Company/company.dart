@@ -251,7 +251,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
                             trimLines: 2,
                             trimMode: TrimMode.Line,
                             trimCollapsedText: 'قرائة المزيد',
-                            trimExpandedText: 'قرائة الأقل',
+                            trimExpandedText: '',
                             textAlign: TextAlign.right,
                             style: TextStyle(
                                 color: Colors.black.withOpacity(0.6),

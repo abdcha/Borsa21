@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:central_borssa/data/model/Post/GetPost.dart';
 import 'package:central_borssa/data/repositroy/PostRepository.dart';
+import 'package:central_borssa/presentation/Home/All_post.dart';
 import 'package:equatable/equatable.dart';
 
 part 'post_event.dart';
@@ -20,13 +21,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     if (event is InitialPostEvent) {
       yield PostInitial();
     } else if (event is AddNewPost) {
+      yield PostLoadingInProgress();
+
       var addNewPostResponse =
           await postRepository.addNewPost(event.body, event.image);
       yield* addNewPostResponse.fold((l) async* {
         print('from here');
         yield PostsLoadingError();
       }, (r) async* {
-        yield PostLoadingInProgress();
         yield AddPostSuccess();
       });
     } else if (event is GetAllPost) {
@@ -40,34 +42,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         yield PostsLoadedSuccess(posts: r);
       });
     } else if (event is GetPostByCityName) {
+      yield GetPostByCityNameLoading();
+      print('from GetPostByCityName');
       var getAllPostResponse = await postRepository.getAllPostByCityName(
-          event.postscityName,
-          event.sortby,
-          event.page,
-          event.countItemPerpage);
+          event.postscityId, event.sortby, event.page, event.countItemPerpage);
+
       yield* getAllPostResponse.fold((l) async* {
         yield GetPostByCityNameError();
       }, (r) async* {
-        yield GetPostByCityNameLoading();
         yield GetPostByCityNameLoaded(posts: r);
-      });
-    } else if (event is UpdatePost) {
-      var getAllPostResponse =
-          await postRepository.editPost(event.body, event.image, event.id);
-      yield* getAllPostResponse.fold((l) async* {
-        yield EditPostError();
-      }, (r) async* {
-        yield EditPostLoading();
-        yield EditPostLoaded(status: r);
-      });
-    } else if (event is DeletePost) {
-      var getAllPostResponse = await postRepository.deletePost(event.id);
-
-      yield* getAllPostResponse.fold((l) async* {
-        yield DeletePostError();
-      }, (r) async* {
-        yield DeletePostLoading();
-        yield DeletePostLoaded(status: r);
       });
     }
   }

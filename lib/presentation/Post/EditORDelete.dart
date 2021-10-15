@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
+import 'package:central_borssa/presentation/Home/Company_Profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,7 +10,6 @@ import 'package:path/path.dart' as p;
 
 import 'package:central_borssa/business_logic/Post/bloc/post_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
-import 'package:central_borssa/presentation/Home/All_post.dart';
 
 class EditORDelete extends StatefulWidget {
   final String body;
@@ -30,6 +31,8 @@ class EditORDeletePostPage extends State<EditORDelete> {
   final postTextInpput = TextEditingController();
   late final String postValue;
   late PostBloc _postBloc;
+  late CompanyBloc _CompanyBloc;
+
   late String base64Image;
   late String encodeImage = "";
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -41,6 +44,7 @@ class EditORDeletePostPage extends State<EditORDelete> {
       setState(() {
         mainFile = File(postFile!.path);
       });
+
       String baseimage = base64Encode(mainFile!.readAsBytesSync());
       print(baseimage);
       String extension = p.extension(postFile!.path);
@@ -58,12 +62,15 @@ class EditORDeletePostPage extends State<EditORDelete> {
   Future clearFile() async {
     setState(() {
       mainFile = null;
+      encodeImage = "";
     });
   }
 
   @override
   void initState() {
     _postBloc = BlocProvider.of<PostBloc>(context);
+    _CompanyBloc = BlocProvider.of<CompanyBloc>(context);
+
     postTextInpput.text = widget.body;
     encodeImage = widget.image;
     super.initState();
@@ -76,10 +83,48 @@ class EditORDeletePostPage extends State<EditORDelete> {
           title: Center(),
           backgroundColor: Color(navbar.hashCode),
         ),
-        body: BlocListener<PostBloc, PostState>(
+        body: BlocListener<CompanyBloc, CompanyState>(
           listener: (context, state) {
-            if (state is AddPostSuccess) {
+            if (state is DeletePostLoaded) {
               print(state);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('تم الحذف بنجاح'),
+                  action: SnackBarAction(
+                    label: 'تنبيه',
+                    onPressed: () {
+                      // Code to execute.
+                    },
+                  ),
+                ),
+              );
+              Navigator.pop(context, MaterialPageRoute(builder: (context) {
+                return CompanyProfile();
+              }));
+            }
+            if (state is DeletePostError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('الرجاء التأكد من صحة المعلومات المدخلة'),
+                  action: SnackBarAction(
+                    label: 'خطأ في المعلومات',
+                    onPressed: () {
+                      // Code to execute.
+                    },
+                  ),
+                ),
+              );
+            } else if (state is DeletePostLoading) {
+              // Future.delayed(const Duration(seconds: 2000), () {
+              //   showDialog(
+              //       context: context,
+              //       builder: (context) {
+              //         return Center(child: CircularProgressIndicator());
+              //       });
+              // });
+            } else if (state is EditPostLoaded) {
+              print(state);
+              print('state of edit');
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: const Text('تم التعديل بنجاح'),
@@ -92,10 +137,10 @@ class EditORDeletePostPage extends State<EditORDelete> {
                 ),
               );
               Navigator.pop(context, MaterialPageRoute(builder: (context) {
-                return AllPost();
+                return CompanyProfile();
               }));
             }
-            if (state is PostsLoadingError) {
+            if (state is EditPostError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: const Text('الرجاء التأكد من صحة المعلومات المدخلة'),
@@ -107,7 +152,7 @@ class EditORDeletePostPage extends State<EditORDelete> {
                   ),
                 ),
               );
-            } else if (state is PostLoadingInProgress) {
+            } else if (state is EditPostLoading) {
               // Future.delayed(const Duration(seconds: 2000), () {
               //   showDialog(
               //       context: context,
@@ -215,7 +260,7 @@ class EditORDeletePostPage extends State<EditORDelete> {
                                         ),
                                       ),
                                       Spacer(),
-                                      mainFile != null
+                                      mainFile != null || encodeImage != ""
                                           ? Container(
                                               height: 50,
                                               width: 50,
@@ -238,11 +283,19 @@ class EditORDeletePostPage extends State<EditORDelete> {
                                         width: 125,
                                         margin: const EdgeInsets.only(
                                             top: 20.0, left: 0.0, right: 20.0),
-                                        child: Card(
-                                            child: mainFile == null
-                                                ? Image.network(encodeImage)
-                                                : Image.file(
-                                                    File(mainFile!.path))),
+                                        child: mainFile == null
+                                            ? Card(
+                                                child: encodeImage == ""
+                                                    ? Icon(Icons
+                                                        .camera_alt_rounded)
+                                                    : Image.network(
+                                                        (encodeImage)))
+                                            : Card(
+                                                child: mainFile == null
+                                                    ? Icon(Icons
+                                                        .camera_alt_rounded)
+                                                    : Image.file(
+                                                        File(mainFile!.path))),
                                       ),
                                     ],
                                   ),
@@ -254,12 +307,13 @@ class EditORDeletePostPage extends State<EditORDelete> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (widget.type == "حذف المنشور") {
-                                _postBloc.add(UpdatePost(
-                                    id: widget.id,
-                                    body: postTextInpput.text,
-                                    image: encodeImage));
-                              } else if(widget.type == "تعديل المنشور"){
-                                _postBloc.add(DeletePost(
+                                print(widget.id);
+                                _CompanyBloc.add(DeletePost(
+                                  id: widget.id,
+                                ));
+                              } else if (widget.type == "تعديل المنشور") {
+                                print('edit post');
+                                _CompanyBloc.add(UpdatePost(
                                     id: widget.id,
                                     body: postTextInpput.text,
                                     image: encodeImage));

@@ -13,6 +13,7 @@ import 'package:central_borssa/data/repositroy/loginRepository.dart';
 import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
@@ -43,9 +44,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late Future test;
   late String token = "";
+
   Future<String?> getValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // prefs.clear();
+    prefs.clear();
+    await Firebase.initializeApp();
+
     setState(() {
       if (prefs.getString('token') != null) {
         token = prefs.getString('token').toString();

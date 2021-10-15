@@ -39,26 +39,26 @@ class AddPostSuccess extends PostState {}
 
 //Edit Post Start
 
-class EditPostLoading extends PostState {}
+// class EditPostLoading extends PostState {}
 
-class EditPostError extends PostState {}
+// class EditPostError extends PostState {}
 
-class EditPostLoaded extends PostState {
-  late final String status;
-  EditPostLoaded({
-    required this.status,
-  });
-}
+// class EditPostLoaded extends PostState {
+//   late final String status;
+//   EditPostLoaded({
+//     required this.status,
+//   });
+// }
 
-//Delete Post
+// //Delete Post
 
-class DeletePostLoading extends PostState {}
+// class DeletePostLoading extends PostState {}
 
-class DeletePostError extends PostState {}
+// class DeletePostError extends PostState {}
 
-class DeletePostLoaded extends PostState {
-  late final String status;
-  DeletePostLoaded({
-    required this.status,
-  });
-}
+// class DeletePostLoaded extends PostState {
+//   late final String status;
+//   DeletePostLoaded({
+//     required this.status,
+//   });
+// }

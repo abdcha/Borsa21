@@ -1,27 +1,28 @@
+import 'dart:ui' as ui;
+
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
-import 'package:central_borssa/business_logic/Borssa/bloc/borssa_event.dart';
-import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
-import 'package:central_borssa/data/model/Post/Cities.dart';
-import 'package:central_borssa/presentation/Company/company.dart';
-import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:readmore/readmore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
+import 'package:central_borssa/business_logic/Borssa/bloc/borssa_event.dart';
+import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
 import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
 import 'package:central_borssa/business_logic/Post/bloc/post_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
+import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:central_borssa/data/model/Post/GetPost.dart';
+import 'package:central_borssa/presentation/Company/company.dart';
+import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Post/add_Post.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/intl.dart';
-import 'dart:ui' as ui;
 
 class AllPost extends StatefulWidget {
   AllPostPage createState() => AllPostPage();
@@ -42,7 +43,7 @@ class AllPostPage extends State<AllPost> {
   late List<list> cities = [];
   late List<list?> selectedcities = [];
   late List<String> userPermissions = [];
-
+  late List<CityId> cityid = [];
   final RefreshController refreshController =
       RefreshController(initialRefresh: true);
   GlobalKey _contentKey = GlobalKey();
@@ -262,7 +263,6 @@ class AllPostPage extends State<AllPost> {
                                   Text(
                                     post[index].user.name,
                                     textAlign: TextAlign.end,
-                                    
                                   ),
                                 ],
                               ),
@@ -301,7 +301,7 @@ class AllPostPage extends State<AllPost> {
                           trimLines: 2,
                           trimMode: TrimMode.Line,
                           trimCollapsedText: 'قرائة المزيد',
-                          trimExpandedText: 'قرائة الأقل',
+                          trimExpandedText: '',
                           textAlign: TextAlign.right,
                           style: TextStyle(
                               color: Colors.black.withOpacity(0.6),
@@ -419,8 +419,8 @@ class AllPostPage extends State<AllPost> {
                         padding: const EdgeInsets.all(8.0),
                         child: MultiSelectDialogField(
                           items: cities
-                              .map((list citiesname) => MultiSelectItem<list?>(
-                                  citiesname, citiesname.name))
+                              .map((list citiesname) => MultiSelectItem<int?>(
+                                  citiesname.id, citiesname.name))
                               .toList(),
                           title: Text("المدن"),
                           selectedColor: Color(navbar.hashCode),
@@ -442,10 +442,12 @@ class AllPostPage extends State<AllPost> {
                               fontSize: 16,
                             ),
                           ),
-                          onConfirm: (List<list?> results) {
+                          onConfirm: (List<int?> results) {
                             setState(() {
-                              // print(results);
-                              selectedcities = results;
+                              print(results);
+                              for (var i = 0; i < results.length; i++) {
+                                cityid.add(CityId(id: results[i].hashCode));
+                              }
                               // print(selectedcities);
                             });
                           },
@@ -463,12 +465,25 @@ class AllPostPage extends State<AllPost> {
                         child: Text('البحث'),
                         onPressed: () {
                           // selectedcities.clear();
-                          // print(selectedcities);
-                          postbloc.add(GetPostByCityName(
-                              postscityName: selectedcities,
-                              page: 1,
-                              countItemPerpage: 5,
-                              sortby: "desc"));
+                          // print(cityid);
+                          if (cityid.isNotEmpty) {
+                            postbloc.add(GetPostByCityName(
+                                postscityId: cityid,
+                                page: 1,
+                                countItemPerpage: 5,
+                                sortby: "desc"));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    const Text('الرجاء أختيار المدينه المرادة'),
+                                action: SnackBarAction(
+                                  label: 'تنبيه',
+                                  onPressed: () {},
+                                ),
+                              ),
+                            );
+                          }
                         },
                       ),
                     ),
@@ -700,6 +715,23 @@ class AllPostPage extends State<AllPost> {
                 return AddPost();
               }));
             }));
+  }
+}
+
+class CityId {
+  late int? id;
+  CityId({
+    this.id,
+  });
+
+  CityId.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    return data;
   }
 }
 

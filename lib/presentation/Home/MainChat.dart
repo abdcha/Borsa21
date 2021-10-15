@@ -43,7 +43,6 @@ class CompanyProfilePage extends State<MainChat> {
     try {
       SharedPreferences _pref = await SharedPreferences.getInstance();
       test = _pref.get('roles').toString();
-      // print(test);
       await Pusher.init(
           'borsa_app',
           PusherOptions(
@@ -52,13 +51,10 @@ class CompanyProfilePage extends State<MainChat> {
               encrypted: false,
               port: 6001));
     } catch (e) {
-      print(e);
     }
     Pusher.connect(onConnectionStateChange: (val) {
-      print('1');
       print(val!.currentState);
     }, onError: (error) {
-      print('2');
       print(error!.message);
     });
 
@@ -234,6 +230,7 @@ class CompanyProfilePage extends State<MainChat> {
                                     ),
                                     Container(
                                         color: Colors.white,
+                                        width: double.infinity,
                                         // constraints: BoxConstraints(
                                         //   minWidth:
                                         //       messages[index].message.length.toDouble(),
@@ -256,6 +253,9 @@ class CompanyProfilePage extends State<MainChat> {
                                                   children: [
                                                     Text(
                                                       messages[index].message,
+                                                      textWidthBasis:
+                                                          TextWidthBasis
+                                                              .longestLine,
                                                       style: TextStyle(
                                                         color: Colors.black
                                                             .withOpacity(0.6),
@@ -416,7 +416,7 @@ class CompanyProfilePage extends State<MainChat> {
       drawer: newDrawer(),
       appBar: AppBar(
         title: Center(
-          child: Text('البورصه المركزيه'),
+          child: Text('البورصة المركزية'),
         ),
         actions: [
           Padding(

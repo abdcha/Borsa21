@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:central_borssa/constants/url.dart';
 import 'package:central_borssa/data/model/Post/CompanyPost.dart';
 import 'package:dartz/dartz.dart';
@@ -86,6 +88,69 @@ class CompanyRepository {
       }
     } catch (e) {
       return Left(false);
+    }
+  }
+
+  Future<Either<String, String>> editPost(
+      String body, String? image, int id) async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    var token = _pref.get('token');
+    _dio.options.headers['authorization'] = 'Bearer $token';
+    var postResponse;
+    if (image == "") {
+      print('from  null else');
+      postResponse = await _dio.put('$editanddeletePost$id',
+          data: jsonEncode(({"body": body})));
+    } else if (image != null && image != "") {
+      print('from not null');
+      if (image != "https://ferasalhallak.online/uploads/placeholder.jpg" &&
+          image != "https://ferasalhallak.onlineno_image") {
+        print('from not null if');
+
+        print(image);
+        postResponse = await _dio.put('$editanddeletePost$id',
+            data: jsonEncode(({"body": body, "image": image})));
+      } else {
+        print('from not null else');
+
+        postResponse = await _dio.put('$editanddeletePost$id',
+            data: jsonEncode(({"body": body, "image": image})));
+      }
+    }
+
+    print(postResponse.data);
+    // print(postResponse);
+    if (postResponse.data['status'] == "success") {
+      print('from here');
+      return Right('success');
+    } else if (postResponse.data['status'] == "error") {
+      return Left('error');
+    } else {
+      return Left('error');
+    }
+  }
+
+  Future<Either<String, String>> deletePost(int id) async {
+    try {
+      SharedPreferences _pref = await SharedPreferences.getInstance();
+      var token = _pref.get('token');
+      _dio.options.headers['authorization'] = 'Bearer $token';
+      var postResponse;
+      String url = 'https://ferasalhallak.online/api/posts/$id';
+      postResponse = await _dio.delete(url);
+      print(postResponse);
+
+      print(postResponse);
+      if (postResponse.data['status'] == "success") {
+        print('from here');
+        return Right('success');
+      } else if (postResponse.data['status'] == "error") {
+        return Left('error');
+      } else {
+        return Left('error');
+      }
+    } catch (e) {
+      return Left('error is catched');
     }
   }
 }

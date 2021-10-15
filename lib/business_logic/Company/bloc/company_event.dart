@@ -38,3 +38,22 @@ class UnFollowEvent extends CompanyEvent {
     required this.id,
   });
 }
+
+class UpdatePost extends CompanyEvent {
+  late final int id;
+  late final String body;
+  late final String image;
+  UpdatePost({
+    required this.id,
+    required this.body,
+    required this.image,
+  });
+}
+
+class DeletePost extends CompanyEvent {
+  late final int id;
+
+  DeletePost({
+    required this.id,
+  });
+}

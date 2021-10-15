@@ -55,3 +55,27 @@ class UnFollowIsLoaded extends CompanyState {
     required this.status,
   });
 }
+
+class EditPostLoading extends CompanyState {}
+
+class EditPostError extends CompanyState {}
+
+class EditPostLoaded extends CompanyState {
+  late final String status;
+  EditPostLoaded({
+    required this.status,
+  });
+}
+
+//Delete Post
+
+class DeletePostLoading extends CompanyState {}
+
+class DeletePostError extends CompanyState {}
+
+class DeletePostLoaded extends CompanyState {
+  late final String status;
+  DeletePostLoaded({
+    required this.status,
+  });
+}
