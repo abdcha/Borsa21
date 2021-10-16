@@ -16,3 +16,10 @@ class UserLoginScreen extends LoginState {}
 class ErrorLoginState extends LoginState {}
 
 class MeInformationState extends LoginState {}
+
+//Fcm Token
+class FcmTokenLoading extends LoginState {}
+
+class FcmTokenError extends LoginState {}
+
+class FcmTokenLoaded extends LoginState {}

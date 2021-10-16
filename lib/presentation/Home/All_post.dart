@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:central_borssa/presentation/Home/Central_Borssa.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +24,7 @@ import 'package:central_borssa/data/model/Post/GetPost.dart';
 import 'package:central_borssa/presentation/Company/company.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Post/add_Post.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AllPost extends StatefulWidget {
   AllPostPage createState() => AllPostPage();
@@ -79,6 +81,25 @@ class AllPostPage extends State<AllPost> {
 
   Future<bool> postloading({bool isRefresh = false}) async {
     if (isRefresh) {
+      // FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      //   print("message recieved onMessage");
+      //   print(event.notification!.body);
+      //   if (event.notification!.body != null) {
+      //     print(event.data);
+      //   }
+      // });
+      // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
+      //   print("message open");
+      //   if (event.notification!.body != null) {
+      //     print('hi');
+      //     print(event.data);
+
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => CentralBorssa()),
+      //     ); // print(event.notification.);
+      //   }
+      // });
       currentPage = 1;
       print('test');
       post.clear();
@@ -110,6 +131,7 @@ class AllPostPage extends State<AllPost> {
     postbloc = BlocProvider.of<PostBloc>(context);
     borssaBloc = BlocProvider.of<BorssaBloc>(context);
     companybloc = BlocProvider.of<CompanyBloc>(context);
+
     postloading();
     sharedValue();
     companybloc.add(GetAllCompanies());

@@ -20,3 +20,10 @@ class LoginSubmite extends LoginEvent {
 }
 
 class MeInformationEvent extends LoginEvent {}
+
+class FireBaseTokenEvent extends LoginEvent {
+  final String? fcmToken;
+  FireBaseTokenEvent({
+    required this.fcmToken,
+  });
+}

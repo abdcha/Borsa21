@@ -27,18 +27,7 @@ class _MyHomePageState extends State<Loginpage> {
 
   late LoginBloc authloginBloc;
   Future<String?> getValue() async {
-    // prefs.clear();
-    // FirebaseMessaging messaging = FirebaseMessaging.instance;
-    // String token2 = await messaging.getToken();
-    // String? token2 = await FirebaseMessaging.instance.getAPNSToken();
-    // print('my Firebase cloud token$token2');
-
-    // _firebaseMessaging.getToken().then((String? token) {
-    //   print(token);
-    // });
-    print('fire base');
     String? token = await FirebaseMessaging.instance.getToken();
-    print(token);
   }
 
   late FirebaseMessaging firebaseMessaging;

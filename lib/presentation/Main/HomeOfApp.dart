@@ -1,7 +1,12 @@
+import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
+import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
+import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:central_borssa/constants/string.dart';
@@ -19,7 +24,7 @@ class HomeOfApp extends StatefulWidget {
 class home_page extends State<HomeOfApp>
     with AutomaticKeepAliveClientMixin<HomeOfApp> {
   int selectedPage = 0;
-
+  late LoginBloc _loginBloc;
   late List<String> userPermissions = [];
   late String userName = "";
   late String userPhone = "";
@@ -29,6 +34,8 @@ class home_page extends State<HomeOfApp>
   late int userActive = 0;
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = await FirebaseMessaging.instance.getToken();
+    _loginBloc.add(FireBaseTokenEvent(fcmToken: token));
     userName = prefs.get('username').toString();
     userPhone = prefs.get('userphone').toString();
     print(userPhone);
@@ -41,6 +48,22 @@ class home_page extends State<HomeOfApp>
     print(companyuser);
     userType = prefs.get('roles').toString();
     setState(() {});
+  }
+
+  fireBase() async {
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
+      print("message open");
+      if (event.notification!.body != null) {
+        if (userPermissions.contains('Chat_Permission')) {
+          if (event.data['type'] == "currency_price_change") {
+            choosePage(1);
+          } else if (event.data['type'] == "renew_subscription") {}
+        } else if (userPermissions.contains('Trader_Permission')) {
+          choosePage(0);
+        } else if (userPermissions
+            .contains('Update_Auction_Price_Permission')) {}
+      }
+    });
   }
 
   @override
@@ -89,6 +112,8 @@ class home_page extends State<HomeOfApp>
 
   @override
   void initState() {
+    _loginBloc = BlocProvider.of<LoginBloc>(context);
+    fireBase();
     navbarbottom = sharedValue();
     super.initState();
   }
@@ -194,7 +219,18 @@ class home_page extends State<HomeOfApp>
               return Scaffold(
                   drawer: newDrawer(),
                   key: _scaffoldKey,
-                  body: callBody(selectedPage),
+                  body: BlocListener<LoginBloc, LoginState>(
+                    listener: (context, state) {
+                      if (state is FcmTokenLoading) {
+                        print(state);
+                      } else if (state is FcmTokenLoaded) {
+                        print(state);
+                      } else if (state is FcmTokenError) {
+                        print(state);
+                      }
+                    },
+                    child: callBody(selectedPage),
+                  ),
                   bottomNavigationBar: BottomNavigationBar(
                     type: BottomNavigationBarType.fixed,
                     backgroundColor: Color(navbar.hashCode),

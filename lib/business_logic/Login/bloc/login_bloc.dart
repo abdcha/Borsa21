@@ -27,53 +27,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         print(r);
         yield LoginLoadingState();
 
-        yield UserLoginScreen();
+        yield UserLoginScreen();  
       });
-
-      // if (data == "success") {
-      //   yield UserLoginScreen();
-      // } else {
-      //   yield ErrorLoginState();
-      // }
-    }
-  }
-}
-
-class MeInformationBloc extends Bloc<LoginEvent, LoginState> {
-  LoginRepository repository;
-
-  MeInformationBloc(LoginState loginInitialState, this.repository)
-      : super(loginInitialState);
-
-  @override
-  Stream<LoginState> mapEventToState(
-    LoginEvent event,
-  ) async* {
-    if (event is StartEvent) {
-      yield LoginInitialState();
-    } else if (event is LoginSubmite) {
-      yield LoginLoadingState();
-      var data = await repository.login(event.phone, event.password);
-      //should solve
-      // if (data.isRight()) {
-      //   yield UserLoginScreen();
-      // }
-      // if (data.isLeft()) {
-      //   yield ErrorLoginState();
-      // }
+    } else if (event is FireBaseTokenEvent) {
+      print('Login bloc');
+        yield FcmTokenLoading();
+      var data = await repository.fcmToken(event.fcmToken);
       yield* data.fold((l) async* {
         print(l);
-        yield ErrorLoginState();
+        yield FcmTokenError();
       }, (r) async* {
         print(r);
-        yield UserLoginScreen();
+        yield FcmTokenLoaded();
       });
-
-      // if (data == "success") {
-      //   yield UserLoginScreen();
-      // } else {
-      //   yield ErrorLoginState();
-      // }
     }
   }
 }

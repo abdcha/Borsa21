@@ -11,11 +11,13 @@ class PriceChart extends StatefulWidget {
   final int cityid;
   final String fromdate;
   final String todate;
+  final String title;
   const PriceChart({
     Key? key,
     required this.cityid,
     required this.fromdate,
     required this.todate,
+    required this.title,
   }) : super(key: key);
 
   @override
@@ -67,7 +69,7 @@ class PriceChartPage extends State<PriceChart> {
     return Scaffold(
         appBar: new AppBar(
           title: Center(
-            child: Text('تغيرات سعر الصرف'),
+            child: Text(widget.title),
           ),
           backgroundColor: Color(navbar.hashCode),
         ),

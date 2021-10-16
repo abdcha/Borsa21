@@ -23,6 +23,8 @@ class CompanyProfilePage extends State<MainChat> {
     await launch(url);
   }
 
+  ScrollController _scrollcontroller = ScrollController();
+
   final RefreshController refreshController =
       RefreshController(initialRefresh: true);
   GlobalKey _contentKey = GlobalKey();
@@ -50,23 +52,29 @@ class CompanyProfilePage extends State<MainChat> {
               host: 'www.ferasalhallak.online',
               encrypted: false,
               port: 6001));
-    } catch (e) {
-    }
-    Pusher.connect(onConnectionStateChange: (val) {
-      print(val!.currentState);
-    }, onError: (error) {
-      print(error!.message);
-    });
+      print('1');
 
-    //Subscribe
-    _ourChannel = await Pusher.subscribe('MessageChannel');
+      Pusher.connect(onConnectionStateChange: (val) {
+        print('2');
+        print(val!.currentState);
+      }, onError: (error) {
+        print('3');
 
-    //Bind
-    _ourChannel.bind('newMessage', (onEvent) {
-      print('fromhere');
-      print(onEvent!.data);
-      bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
-    });
+        print(error!.message);
+      });
+
+      //Subscribe
+      _ourChannel = await Pusher.subscribe('MessageChannel');
+
+      //Bind
+      _ourChannel.bind('newMessage', (onEvent) {
+        print('fromhere');
+        print('4');
+
+        print(onEvent!.data);
+        bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
+      });
+    } catch (e) {}
   }
 
   Future<bool> postloading({bool isRefresh = false}) async {
@@ -76,8 +84,9 @@ class CompanyProfilePage extends State<MainChat> {
     currentPage = 0;
     messages.clear();
     print('is refresh');
-    bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
+    bloc.add(GetAllMessagesEvent(pageSize: 1000, page: 1));
     setState(() {});
+
     currentPage++;
     // print(companypost.length);
     // else if (messages.length != totalpost) {
@@ -120,10 +129,7 @@ class CompanyProfilePage extends State<MainChat> {
               onPressed: () {
                 if (messagebody.text.isNotEmpty) {
                   bloc.add(SendMessageEvent(message: messagebody.text));
-                  setState(() {
-                    print('pusher terster');
-                    pusherTerster();
-                  });
+                  messagebody.text = "";
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -146,43 +152,32 @@ class CompanyProfilePage extends State<MainChat> {
   Widget ourListview() {
     return Column(
       children: [
-        Container(
-          child: Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(
-                  bottom: 5,
-                  left: 10,
-                  // top: 10,
-                  right:
-                      10), // constraints: const BoxConstraints(maxWidth: 340, minWidth: 100),
-              child: SingleChildScrollView(
-                child: ListView.separated(
-                  key: _contentKey,
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  // primary: false,
-                  // reverse: true,
-                  padding: const EdgeInsets.all(2),
-                  itemCount: messages.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Directionality(
-                      textDirection: userName != messages[index].username
-                          ? ui.TextDirection.rtl
-                          : ui.TextDirection.ltr,
-                      child: SingleChildScrollView(
-                        child: Container(
-                          color: Colors.blueAccent[300],
-                          // constraints: const BoxConstraints(
-                          //   maxWidth: 100,
-                          // ),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8, top: 8),
-                                child: Container(
-                                    child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
+        Expanded(
+          child: ListView.separated(
+            key: _contentKey,
+            controller: _scrollcontroller,
+            reverse: true,
+            padding: const EdgeInsets.all(2),
+            itemCount: messages.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Directionality(
+                textDirection: userName != messages[index].username
+                    ? ui.TextDirection.rtl
+                    : ui.TextDirection.ltr,
+                child: Column(
+                  // crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (index < messages.length - 1)
+                      messages[index].username == messages[index + 1].username
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 8, top: 8),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.only(left: 8, top: 8),
+                              child: Container(
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
                                     Padding(
                                       padding: const EdgeInsets.only(right: 10),
                                       child: Text(
@@ -197,110 +192,132 @@ class CompanyProfilePage extends State<MainChat> {
                                         right: 10.0,
                                       ),
                                       child: CircleAvatar(
-                                        backgroundColor: navbar,
-                                        child: Text(
-                                          messages[index]
-                                              .username
-                                              .characters
-                                              .first
-                                              .toUpperCase(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20),
+                                        // backgroundColor: navbar,
+                                        child: CircleAvatar(
+                                          radius: 30.0,
+                                          backgroundColor: Colors.transparent,
+                                          backgroundImage: NetworkImage(
+                                            "https://ferasalhallak.online${messages[index].companyImage}",
+                                          ),
+                                        ),
+                                        // child: Text(
+                                        //   messages[index]
+                                        //       .username
+                                        //       .characters
+                                        //       .first
+                                        //       .toUpperCase(),
+                                        //   style: TextStyle(
+                                        //       fontWeight: FontWeight.bold,
+                                        //       fontSize: 20),
+                                        // ),
+                                      ),
+                                    ),
+                                  ]))),
+                    if (index == messages.length - 1)
+                      Padding(
+                          padding: const EdgeInsets.only(left: 8, top: 8),
+                          child: Container(
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Text(
+                                    messages[index].username,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    right: 10.0,
+                                  ),
+                                  child: CircleAvatar(
+                                    // backgroundColor: navbar,
+                                    child: CircleAvatar(
+                                      radius: 30.0,
+                                      backgroundColor: Colors.transparent,
+                                      backgroundImage: NetworkImage(
+                                        "https://ferasalhallak.online${messages[index].companyImage}",
+                                      ),
+                                    ),
+                                    // child: Text(
+                                    //   messages[index]
+                                    //       .username
+                                    //       .characters
+                                    //       .first
+                                    //       .toUpperCase(),
+                                    //   style: TextStyle(
+                                    //       fontWeight: FontWeight.bold,
+                                    //       fontSize: 20),
+                                    // ),
+                                  ),
+                                ),
+                              ]))),
+                   
+                    Container(
+                      //equation to solve width
+                      // width: messages[index].message.length.toDouble() *
+                      //     messages[index].message.length.toDouble() *
+                      //     2,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                        // elevation: 5.0,
+                        // shadowColor: Colors.black,
+                        clipBehavior: Clip.antiAlias,
+                        child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 25, bottom: 15, right: 25, top: 15),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        messages[index].message,
+                                        textAlign:
+                                            userName != messages[index].username
+                                                ? TextAlign.left
+                                                : TextAlign.right,
+                                        // textWidthBasis: TextWidthBasis
+                                        //     .longestLine,
+                                        style: TextStyle(
+                                          // color: Colors.black
+                                          //     .withOpacity(0.6),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
                                   ],
-                                )),
-                              ),
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
                                 ),
-                                elevation: 5.0,
-                                shadowColor: Colors.black,
-                                clipBehavior: Clip.antiAlias,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .end, //change here don't //worked
-                                      children: [],
+                                    Text(
+                                      DateFormat.jm().format(DateTime.parse(
+                                          messages[index].createdAt)),
+                                      style: TextStyle(
+                                          color: Colors.black.withOpacity(0.6),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    Container(
-                                        color: Colors.white,
-                                        width: double.infinity,
-                                        // constraints: BoxConstraints(
-                                        //   minWidth:
-                                        //       messages[index].message.length.toDouble(),
-                                        // ),
-                                        alignment:
-                                            AlignmentDirectional.centerEnd,
-                                        child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 25,
-                                                bottom: 15,
-                                                right: 25,
-                                                top: 15),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    Text(
-                                                      messages[index].message,
-                                                      textWidthBasis:
-                                                          TextWidthBasis
-                                                              .longestLine,
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.6),
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      DateFormat.jm().format(
-                                                          DateTime.parse(
-                                                              messages[index]
-                                                                  .createdAt)),
-                                                      style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.6),
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ))),
                                   ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
+                              ],
+                            )),
                       ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const Divider(
-                    height: 1,
-                  ),
+                    ),
+                  ],
                 ),
-              ),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) =>
+                const Divider(
+              height: 1,
             ),
           ),
         ),
@@ -321,11 +338,11 @@ class CompanyProfilePage extends State<MainChat> {
   void initState() {
     bloc = BlocProvider.of<ChatBloc>(context);
     messages.clear();
-
     postloading();
     pusherTerster();
     sharedValue();
     setState(() {});
+
     super.initState();
   }
 
@@ -436,20 +453,23 @@ class CompanyProfilePage extends State<MainChat> {
                 print(state);
               } else if (state is GetAllMessagesIsLoaded) {
                 print(state);
-                messages = state.data.message.reversed.toList();
+
+                messages = state.data.message;
+                // _scrollcontroller.animateTo(
+                //     _scrollcontroller.position.maxScrollExtent,
+                //     duration: Duration(milliseconds: 200),
+                //     curve: Curves.easeOut);
                 totalpost = state.data.total;
                 setState(() {
                   print('get all message');
                 });
-                print(messages);
-                print(totalpost);
               } else if (state is GetAllMessagesError) {
                 print(state);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: const Text('??? ?? ???????'),
+                    content: const Text('خطأ في التحميل'),
                     action: SnackBarAction(
-                      label: '?????',
+                      label: 'تنبيه',
                       onPressed: () {},
                     ),
                   ),
@@ -460,8 +480,10 @@ class CompanyProfilePage extends State<MainChat> {
               if (state is SendMessageIsLoaded) {
                 print(state);
                 pusherTerster();
-                print('loadded');
-                setState(() {});
+                // _scrollcontroller.animateTo(
+                //     _scrollcontroller.position.maxScrollExtent,
+                //     duration: Duration(milliseconds: 200),
+                //     curve: Curves.easeOut);
               } else if (state is SendMessageError) {
                 print(state);
                 ScaffoldMessenger.of(context).showSnackBar(

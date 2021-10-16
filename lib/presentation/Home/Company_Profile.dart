@@ -1,5 +1,4 @@
 import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
-import 'package:central_borssa/business_logic/Post/bloc/post_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Post/EditORDelete.dart';
@@ -30,7 +29,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
   int currentPage = 1;
-  late int countItemPerpage = 5;
+  late int countItemPerpage = 3;
 
   late CompanyBloc bloc;
   late List<Posts> companypost = [];
@@ -156,14 +155,13 @@ class CompanyProfilePage extends State<CompanyProfile> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text("11111111111"
-                                      // companypost[index].company.phone,
-                                      ),
+                                  Text(companypost[index].company.phone),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 8),
                                     child: InkWell(
-                                      onTap: (){
-                                        
+                                      onTap: () {
+                                        launch(
+                                            "tel://${companypost[index].company.phone}");
                                       },
                                       child: Icon(
                                         Icons.phone,

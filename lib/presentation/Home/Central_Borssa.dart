@@ -1,6 +1,7 @@
 import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/repositroy/CurrencyRepository.dart';
+import 'package:central_borssa/presentation/Auction/Auction.dart';
 import 'package:central_borssa/presentation/Auction/Price_Chart.dart';
 import 'package:central_borssa/presentation/Auction/Update_Price.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
@@ -307,9 +308,11 @@ class CentralBorssaPage extends State<CentralBorssa> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => PriceChart(
-                                  cityid: currencyprice[i].city.id,
-                                  fromdate: startpoint,
-                                  todate: endpoint),
+                                cityid: currencyprice[i].city.id,
+                                fromdate: startpoint,
+                                todate: endpoint,
+                                title: currencyprice[i].city.name,
+                              ),
                             ),
                           );
                         },
@@ -432,7 +435,58 @@ class CentralBorssaPage extends State<CentralBorssa> {
                     child: Center(child: CircularProgressIndicator()),
                   )
                 : Container(
-                    child: dataTable(),
+                    child: Column(
+                      children: [
+                        dataTable(),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Row(
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Color(navbar.hashCode),
+                                        alignment: Alignment.center),
+                                    onPressed: () {
+                                      // getChart();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Auction()),
+                                      );
+                                    },
+                                    child: Text(
+                                      "المزاد المركزي",
+                                      style: TextStyle(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Spacer(),
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Color(navbar.hashCode),
+                                        alignment: Alignment.center),
+                                    onPressed: () {
+                                      // getChart();
+                                    },
+                                    child: Text(
+                                      "البورصة العالمية",
+                                      style: TextStyle(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
           ],
         ),

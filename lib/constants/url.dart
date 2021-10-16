@@ -14,6 +14,12 @@ final followUrl = 'https://ferasalhallak.online/api/followCompany?company_id=';
 final unfollowUrl =
     'https://ferasalhallak.online/api/unfollowCompany?company_id=';
 
+//Chat Message
 final allMessagesUrl = 'https://ferasalhallak.online/api/message?page=';
-
 final sendMessageUrl = 'https://ferasalhallak.online/api/message';
+//Fcm Token
+final sendFcmtoken = 'https://ferasalhallak.online/api/setUserData?';
+//Auction
+final auctionAddUrl = 'https://ferasalhallak.online/api/auction';
+final auctionGetUrl = 'https://ferasalhallak.online/api/auction';
+//

@@ -5,6 +5,7 @@ import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/business_logic/Post/bloc/post_bloc.dart';
+import 'package:central_borssa/data/repositroy/AuctionRepository.dart';
 import 'package:central_borssa/data/repositroy/CityRepository.dart';
 import 'package:central_borssa/data/repositroy/CompanyRepository.dart';
 import 'package:central_borssa/data/repositroy/CurrencyRepository.dart';
@@ -14,17 +15,44 @@ import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'business_logic/Auction/bloc/auction_bloc.dart';
 import 'business_logic/Chat/bloc/chat_bloc.dart';
 import 'business_logic/Login/bloc/login_bloc.dart';
 import 'data/repositroy/ChatRepository.dart';
 
 void main() {
   runApp(MyApp());
+}
+
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+  //   print("message recieved");
+  //   // if (event.notification!.body != null) {
+  //   //   print("body " + event.notification!.body!);
+  //   //   print(event.notification!.bodyLocArgs);
+  //   //   print(event.notification!.titleLocArgs);
+  //   //   print(event.notification);
+  //   // }
+
+  //   // print(event.notification);
+  // });
+  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
+  //   print("message open");
+  //   // print(event.notification!.body);
+  //   if (event.notification!.body != null) {
+  //     print("body " + event.notification!.body!);
+  //     print(event.notification!.bodyLocArgs);
+  //     print(event.notification!.titleLocArgs);
+  //     print(event.data);
+  //     // print(event.notification.);
+  //   }
+  // });
 }
 
 class MyApp extends StatelessWidget {
@@ -47,8 +75,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<String?> getValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    // prefs.clear();
     await Firebase.initializeApp();
+    print('firebase');
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
     setState(() {
       if (prefs.getString('token') != null) {
@@ -90,6 +120,10 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           BlocProvider(
             create: (context) => ChatBloc(ChatInitial(), ChatRepository()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                AuctionBloc(AuctionInitial(), AuctionRepository()),
           ),
         ],
         child: MaterialApp(
