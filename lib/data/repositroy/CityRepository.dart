@@ -21,15 +21,12 @@ class CityRepository {
       _dio..options.headers['authorization'] = 'Bearer $_token';
 
       var response = await _dio.get(currencyUpdateUrl);
-      print(response);
       var status = response.data['status'];
       var allcurrency = Data.fromJson(response.data['data']);
-      print(allcurrency);
 
       allcurrency.currencyPrice.forEach((v) {
         mycities.add(v);
       });
-      print(allcurrency);
       if (status == "success") {
         return Right(mycities);
       } else {
@@ -52,8 +49,7 @@ class CityRepository {
     var response = await _dio.get(allCities);
     var status = response.data['status'];
     var test = data.fromJson(response.data['data']);
-   
-    print(status);
+
     if (status == "success") {
       return Right(test.lists);
     } else {

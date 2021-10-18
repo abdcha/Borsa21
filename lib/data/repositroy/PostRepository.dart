@@ -1,12 +1,10 @@
 import 'dart:convert';
 
 import 'package:central_borssa/constants/url.dart';
-import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:central_borssa/data/model/Post/GetPost.dart';
 import 'package:central_borssa/presentation/Home/All_post.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PostRepository {
@@ -26,9 +24,9 @@ class PostRepository {
             data: jsonEncode(({"body": body, "image": image})));
       }
 
-      print(postResponse);
+      // print(postResponse);
       if (postResponse.data['status'] == "success") {
-        print('from here');
+        // print('from here');
         return Right('success');
       } else if (postResponse.data['status'] == "error") {
         return Left('error');
@@ -47,30 +45,30 @@ class PostRepository {
     dio.options.headers['authorization'] = 'Bearer $token';
     var postResponse;
     if (image == "") {
-      print('from  null else');
+      // print('from  null else');
       postResponse = await dio.put('$editanddeletePost$id',
           data: jsonEncode(({"body": body})));
     } else if (image != null && image != "") {
-      print('from not null');
+      // print('from not null');
       if (image != "https://ferasalhallak.online/uploads/placeholder.jpg" &&
           image != "https://ferasalhallak.onlineno_image") {
-        print('from not null if');
+        // print('from not null if');
 
-        print(image);
+        // print(image);
         postResponse = await dio.put('$editanddeletePost$id',
             data: jsonEncode(({"body": body, "image": image})));
       } else {
-        print('from not null else');
+        // print('from not null else');
 
         postResponse = await dio.put('$editanddeletePost$id',
             data: jsonEncode(({"body": body, "image": image})));
       }
     }
 
-    print(postResponse.data);
+    // print(postResponse.data);
     // print(postResponse);
     if (postResponse.data['status'] == "success") {
-      print('from here');
+      // print('from here');
       return Right('success');
     } else if (postResponse.data['status'] == "error") {
       return Left('error');
@@ -87,11 +85,7 @@ class PostRepository {
       var postResponse;
       String url = 'https://ferasalhallak.online/api/posts/$id';
       postResponse = await dio.delete(url);
-      print(postResponse);
-
-      print(postResponse);
       if (postResponse.data['status'] == "success") {
-        print('from here');
         return Right('success');
       } else if (postResponse.data['status'] == "error") {
         return Left('error');
@@ -112,7 +106,7 @@ class PostRepository {
           "https://ferasalhallak.online/api/posts?page=$page&sort=desc&pageSize=$count";
       var getallPost = await dio.get(fullUrl);
       var data = new PostGet.fromJson(getallPost.data['data']);
-      print('By City Name$data');
+      // print('By City Name$data');
       return Right(data);
     } catch (e) {
       return Left('error');
@@ -125,7 +119,7 @@ class PostRepository {
       var cities;
       if (citiesid.isNotEmpty) {
         cities = jsonEncode(citiesid);
-        print(cities);
+        // print(cities);
       }
       SharedPreferences _pref = await SharedPreferences.getInstance();
       var token = _pref.get('token');
@@ -134,7 +128,7 @@ class PostRepository {
       String fullUrl =
           "$allPostByCityName&page=$page&sort=$sortby&pageSize=$pageSize&city_id=$cities";
       var getallPost = await dio.get(fullUrl);
-      print(getallPost.data);
+      // print(getallPost.data);
       var data = new PostGet.fromJson(getallPost.data['data']);
 
       return Right(data);

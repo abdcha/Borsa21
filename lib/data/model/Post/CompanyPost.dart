@@ -85,8 +85,8 @@ class Company {
   late String name;
   late int id;
   late String image;
-  late String? email;
-  late String? address;
+  late String email;
+  late String address;
   late String phone;
 
   Company({required this.name, required this.id, required this.image});

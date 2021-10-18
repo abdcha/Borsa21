@@ -132,73 +132,6 @@ class home_page extends State<HomeOfApp>
     prefs.clear();
   }
 
-  Widget newDrawer() {
-    return new Drawer(
-      child: new ListView(
-        children: <Widget>[
-          new Container(
-            child: new DrawerHeader(
-                child: new CircleAvatar(
-              backgroundColor: navbar,
-              // child: Image.asset('asesst/Images/Logo.png')
-            )),
-            color: Colors.white,
-          ),
-          new Container(
-              color: Colors.white30,
-              child: Center(
-                child: new Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(''),
-                      leading: new Icon(Icons.account_circle),
-                      onTap: () {
-                        // Update the state of the app.//feas
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      title: Text('userPhone'),
-                      leading: new Icon(Icons.phone),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      title: Text(''),
-                      leading: new Icon(Icons.location_on_outlined),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      leading: new Icon(Icons.online_prediction_outlined),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
-                    ),
-                    ListTile(
-                      title: Text('تسجيل الخروج'),
-                      leading: new Icon(Icons.logout_sharp),
-                      onTap: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          logout();
-                          return Loginpage();
-                        }));
-                      },
-                    ),
-                  ],
-                ),
-              ))
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -217,7 +150,6 @@ class home_page extends State<HomeOfApp>
               return Welcome();
             case ConnectionState.done:
               return Scaffold(
-                  drawer: newDrawer(),
                   key: _scaffoldKey,
                   body: BlocListener<LoginBloc, LoginState>(
                     listener: (context, state) {
@@ -274,7 +206,6 @@ class home_page extends State<HomeOfApp>
               break;
             default:
               return Scaffold(
-                  drawer: newDrawer(),
                   key: _scaffoldKey,
                   body: callBody(selectedPage),
                   bottomNavigationBar: BottomNavigationBar(

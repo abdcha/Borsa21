@@ -44,6 +44,10 @@ class Message {
   late String companyImage;
   late String message;
   late String? replayOn;
+  late int companyId;
+  late String companyName;
+  late int userId;
+  late String userPhone;
 
   Message.fromJson(Map<String, dynamic> json) {
     createdAt = json['created_at'];
@@ -51,6 +55,10 @@ class Message {
     companyImage = json['company_image'];
     message = json['message'];
     if (json['replay_on'] != null) replayOn = json['replay_on'];
+    companyId = json['company_id'];
+    companyName = json['company_name'];
+    userId = json['user_id'];
+    userPhone = json['user_phone'];
   }
 
   Map<String, dynamic> toJson() {
@@ -60,6 +68,10 @@ class Message {
     data['company_image'] = this.companyImage;
     data['message'] = this.message;
     if (this.replayOn != null) data['replay_on'] = this.replayOn;
+    data['company_id'] = this.companyId;
+    data['company_name'] = this.companyName;
+    data['user_id'] = this.userId;
+    data['user_phone'] = this.userPhone;
     return data;
   }
 }

@@ -252,11 +252,57 @@ class CompanyProfilePage extends State<MainChat> {
                                     margin: EdgeInsets.symmetric(vertical: 2),
                                     child: Stack(
                                       children: [
+                                        if (index == messages.length - 1)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20,
+                                                right: 20,
+                                                top: 2,
+                                                bottom: 15),
+                                            child: Text(
+                                              messages[index].companyName,
+                                              textAlign:
+                                                  messages[index].username ==
+                                                          userName
+                                                      ? TextAlign.right
+                                                      : TextAlign.left,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        if (index < messages.length - 1)
+                                          messages[index + 1].username ==
+                                                  messages[index].username
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(),
+                                                )
+                                              : Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 20,
+                                                          right: 20,
+                                                          top: 2,
+                                                          bottom: 15),
+                                                  child: Text(
+                                                    messages[index].companyName,
+                                                    textAlign: messages[index]
+                                                                .username ==
+                                                            userName
+                                                        ? TextAlign.right
+                                                        : TextAlign.left,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
                                         Padding(
                                           padding: const EdgeInsets.only(
                                             left: 20,
                                             right: 20,
-                                            top: 15,
+                                            top: 35,
                                             bottom: 30,
                                           ),
                                           child: Text(

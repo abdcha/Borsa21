@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:central_borssa/data/model/Post/GetPost.dart';
 import 'package:central_borssa/data/repositroy/PostRepository.dart';
 import 'package:central_borssa/presentation/Home/All_post.dart';
@@ -26,7 +25,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       var addNewPostResponse =
           await postRepository.addNewPost(event.body, event.image);
       yield* addNewPostResponse.fold((l) async* {
-        print('from here');
         yield PostsLoadingError();
       }, (r) async* {
         yield AddPostSuccess();
@@ -43,7 +41,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       });
     } else if (event is GetPostByCityName) {
       yield GetPostByCityNameLoading();
-      print('from GetPostByCityName');
       var getAllPostResponse = await postRepository.getAllPostByCityName(
           event.postscityId, event.sortby, event.page, event.countItemPerpage);
 

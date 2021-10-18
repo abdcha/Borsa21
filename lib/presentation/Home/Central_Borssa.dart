@@ -15,7 +15,6 @@ import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
 import 'package:central_borssa/data/model/Currency.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'dart:ui' as ui;
 
 class CentralBorssa extends StatefulWidget {
   CentralBorssaPage createState() => CentralBorssaPage();

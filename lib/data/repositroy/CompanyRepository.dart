@@ -17,11 +17,9 @@ class CompanyRepository {
       SharedPreferences _pref = await SharedPreferences.getInstance();
       var token = _pref.get('token');
       _dio.options.headers['authorization'] = 'Bearer $token';
-      print('value $page');
       String urledit =
           '$allCompanyPost$number?pageSize=$pagesize&date=desc&page=$page';
       var companyPostResponse = await _dio.get(urledit);
-      print(companyPostResponse.data['data']);
       var data = new Data.fromJson(companyPostResponse.data['data']);
       if (data != "") {
         return Right(data);
@@ -40,7 +38,6 @@ class CompanyRepository {
       var token = _pref.get('token');
       _dio.options.headers['authorization'] = 'Bearer $token';
       var companyNameResponse = await _dio.get(allCompany);
-      print(companyNameResponse.data['data']);
       var response = data.fromJson(companyNameResponse.data['data']);
       if (companyNameResponse.data['status'] == 'success') {
         return Right(response.lists);
@@ -60,7 +57,6 @@ class CompanyRepository {
       _dio.options.headers['authorization'] = 'Bearer $token';
       String urledit = '$followUrl$companyId';
       var companyPostResponse = await _dio.get(urledit);
-      print(companyPostResponse.data['data']);
       var data = companyPostResponse.data['status'];
       if (data == "success") {
         return Right(true);
@@ -79,7 +75,6 @@ class CompanyRepository {
       _dio.options.headers['authorization'] = 'Bearer $token';
       String urledit = '$unfollowUrl$companyId';
       var companyPostResponse = await _dio.get(urledit);
-      print(companyPostResponse.data['data']);
       var data = companyPostResponse.data['status'];
       if (data == "success") {
         return Right(true);
@@ -98,30 +93,21 @@ class CompanyRepository {
     _dio.options.headers['authorization'] = 'Bearer $token';
     var postResponse;
     if (image == "") {
-      print('from  null else');
       postResponse = await _dio.put('$editanddeletePost$id',
           data: jsonEncode(({"body": body})));
     } else if (image != null && image != "") {
-      print('from not null');
       if (image != "https://ferasalhallak.online/uploads/placeholder.jpg" &&
           image != "https://ferasalhallak.onlineno_image") {
-        print('from not null if');
-
-        print(image);
         postResponse = await _dio.put('$editanddeletePost$id',
             data: jsonEncode(({"body": body, "image": image})));
       } else {
-        print('from not null else');
-
         postResponse = await _dio.put('$editanddeletePost$id',
             data: jsonEncode(({"body": body, "image": image})));
       }
     }
 
-    print(postResponse.data);
     // print(postResponse);
     if (postResponse.data['status'] == "success") {
-      print('from here');
       return Right('success');
     } else if (postResponse.data['status'] == "error") {
       return Left('error');

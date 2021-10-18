@@ -123,32 +123,6 @@ class CompanyProfilePage extends State<CompanyProfile> {
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                           ),
-                          //whatsapp Sender
-                          // Container(
-                          //     margin: const EdgeInsets.only(bottom: 10),
-                          //     child: Center(
-                          //       child: Row(
-                          //         mainAxisAlignment: MainAxisAlignment.center,
-                          //         children: [
-                          //           Padding(
-                          //             padding: const EdgeInsets.all(8.0),
-                          //             child: InkWell(
-                          //               onTap: () {
-                          //                 whatsappSender(
-                          //                     message: "hi",
-                          //                     number: '+9647716600999');
-                          //               },
-                          //               child: Image.asset(
-                          //                 'assest/Images/whatsapp.png',
-                          //                 width: 25,
-                          //                 height: 25,
-                          //               ),
-                          //             ),
-                          //           ),
-                          //         ],
-                          //       ),
-                          //     )),
-
                           Container(
                             child: Padding(
                               padding: const EdgeInsets.only(
@@ -181,13 +155,13 @@ class CompanyProfilePage extends State<CompanyProfile> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text("Erbil"
-                                      // companypost[index].company.address,
-                                      ),
+                                  Text(
+                                    companypost[index].company.address,
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 8),
                                     child: Icon(
-                                      Icons.location_on,
+                                      Icons.location_city,
                                       color: Color(navbar.hashCode),
                                     ),
                                   )
@@ -202,9 +176,9 @@ class CompanyProfilePage extends State<CompanyProfile> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text("test@htomail.com"
-                                      // companypost[index].company.email,
-                                      ),
+                                  Text(
+                                    companypost[index].company.email,
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 8),
                                     child: Icon(
