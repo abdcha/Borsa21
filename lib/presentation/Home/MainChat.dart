@@ -116,6 +116,7 @@ class CompanyProfilePage extends State<MainChat> {
                   controller: messagebody,
                   maxLines: null,
                   expands: true,
+                  // keyboardType: TextInputType.multiline,
                   textAlign: TextAlign.right,
                   decoration: InputDecoration.collapsed(hintText: 'الرسالة'),
                   textCapitalization: TextCapitalization.sentences,
@@ -157,158 +158,152 @@ class CompanyProfilePage extends State<MainChat> {
             key: _contentKey,
             controller: _scrollcontroller,
             reverse: true,
-            padding: const EdgeInsets.all(2),
+            shrinkWrap: true,
             itemCount: messages.length,
             itemBuilder: (BuildContext context, int index) {
               return Directionality(
-                textDirection: userName != messages[index].username
+                textDirection: userName.toLowerCase() ==
+                        messages[index].username.toLowerCase()
                     ? ui.TextDirection.rtl
                     : ui.TextDirection.ltr,
                 child: Column(
-                  // crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (index < messages.length - 1)
-                      messages[index].username == messages[index + 1].username
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 8, top: 8),
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.only(left: 8, top: 8),
-                              child: Container(
-                                  child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: Text(
-                                        messages[index].username,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        right: 10.0,
-                                      ),
-                                      child: CircleAvatar(
-                                        // backgroundColor: navbar,
-                                        child: CircleAvatar(
-                                          radius: 30.0,
-                                          backgroundColor: Colors.transparent,
-                                          backgroundImage: NetworkImage(
-                                            "https://ferasalhallak.online${messages[index].companyImage}",
+                    Align(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                if (index < messages.length - 1)
+                                  messages[index].username ==
+                                          messages[index + 1].username
+                                      ? Container(
+                                          margin: EdgeInsets.all(24),
+                                        )
+                                      : Container(
+                                          padding: const EdgeInsets.only(
+                                              right: 4.0, left: 4.0),
+                                          child: CircleAvatar(
+                                            child: CircleAvatar(
+                                              radius: 30.0,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              backgroundImage: NetworkImage(
+                                                "https://ferasalhallak.online${messages[index].companyImage}",
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        // child: Text(
-                                        //   messages[index]
-                                        //       .username
-                                        //       .characters
-                                        //       .first
-                                        //       .toUpperCase(),
-                                        //   style: TextStyle(
-                                        //       fontWeight: FontWeight.bold,
-                                        //       fontSize: 20),
-                                        // ),
-                                      ),
-                                    ),
-                                  ]))),
-                    if (index == messages.length - 1)
-                      Padding(
-                          padding: const EdgeInsets.only(left: 8, top: 8),
-                          child: Container(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: Text(
-                                    messages[index].username,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    right: 10.0,
-                                  ),
-                                  child: CircleAvatar(
-                                    // backgroundColor: navbar,
-                                    child: CircleAvatar(
-                                      radius: 30.0,
-                                      backgroundColor: Colors.transparent,
-                                      backgroundImage: NetworkImage(
-                                        "https://ferasalhallak.online${messages[index].companyImage}",
-                                      ),
-                                    ),
-                                    // child: Text(
-                                    //   messages[index]
-                                    //       .username
-                                    //       .characters
-                                    //       .first
-                                    //       .toUpperCase(),
-                                    //   style: TextStyle(
-                                    //       fontWeight: FontWeight.bold,
-                                    //       fontSize: 20),
-                                    // ),
-                                  ),
-                                ),
-                              ]))),
-                   
-                    Container(
-                      //equation to solve width
-                      // width: messages[index].message.length.toDouble() *
-                      //     messages[index].message.length.toDouble() *
-                      //     2,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14.0),
-                        ),
-                        // elevation: 5.0,
-                        // shadowColor: Colors.black,
-                        clipBehavior: Clip.antiAlias,
-                        child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 25, bottom: 15, right: 25, top: 15),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        messages[index].message,
-                                        textAlign:
-                                            userName != messages[index].username
-                                                ? TextAlign.left
-                                                : TextAlign.right,
-                                        // textWidthBasis: TextWidthBasis
-                                        //     .longestLine,
-                                        style: TextStyle(
-                                          // color: Colors.black
-                                          //     .withOpacity(0.6),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
+                                if (index == messages.length - 1)
+                                  Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 8, top: 8),
+                                      child: Container(
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  // right: 10.0,
+                                                  ),
+                                              child: CircleAvatar(
+                                                // backgroundColor: navbar,
+
+                                                child: CircleAvatar(
+                                                  // radius: 12.0,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  backgroundImage: NetworkImage(
+                                                    "https://ferasalhallak.online${messages[index].companyImage}",
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ]))),
+                                Container(
+                                  width: messages[index]
+                                              .message
+                                              .length
+                                              .toDouble() >
+                                          23
+                                      ? 300
+                                      : messages[index]
+                                                  .message
+                                                  .length
+                                                  .toDouble() >
+                                              16
+                                          ? 230
+                                          : messages[index]
+                                                      .message
+                                                      .length
+                                                      .toDouble() >
+                                                  9
+                                              ? 180
+                                              : 120,
+                                  child: Card(
+                                    elevation: 1,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    color: Color(0xffdcf8c6),
+                                    margin: EdgeInsets.symmetric(vertical: 2),
+                                    child: Stack(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 20,
+                                            right: 20,
+                                            top: 15,
+                                            bottom: 30,
+                                          ),
+                                          child: Text(
+                                            messages[index].message,
+                                            textAlign:
+                                                messages[index].username ==
+                                                        userName
+                                                    ? TextAlign.right
+                                                    : TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        Positioned(
+                                          bottom: 4,
+                                          right: 5,
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                DateFormat.jm().format(
+                                                    DateTime.parse(
+                                                        messages[index]
+                                                            .createdAt)),
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.grey[600],
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              // Icon(
+                                              //   Icons.done_all,
+                                              //   size: 20,
+                                              // ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      DateFormat.jm().format(DateTime.parse(
-                                          messages[index].createdAt)),
-                                      style: TextStyle(
-                                          color: Colors.black.withOpacity(0.6),
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ],
-                            )),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

@@ -31,7 +31,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
   int currentPage = 1;
-  late int countItemPerpage = 5;
+  late int countItemPerpage = 30;
 
   late CompanyBloc bloc;
   late List<Posts> companypost = [];
@@ -82,85 +82,280 @@ class CompanyPage extends State<AnyCompanyProfile> {
               children: [
                 if (index == 0)
                   // Slider Images
+                  // Container(
+                  //   margin: const EdgeInsets.only(bottom: 10, top: 6),
+                  //   child: Card(
+                  //     child: Column(
+                  //       children: [
+                  //         Container(
+                  //           margin: const EdgeInsets.only(
+                  //             bottom: 15,
+                  //             top: 20,
+                  //           ),
+                  //           height: 150,
+                  //           width: 150,
+                  //           child: CircleAvatar(
+                  //             radius: 30.0,
+                  //             backgroundColor: Colors.transparent,
+                  //             backgroundImage: NetworkImage(
+                  //               companypost[index].company.image,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         Container(
+                  //           margin: const EdgeInsets.only(bottom: 10),
+                  //           child: Text(
+                  //             companypost[index].company.name,
+                  //             style: TextStyle(
+                  //                 fontWeight: FontWeight.bold, fontSize: 18),
+                  //           ),
+                  //         ),
+                  //         //whatsapp Sender
+                  //         // Container(
+                  //         //     margin: const EdgeInsets.only(bottom: 10),
+                  //         //     child: Center(
+                  //         //       child: Row(
+                  //         //         mainAxisAlignment: MainAxisAlignment.center,
+                  //         //         children: [
+                  //         //           Padding(
+                  //         //             padding: const EdgeInsets.all(8.0),
+                  //         //             child: InkWell(
+                  //         //               onTap: () {
+                  //         //                 whatsappSender(
+                  //         //                     message: "hi",
+                  //         //                     number: '+9647716600999');
+                  //         //               },
+                  //         //               child: Image.asset(
+                  //         //                 'assest/Images/whatsapp.png',
+                  //         //                 width: 25,
+                  //         //                 height: 25,
+                  //         //               ),
+                  //         //             ),
+                  //         //           ),
+                  //         //         ],
+                  //         //       ),
+                  //         //     )),
+
+                  //         Container(
+                  //           child: Padding(
+                  //             padding: const EdgeInsets.only(
+                  //                 bottom: 8, top: 8, right: 12, left: 12),
+                  //             child: Row(
+                  //               mainAxisAlignment: MainAxisAlignment.end,
+                  //               children: [
+                  //                 Text(companypost[index].company.phone),
+                  //                 Padding(
+                  //                   padding: const EdgeInsets.only(left: 8),
+                  //                   child: InkWell(
+                  //                     onTap: () {
+                  //                       launch(
+                  //                           "tel://${companypost[index].company.phone}");
+                  //                     },
+                  //                     child: Icon(
+                  //                       Icons.phone,
+                  //                       color: Color(navbar.hashCode),
+                  //                     ),
+                  //                   ),
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         Container(
+                  //           child: Padding(
+                  //             padding: const EdgeInsets.only(
+                  //                 bottom: 8, top: 8, right: 12, left: 12),
+                  //             child: Row(
+                  //               mainAxisAlignment: MainAxisAlignment.end,
+                  //               children: [
+                  //                 Text("Erbil"
+                  //                     // companypost[index].company.address,
+                  //                     ),
+                  //                 Padding(
+                  //                   padding: const EdgeInsets.only(left: 8),
+                  //                   child: Icon(
+                  //                     Icons.location_on,
+                  //                     color: Color(navbar.hashCode),
+                  //                   ),
+                  //                 )
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         Container(
+                  //           child: Padding(
+                  //             padding: const EdgeInsets.only(
+                  //                 bottom: 8, top: 8, right: 12, left: 12),
+                  //             child: Row(
+                  //               mainAxisAlignment: MainAxisAlignment.end,
+                  //               children: [
+                  //                 Text("test@htomail.com"
+                  //                     // companypost[index].company.email,
+                  //                     ),
+                  //                 Padding(
+                  //                   padding: const EdgeInsets.only(left: 8),
+                  //                   child: Icon(
+                  //                     Icons.email_sharp,
+                  //                     color: Color(navbar.hashCode),
+                  //                   ),
+                  //                 )
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 10, top: 6),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(
-                            bottom: 15,
-                            top: 20,
-                          ),
-                          height: 150,
-                          width: 150,
-                          child: CircleAvatar(
-                            radius: 30.0,
-                            backgroundColor: Colors.transparent,
-                            backgroundImage: NetworkImage(
-                              companypost[index].company.image,
+                    child: Card(
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(
+                              bottom: 15,
+                              top: 20,
+                            ),
+                            height: 150,
+                            width: 150,
+                            child: CircleAvatar(
+                              radius: 30.0,
+                              backgroundColor: Colors.transparent,
+                              backgroundImage: NetworkImage(
+                                companypost[index].company.image,
+                              ),
                             ),
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Text(
-                            companypost[index].company.name,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ),
-                        Container(
+                          Container(
                             margin: const EdgeInsets.only(bottom: 10),
-                            child: Center(
+                            child: Text(
+                              companypost[index].company.name,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          whatsappSender(
+                                              message: "hi",
+                                              number: '+9647716600999');
+                                        },
+                                        child: Image.asset(
+                                          'assest/Images/whatsapp.png',
+                                          width: 25,
+                                          height: 25,
+                                        ),
+                                      ),
+                                    ),
+                                    (isFollowed = companypost[index]
+                                                .isFollowed) ==
+                                            1
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: InkWell(
+                                                onTap: () {
+                                                  bloc.add(UnFollowEvent(
+                                                      id: companypost[index]
+                                                          .companyId));
+                                                },
+                                                child: Icon(
+                                                  Icons
+                                                      .add_circle_outline_rounded,
+                                                  color: Colors.blue[400],
+                                                )),
+                                          )
+                                        : Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: InkWell(
+                                                onTap: () {
+                                                  bloc.add(FollowEvent(
+                                                      id: companypost[index]
+                                                          .companyId));
+                                                },
+                                                child: Icon(Icons
+                                                    .add_circle_outline_rounded)),
+                                          )
+                                  ],
+                                ),
+                              )),
+                          Container(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 8, top: 8, right: 12, left: 12),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
+                                  Text(companypost[index].company.phone),
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.only(left: 8),
                                     child: InkWell(
                                       onTap: () {
-                                        whatsappSender(
-                                            message: "hi",
-                                            number: '+9647716600999');
+                                        launch(
+                                            "tel://${companypost[index].company.phone}");
                                       },
-                                      child: Image.asset(
-                                        'assest/Images/whatsapp.png',
-                                        width: 25,
-                                        height: 25,
+                                      child: Icon(
+                                        Icons.phone,
+                                        color: Color(navbar.hashCode),
                                       ),
                                     ),
                                   ),
-                                  (isFollowed =
-                                              companypost[index].isFollowed) ==
-                                          1
-                                      ? Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: InkWell(
-                                              onTap: () {
-                                                bloc.add(UnFollowEvent(
-                                                    id: companypost[index]
-                                                        .companyId));
-                                              },
-                                              child: Icon(
-                                                Icons.subscriptions_outlined,
-                                                color: Colors.blue[400],
-                                              )),
-                                        )
-                                      : Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: InkWell(
-                                              onTap: () {
-                                                bloc.add(FollowEvent(
-                                                    id: companypost[index]
-                                                        .companyId));
-                                              },
-                                              child: Icon(Icons
-                                                  .subscriptions_outlined)),
-                                        )
                                 ],
                               ),
-                            )),
-                      ],
+                            ),
+                          ),
+                          Container(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 8, top: 8, right: 12, left: 12),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text("Erbil"
+                                      // companypost[index].company.address,
+                                      ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: Icon(
+                                      Icons.location_on,
+                                      color: Color(navbar.hashCode),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 8, top: 8, right: 12, left: 12),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text("test@htomail.com"
+                                      // companypost[index].company.email,
+                                      ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: Icon(
+                                      Icons.email_sharp,
+                                      color: Color(navbar.hashCode),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 Card(
@@ -348,9 +543,9 @@ class CompanyPage extends State<AnyCompanyProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: Center(
-          child: Text('تحديث الأسعار'),
-        ),
+        // title: Center(
+        //   child: Text('الشخصيه'),
+        // ),
         backgroundColor: Color(navbar.hashCode),
       ),
       backgroundColor: Colors.grey[300],

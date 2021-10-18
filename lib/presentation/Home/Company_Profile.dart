@@ -2,6 +2,7 @@ import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Post/EditORDelete.dart';
+import 'package:central_borssa/presentation/Post/add_Post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,7 +30,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
   int currentPage = 1;
-  late int countItemPerpage = 3;
+  late int countItemPerpage = 30;
 
   late CompanyBloc bloc;
   late List<Posts> companypost = [];
@@ -489,86 +490,94 @@ class CompanyProfilePage extends State<CompanyProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: newDrawer(),
-      appBar: AppBar(
-        title: Center(
-          child: Text('البورصة المركزية'),
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: InkWell(
-                child: Icon(Icons.notification_add_outlined), onTap: () {}),
+        drawer: newDrawer(),
+        appBar: AppBar(
+          title: Center(
+            child: Text('البورصة المركزية'),
           ),
-        ],
-        backgroundColor: Color(navbar.hashCode),
-      ),
-      backgroundColor: Colors.grey[300],
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<CompanyBloc, CompanyState>(
-            listener: (context, state) {
-              if (state is EditPostLoaded) {
-                reload();
-              } else if (state is GetAllInformationLoading) {
-                print(state);
-              } else if (state is GetAllInformationLoaded) {
-                if (companypost.isEmpty) {
-                  print('length');
-                  companypost.clear();
-                  companypost = state.data.posts;
-                  totalpost = state.data.total;
-                  setState(() {});
-                } else if (companypost.isNotEmpty) {
-                  print(companypost.length);
-
-                  print('from addall');
-                  companypost.addAll(state.data.posts);
-                } else {
-                  print(state);
-                }
-              } else if (state is GetAllInformationError) {
-                print(state);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('خطأ في التحميل'),
-                    action: SnackBarAction(
-                      label: 'تنبيه',
-                      onPressed: () {},
-                    ),
-                  ),
-                );
-              }
-            },
-          ),
-        ],
-        child: Container(
-          height: double.infinity,
-          child: SmartRefresher(
-            key: _refresherKey,
-            controller: refreshController,
-            enablePullUp: true,
-            physics: BouncingScrollPhysics(),
-            footer: ClassicFooter(
-              loadStyle: LoadStyle.ShowWhenLoading,
-              completeDuration: Duration(milliseconds: 500),
+          actions: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: InkWell(
+                  child: Icon(Icons.notification_add_outlined), onTap: () {}),
             ),
-            onRefresh: () async {
-              postloading(isRefresh: true);
-              await Future.delayed(Duration(milliseconds: 1000));
-              if (mounted) setState(() {});
-              refreshController.refreshCompleted();
-            },
-            onLoading: () async {
-              await Future.delayed(Duration(milliseconds: 180));
-              postloading();
-              if (mounted) setState(() {});
-              refreshController.loadFailed();
-            },
-            child: ourListview(),
+          ],
+          backgroundColor: Color(navbar.hashCode),
+        ),
+        backgroundColor: Colors.grey[300],
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<CompanyBloc, CompanyState>(
+              listener: (context, state) {
+                if (state is EditPostLoaded) {
+                  reload();
+                } else if (state is GetAllInformationLoading) {
+                  print(state);
+                } else if (state is GetAllInformationLoaded) {
+                  if (companypost.isEmpty) {
+                    print('length');
+                    companypost.clear();
+                    companypost = state.data.posts;
+                    totalpost = state.data.total;
+                    setState(() {});
+                  } else if (companypost.isNotEmpty) {
+                    print(companypost.length);
+
+                    print('from addall');
+                    companypost.addAll(state.data.posts);
+                  } else {
+                    print(state);
+                  }
+                } else if (state is GetAllInformationError) {
+                  print(state);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('خطأ في التحميل'),
+                      action: SnackBarAction(
+                        label: 'تنبيه',
+                        onPressed: () {},
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+          child: Container(
+            height: double.infinity,
+            child: SmartRefresher(
+              key: _refresherKey,
+              controller: refreshController,
+              enablePullUp: true,
+              physics: BouncingScrollPhysics(),
+              footer: ClassicFooter(
+                loadStyle: LoadStyle.ShowWhenLoading,
+                completeDuration: Duration(milliseconds: 500),
+              ),
+              onRefresh: () async {
+                postloading(isRefresh: true);
+                await Future.delayed(Duration(milliseconds: 1000));
+                if (mounted) setState(() {});
+                refreshController.refreshCompleted();
+              },
+              onLoading: () async {
+                await Future.delayed(Duration(milliseconds: 180));
+                postloading();
+                if (mounted) setState(() {});
+                refreshController.loadFailed();
+              },
+              child: ourListview(),
+            ),
           ),
         ),
-      ),
-    );
+        floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            backgroundColor: Color(navbar.hashCode),
+            tooltip: 'إضافة منتج',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return AddPost();
+              }));
+            }));
   }
 }

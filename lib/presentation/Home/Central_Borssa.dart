@@ -443,23 +443,27 @@ class CentralBorssaPage extends State<CentralBorssa> {
                           child: Row(
                             children: [
                               Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        primary: Color(navbar.hashCode),
-                                        alignment: Alignment.center),
-                                    onPressed: () {
-                                      // getChart();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Auction()),
-                                      );
-                                    },
-                                    child: Text(
-                                      "المزاد المركزي",
-                                      style: TextStyle(),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Color(navbar.hashCode),
+                                      alignment: Alignment.center),
+                                  onPressed: () {
+                                    // getChart();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Auction()),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        Icon(Icons.account_balance_sharp),
+                                        Text(
+                                          "البورصة العالميه",
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -475,9 +479,18 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                     onPressed: () {
                                       // getChart();
                                     },
-                                    child: Text(
-                                      "البورصة العالمية",
-                                      style: TextStyle(),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            Icons.sports_soccer_rounded,
+                                          ),
+                                          Text(
+                                            "البورصة العالميه",
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:central_borssa/presentation/Home/Central_Borssa.dart';
+import 'package:central_borssa/presentation/Post/EditORDelete.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +25,6 @@ import 'package:central_borssa/data/model/Post/GetPost.dart';
 import 'package:central_borssa/presentation/Company/company.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Post/add_Post.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AllPost extends StatefulWidget {
   AllPostPage createState() => AllPostPage();
@@ -50,7 +50,7 @@ class AllPostPage extends State<AllPost> {
       RefreshController(initialRefresh: true);
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
-  late int countItemPerpage = 5;
+  late int countItemPerpage = 30;
   late int totalpost = 0;
   late String userName = "";
   late String userPhone = "";
@@ -81,25 +81,6 @@ class AllPostPage extends State<AllPost> {
 
   Future<bool> postloading({bool isRefresh = false}) async {
     if (isRefresh) {
-      // FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      //   print("message recieved onMessage");
-      //   print(event.notification!.body);
-      //   if (event.notification!.body != null) {
-      //     print(event.data);
-      //   }
-      // });
-      // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
-      //   print("message open");
-      //   if (event.notification!.body != null) {
-      //     print('hi');
-      //     print(event.data);
-
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => CentralBorssa()),
-      //     ); // print(event.notification.);
-      //   }
-      // });
       currentPage = 1;
       print('test');
       post.clear();
@@ -246,9 +227,67 @@ class AllPostPage extends State<AllPost> {
                           MainAxisAlignment.end, //change here don't //worked
 
                       children: [
+                        post[index].companyId == companyuser
+                            ? Container(
+                                margin: const EdgeInsets.only(
+                                  bottom: 20,
+                                ),
+                                child: Directionality(
+                                  textDirection: ui.TextDirection.rtl,
+                                  child: PopupMenuButton(
+                                    icon: Icon(Icons.more_vert),
+                                    itemBuilder: (BuildContext context) =>
+                                        <PopupMenuEntry>[
+                                      PopupMenuItem(
+                                        child: ListTile(
+                                          leading: Icon(Icons.delete),
+                                          title: Text('حذف المنشور'),
+                                          onTap: () {
+                                            Navigator.pop(context);
+
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return EditORDelete(
+                                                id: post[index].id,
+                                                type: 'حذف المنشور',
+                                                image: post[index].image,
+                                                body: post[index].body,
+                                              );
+                                            }));
+                                          },
+                                        ),
+                                      ),
+                                      PopupMenuItem(
+                                        child: ListTile(
+                                          leading: Icon(Icons.edit),
+                                          title: Text('تعديل المنشور'),
+                                          onTap: () {
+                                            Navigator.pop(context);
+
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return EditORDelete(
+                                                id: post[index].id,
+                                                type: 'تعديل المنشور',
+                                                image: post[index].image,
+                                                body: post[index].body,
+                                              );
+                                            }));
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                            : Container(
+                                margin: const EdgeInsets.only(
+                                    bottom: 10, top: 15, right: 10, left: 25),
+                              ),
                         Container(
                             margin: const EdgeInsets.only(
-                                bottom: 10, left: 25, top: 15, right: 10),
+                                bottom: 10, top: 15, right: 10),
                             child: Column(
                               children: [
                                 Icon(Icons.location_on_outlined),
@@ -257,7 +296,7 @@ class AllPostPage extends State<AllPost> {
                                   style: TextStyle(
                                     fontWeight: FontWeight.w300,
                                   ),
-                                )
+                                ),
                               ],
                             )),
                         Spacer(),
@@ -717,7 +756,7 @@ class AllPostPage extends State<AllPost> {
                 refreshController.refreshCompleted();
               },
               onLoading: () async {
-                await Future.delayed(Duration(milliseconds: 5000));
+                await Future.delayed(Duration(milliseconds: 1000));
                 postloading(isRefresh: false);
                 if (mounted) setState(() {});
                 if (mounted) setState(() {});

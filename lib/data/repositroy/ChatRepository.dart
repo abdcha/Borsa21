@@ -34,8 +34,6 @@ class ChatRepository {
   }
 
   Future<Either<String, String>> sendMessages(String message) async {
-    messages.clear();
-
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var _token = _prefs.getString('token');
 
