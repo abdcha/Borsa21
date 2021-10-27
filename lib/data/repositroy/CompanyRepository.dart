@@ -18,10 +18,10 @@ class CompanyRepository {
       var token = _pref.get('token');
       _dio.options.headers['authorization'] = 'Bearer $token';
       String urledit =
-          '$allCompanyPost$number?pageSize=$pagesize&date=desc&page=$page';
+          '$allCompanyPost$number?pageSize=$pagesize&sort=desc&page=$page';
       var companyPostResponse = await _dio.get(urledit);
       var data = new Data.fromJson(companyPostResponse.data['data']);
-      if (data != "") {
+      if (data.toString() != "") {
         return Right(data);
       } else {
         return Left('error');

@@ -13,3 +13,5 @@ class StartBorssaEvent extends BorssaEvent {}
 class AllCity extends BorssaEvent {}
 
 class AllCitiesList extends BorssaEvent {}
+
+class GetAllTransfersEvent extends BorssaEvent {}

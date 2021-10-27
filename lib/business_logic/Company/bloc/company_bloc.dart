@@ -24,7 +24,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       yield CompanyInitial();
     } else if (event is GetAllCompanyInformationsEvent) {
       yield GetAllInformationLoading();
-
       var getAllCompanyInformationsResponse = await companyRepository
           .getAllCompanypost(event.id, event.pageSize, event.date, event.page);
       yield* getAllCompanyInformationsResponse.fold((l) async* {

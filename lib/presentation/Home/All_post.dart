@@ -49,7 +49,7 @@ class AllPostPage extends State<AllPost> {
       RefreshController(initialRefresh: true);
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
-  late int countItemPerpage = 30;
+  late int countItemPerpage = 15;
   late int totalpost = 0;
   late String userName = "";
   late String userPhone = "";
@@ -73,22 +73,27 @@ class AllPostPage extends State<AllPost> {
   }
 
   Future<bool> postloading({bool isRefresh = false}) async {
-    if (isRefresh) {
-      post.clear();
-      currentPage = 1;
-      postbloc.add(
-          GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
-      currentPage++;
-    }
-    if (post.length != totalpost && isRefresh == false) {
-      postbloc.add(
-          GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
-      currentPage++;
-    }
+    setState(() {
+      if (isRefresh) {
+        postbloc.add(
+            GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
+        print('inside');
+
+        currentPage++;
+      }
+      if (post.length != totalpost) {
+        print('out');
+
+        postbloc.add(
+            GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
+        currentPage++;
+      }
+    });
+
     return true;
   }
 
-  void whatsappSender({@required number, @required message}) async {
+  void whatsappSender({@required number}) async {
     final String url = "https://api.whatsapp.com/send?phone=$number";
     await launch(url);
   }
@@ -107,8 +112,8 @@ class AllPostPage extends State<AllPost> {
 
     postloading();
     sharedValue();
-    companybloc.add(GetAllCompanies());
-    borssaBloc.add(AllCitiesList());
+    // companybloc.add(GetAllCompanies());
+    // borssaBloc.add(AllCitiesList());
     super.initState();
   }
 
@@ -206,9 +211,6 @@ class AllPostPage extends State<AllPost> {
             Card(
               elevation: 5.0,
               shadowColor: Colors.black,
-              // shape: RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.circular(30.0),
-              // ),
               clipBehavior: Clip.antiAlias,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -216,7 +218,6 @@ class AllPostPage extends State<AllPost> {
                   Row(
                     mainAxisAlignment:
                         MainAxisAlignment.end, //change here don't //worked
-
                     children: [
                       post[index].companyId == companyuser
                           ? Container(
@@ -350,7 +351,7 @@ class AllPostPage extends State<AllPost> {
                       margin: const EdgeInsets.only(
                           bottom: 10, left: 25, top: 10, right: 25),
                       child: ReadMoreText(
-                        post[index].body,
+                        post[index].body == "empty" ? "" : post[index].body,
                         trimLines: 3,
                         trimMode: TrimMode.Line,
                         trimCollapsedText: 'قرائة المزيد',
@@ -391,7 +392,7 @@ class AllPostPage extends State<AllPost> {
                               child: InkWell(
                                 onTap: () {
                                   whatsappSender(
-                                      message: "hi", number: '+9647716600999');
+                                      number: post[index].user.phone);
                                 },
                                 child: Image.asset(
                                   'assest/Images/whatsapp.png',
@@ -404,7 +405,7 @@ class AllPostPage extends State<AllPost> {
                               padding: const EdgeInsets.all(8.0),
                               child: InkWell(
                                 onTap: () {
-                                  launch("tel://+9647716600999");
+                                  launch("tel://+964${post[index].user.phone}");
                                 },
                                 child: Icon(
                                   Icons.add_ic_call,
@@ -515,8 +516,6 @@ class AllPostPage extends State<AllPost> {
                             alignment: Alignment.center),
                         child: Text('البحث'),
                         onPressed: () {
-                          // selectedcities.clear();
-                          // print(cityid);
                           if (cityid.isNotEmpty) {
                             postbloc.add(GetPostByCityName(
                                 postscityId: cityid,
@@ -560,7 +559,6 @@ class AllPostPage extends State<AllPost> {
             child: new DrawerHeader(
                 child: new CircleAvatar(
               backgroundColor: navbar,
-              // child: Image.asset('asesst/Images/Logo.png')
             )),
             color: Colors.grey[300],
           ),
@@ -572,10 +570,6 @@ class AllPostPage extends State<AllPost> {
                     ListTile(
                       title: Text(userName),
                       leading: new Icon(Icons.account_circle),
-                      onTap: () {
-                        // Update the state of the app.//feas
-                        // ...
-                      },
                     ),
                     ListTile(
                       title: Text(userPhone),
@@ -584,10 +578,7 @@ class AllPostPage extends State<AllPost> {
                     ListTile(
                       title: Text(userActive),
                       leading: new Icon(Icons.wifi_tethering_outlined),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
+                      onTap: () {},
                     ),
                     ListTile(
                       title: Text('تسجيل الخروج'),
@@ -619,11 +610,11 @@ class AllPostPage extends State<AllPost> {
             child: Text('البورصة المركزية'),
           ),
           actions: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              child: InkWell(
-                  child: Icon(Icons.notification_add_outlined), onTap: () {}),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 4),
+            //   child: InkWell(
+            //       child: Icon(Icons.notification_add_outlined), onTap: () {}),
+            // ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 4),
               child: InkWell(
@@ -647,13 +638,10 @@ class AllPostPage extends State<AllPost> {
           listeners: [
             BlocListener<PostBloc, PostState>(
               listener: (context, state) {
-                if (state is AddPostSuccess) {
-                  print(state);
-                  postloading(isRefresh: true);
-                  setState(() {});
-                } else if (state is PostLoadingInProgress) {
+                if (state is PostLoadingInProgress) {
                   print(state);
                 } else if (state is PostsLoadedSuccess) {
+                  print(state);
                   if (post.isEmpty) {
                     print(state);
                     print('empty');
@@ -689,7 +677,13 @@ class AllPostPage extends State<AllPost> {
                     ),
                   );
                 } else if (state is GetPostByCityNameLoaded) {
+                  print(state.posts.posts.length);
+                  post = state.posts.posts;
+                  setState(() {});
+                } else if (state is AddPostSuccess) {
                   print(state);
+                  postloading(isRefresh: true);
+                  setState(() {});
                 }
               },
             ),
@@ -762,12 +756,12 @@ class AllPostPage extends State<AllPost> {
               ),
               onRefresh: () async {
                 postloading(isRefresh: true);
-                await Future.delayed(Duration(milliseconds: 600));
+                await Future.delayed(Duration(milliseconds: 500));
                 if (mounted) setState(() {});
                 refreshController.refreshCompleted();
               },
               onLoading: () async {
-                await Future.delayed(Duration(milliseconds: 100));
+                await Future.delayed(Duration(milliseconds: 500));
                 postloading(isRefresh: false);
                 if (mounted) setState(() {});
                 if (mounted) setState(() {});
@@ -867,18 +861,9 @@ class CitySearchPage extends SearchDelegate<String> {
           final suggestion = suggestions[index];
           final queryText = suggestion.name.substring(0, query.length);
           final remainingText = suggestion.name.substring(query.length);
-
           return ListTile(
             onTap: () {
               query = suggestion.name;
-              // print('show image');
-              // 1. Show Results
-              // showResults(context);
-
-              // 2. Close Search & Return Result
-              // close(context, suggestion);
-
-              // 3. Navigate to Result Page
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -890,7 +875,6 @@ class CitySearchPage extends SearchDelegate<String> {
               );
             },
             leading: Icon(Icons.location_city),
-            // title: Text(suggestion),
             title: RichText(
               text: TextSpan(
                 text: queryText,

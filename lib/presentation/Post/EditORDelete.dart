@@ -12,7 +12,7 @@ import 'package:central_borssa/business_logic/Post/bloc/post_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 
 class EditORDelete extends StatefulWidget {
-  final String body;
+  final String? body;
   final String image;
   final int id;
   final String type;
@@ -70,8 +70,7 @@ class EditORDeletePostPage extends State<EditORDelete> {
   void initState() {
     _postBloc = BlocProvider.of<PostBloc>(context);
     _CompanyBloc = BlocProvider.of<CompanyBloc>(context);
-
-    postTextInpput.text = widget.body;
+    postTextInpput.text = widget.body!;
     encodeImage = widget.image;
     super.initState();
   }

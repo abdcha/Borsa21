@@ -23,24 +23,22 @@ class AddPostPage extends State<AddPost> {
   late String encodeImage = "";
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   File? mainFile;
-
+  ScrollController _scrollController = ScrollController();
   Future chooseFile() async {
-    setState(() async {
-      final postFile = await _picker.pickImage(source: ImageSource.gallery);
-      setState(() {
-        mainFile = File(postFile!.path);
-      });
-      String baseimage = base64Encode(mainFile!.readAsBytesSync());
-      print(baseimage);
-      String extension = p.extension(postFile!.path);
-      String extensionWithoutDot = extension.substring(1);
+    final postFile = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      mainFile = File(postFile!.path);
+    });
+    String baseimage = base64Encode(mainFile!.readAsBytesSync());
+    print(baseimage);
+    String extension = p.extension(postFile!.path);
+    String extensionWithoutDot = extension.substring(1);
 
-      String someWorld = 'data:image/$extensionWithoutDot;base64,';
-      setState(() {
-        mainFile = File(postFile.path);
-        encodeImage = '$someWorld$baseimage';
-        print(encodeImage);
-      });
+    String someWorld = 'data:image/$extensionWithoutDot;base64,';
+    setState(() {
+      mainFile = File(postFile.path);
+      encodeImage = '$someWorld$baseimage';
+      print(encodeImage);
     });
   }
 
@@ -109,132 +107,118 @@ class AddPostPage extends State<AddPost> {
             }
           },
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(
-                            top: 20.0, left: 20.0, right: 20.0),
-                        child: Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: Column(
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(
+                        top: 20.0, left: 20.0, right: 20.0),
+                    child: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Column(
+                          children: [
+                            Row(
                               children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 20.0),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            primary: Color(navbar.hashCode)),
-                                        onPressed: () {
-                                          chooseFile();
-                                        },
-                                        child: Text("إضافة صورة"),
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    mainFile != null
-                                        ? Container(
-                                            height: 50,
-                                            width: 50,
-                                            margin: const EdgeInsets.only(
-                                                top: 20.0,
-                                                left: 0.0,
-                                                right: 10.0),
-                                            child: new IconButton(
-                                              icon: new Icon(
-                                                  Icons.delete_forever),
-                                              highlightColor: Colors.grey,
-                                              onPressed: () {
-                                                clearFile();
-                                              },
-                                            ),
-                                          )
-                                        : Container(),
-                                    Container(
-                                      height: 125,
-                                      width: 125,
-                                      margin: const EdgeInsets.only(
-                                          top: 20.0, left: 0.0, right: 20.0),
-                                      child: Card(
-                                          child: mainFile == null
-                                              ? Icon(Icons.camera_alt_rounded)
-                                              : Image.file(
-                                                  File(mainFile!.path))),
-                                    ),
-                                  ],
+                                Container(
+                                  margin: const EdgeInsets.only(top: 20.0),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Color(navbar.hashCode)),
+                                    onPressed: () {
+                                      chooseFile();
+                                    },
+                                    child: Text("إضافة صورة"),
+                                  ),
+                                ),
+                                Spacer(),
+                                mainFile != null
+                                    ? Container(
+                                        height: 50,
+                                        width: 50,
+                                        margin: const EdgeInsets.only(
+                                            top: 20.0, left: 0.0, right: 10.0),
+                                        child: new IconButton(
+                                          icon: new Icon(Icons.delete_forever),
+                                          highlightColor: Colors.grey,
+                                          onPressed: () {
+                                            clearFile();
+                                          },
+                                        ),
+                                      )
+                                    : Container(),
+                                Container(
+                                  height: 125,
+                                  width: 125,
+                                  margin: const EdgeInsets.only(
+                                      top: 20.0, left: 0.0, right: 20.0),
+                                  child: Card(
+                                      child: mainFile == null
+                                          ? Icon(Icons.camera_alt_rounded)
+                                          : Image.file(File(mainFile!.path))),
                                 ),
                               ],
-                            )),
-                      ),
-                      Container(
-                          margin: const EdgeInsets.only(
-                              top: 25.0, left: 15.0, right: 15.0, bottom: 20.0),
-                          child: new Theme(
-                              data: new ThemeData(
-                                  primaryColor: Colors.red,
-                                  primaryColorDark: Colors.red,
-                                  focusColor: Colors.red),
-                              child: Directionality(
-                                  textDirection: TextDirection.rtl,
-                                  child: TextFormField(
-                                    textAlign: TextAlign.right,
-                                    cursorColor: Colors.black,
-                                    maxLines: null,
-                                    controller: postTextInpput,
-                                    keyboardType: TextInputType.text,
-                                    style: TextStyle(color: Colors.black),
-                                    validator: (String? value) {
-                                      if (value!.isEmpty) {
-                                        return 'الرجاء إدخال المنشور الجديد';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (String? value) {
-                                      postValue = value ?? "";
-                                    },
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                          EdgeInsets.fromLTRB(0, 0, 40, 35),
-                                      labelText: 'المنشور',
-                                      labelStyle: TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                      fillColor: Colors.red,
-                                      border: OutlineInputBorder(),
-                                      enabledBorder: new OutlineInputBorder(
-                                          borderSide: new BorderSide(
-                                              color: Color(navbar.hashCode))),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 3,
-                                            color: Color(navbar.hashCode)),
-                                      ),
-                                    ),
-                                  )))),
-                      Container(
-                        margin: const EdgeInsets.all(25.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              _postBloc.add(AddNewPost(
-                                  body: postTextInpput.text,
-                                  image: encodeImage));
+                            ),
+                          ],
+                        )),
+                  ),
+                  Container(
+                    height: 100,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: TextFormField(
+                          controller: postTextInpput,
+                          maxLines: null,
+                          expands: true,
+                          textAlign: TextAlign.right,
+                          validator: (String? value) {
+                            if (value!.isEmpty) {
+                              return 'الرجاء إدخال المنشور الجديد';
                             }
+                            return null;
                           },
-                          style: ElevatedButton.styleFrom(
-                              primary: Color(navbar.hashCode)),
-                          child: Text("إضافة المنشور"),
+                          onSaved: (String? value) {
+                            postValue = value ?? "";
+                          },
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(0, 0, 40, 35),
+                            labelText: 'المنشور',
+                            labelStyle: TextStyle(
+                              color: Colors.black,
+                            ),
+                            fillColor: Colors.red,
+                            border: OutlineInputBorder(),
+                            enabledBorder: new OutlineInputBorder(
+                                borderSide: new BorderSide(
+                                    color: Color(navbar.hashCode))),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 3, color: Color(navbar.hashCode)),
+                            ),
+                          ),
+                          textCapitalization: TextCapitalization.sentences,
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                )
-              ],
+                  Container(
+                    margin: const EdgeInsets.all(25.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          _postBloc.add(AddNewPost(
+                              body: postTextInpput.text, image: encodeImage));
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          primary: Color(navbar.hashCode)),
+                      child: Text("إضافة المنشور"),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ));

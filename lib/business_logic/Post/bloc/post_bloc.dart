@@ -21,7 +21,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       yield PostInitial();
     } else if (event is AddNewPost) {
       yield PostLoadingInProgress();
-
       var addNewPostResponse =
           await postRepository.addNewPost(event.body, event.image);
       yield* addNewPostResponse.fold((l) async* {
@@ -30,8 +29,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         yield AddPostSuccess();
       });
     } else if (event is GetAllPost) {
+      print('from bloc');
       yield PostLoadingInProgress();
-
       var getAllPostResponse =
           await postRepository.getAllPost(event.page, event.countItemPerpage);
       yield* getAllPostResponse.fold((l) async* {

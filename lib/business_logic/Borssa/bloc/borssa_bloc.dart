@@ -40,6 +40,19 @@ class BorssaBloc extends Bloc<BorssaEvent, BorssaState> {
         yield AllCitiesLoaded(cities: r);
         print('get all');
       });
+    } else if (event is GetAllTransfersEvent) {
+      yield GetAllTransfersLoading();
+
+      final allCititesResponse = await cityrepository.alltransfer();
+      yield* allCititesResponse.fold((l) async* {
+        print(l);
+        print('transfer error');
+        yield GetAllTransfersError();
+      }, (r) async* {
+        print(r);
+        yield GetAllTransfersLoaded(cities: r);
+        print('get all');
+      });
     }
   }
 }

@@ -8,25 +8,28 @@ abstract class CurrencyEvent extends Equatable {
 }
 
 class UpdatePriceEvent extends CurrencyEvent {
-  late final int id;
-  late final double buy;
-  late final double sell;
-  late final String status;
+  final int id;
+  final double buy;
+  final double sell;
+  final String buystate;
+  final String sellstate;
+  final String type;
+
   UpdatePriceEvent({
     required this.id,
     required this.buy,
     required this.sell,
-    required this.status,
+    required this.buystate,
+    required this.sellstate,
+    required this.type,
   });
 }
 
 class ChartEvent extends CurrencyEvent {
   late final int cityid;
   late final String fromdate;
-  late final String todate;
   ChartEvent({
     required this.cityid,
     required this.fromdate,
-    required this.todate,
   });
 }

@@ -1,7 +1,6 @@
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
-import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,11 +56,23 @@ class home_page extends State<HomeOfApp>
         if (userPermissions.contains('Chat_Permission')) {
           if (event.data['type'] == "currency_price_change") {
             choosePage(1);
-          } else if (event.data['type'] == "renew_subscription") {}
+          } else if (event.data['type'] == "renew_subscription") {
+            print(event.data['type']);
+          } else if (event.data['type'] == "new_chat") {
+            print(event.data['type']);
+          } else if (event.data['type'] == "new_followed_post") {
+            print(event.data['type']);
+            var value = event.data['id'];
+            print(value['data']);
+          }
         } else if (userPermissions.contains('Trader_Permission')) {
           choosePage(0);
         } else if (userPermissions
-            .contains('Update_Auction_Price_Permission')) {}
+            .contains('Update_Auction_Price_Permission')) {
+          if (event.data['type'] == "currency_price_change") {
+            choosePage(0);
+          }
+        }
       }
     });
   }
@@ -175,7 +186,7 @@ class home_page extends State<HomeOfApp>
                     items: [
                       if (userPermissions.contains('Chat_Permission'))
                         BottomNavigationBarItem(
-                          label: 'الأساسية',
+                          label: 'الرئيسية',
                           icon: Icon(Icons.home),
                         ),
                       if (userPermissions.contains('Chat_Permission') ||
@@ -183,7 +194,7 @@ class home_page extends State<HomeOfApp>
                           userPermissions
                               .contains('Update_Auction_Price_Permission'))
                         BottomNavigationBarItem(
-                          label: 'مزاد العملات',
+                          label: 'البورصة',
                           icon: Icon(Icons.attach_money),
                         ),
                       if (userPermissions.contains('Chat_Permission') ||

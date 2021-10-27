@@ -17,8 +17,7 @@ class AnyCompanyProfile extends StatefulWidget {
   const AnyCompanyProfile({
     Key? key,
     required this.id,
-        required this.name,
-
+    required this.name,
   }) : super(key: key);
   CompanyPage createState() => CompanyPage();
 }
@@ -438,6 +437,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
                   print('length');
                   companypost = state.data.posts;
                   totalpost = state.data.total;
+                  setState(() {});
                 } else if (companypost.isNotEmpty) {
                   print('from addall');
                   companypost.addAll(state.data.posts);
@@ -466,10 +466,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
               if (state is FollowIsLoaded) {
                 print(state);
                 followStatus = state.status;
-                setState(() {
-                  isFollowed = 1;
-                  companypost[0].isFollowed = 1;
-                });
+                setState(() {});
               } else if (state is FollowError) {
                 print(state);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -492,10 +489,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
               if (state is UnFollowIsLoaded) {
                 print(state);
                 followStatus = state.status;
-                setState(() {
-                  isFollowed = 0;
-                  companypost[0].isFollowed = 0;
-                });
+                setState(() {});
               } else if (state is UnFollowError) {
                 print(state);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -524,7 +518,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
             ),
             onRefresh: () async {
               postloading(isRefresh: true);
-              await Future.delayed(Duration(milliseconds: 1000));
+              await Future.delayed(Duration(milliseconds: 600));
               if (mounted) setState(() {});
               refreshController.refreshCompleted();
             },

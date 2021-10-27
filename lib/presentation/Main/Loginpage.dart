@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
@@ -8,7 +6,6 @@ import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Loginpage extends StatefulWidget {
   @override
@@ -26,15 +23,11 @@ class _MyHomePageState extends State<Loginpage> {
   final passwordTextEdit = TextEditingController();
 
   late LoginBloc authloginBloc;
-  Future<String?> getValue() async {
-    String? token = await FirebaseMessaging.instance.getToken();
-  }
 
   late FirebaseMessaging firebaseMessaging;
   @override
   void initState() {
     authloginBloc = BlocProvider.of<LoginBloc>(context);
-    getValue();
     super.initState();
   }
 
@@ -234,7 +227,6 @@ class _MyHomePageState extends State<Loginpage> {
                                           authloginBloc.add(LoginSubmite(
                                               phone: phoneNumberTextEdit.text,
                                               password: passwordTextEdit.text));
-                                          getValue();
                                         }
                                       },
                                       child: Text("تسجيل الدخول"),

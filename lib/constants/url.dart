@@ -22,4 +22,5 @@ final sendFcmtoken = 'https://ferasalhallak.online/api/setUserData?';
 //Auction
 final auctionAddUrl = 'https://ferasalhallak.online/api/auction';
 final auctionGetUrl = 'https://ferasalhallak.online/api/auction';
-//
+//Transfers
+final transfersUrl = 'https://ferasalhallak.online/api/transfers';

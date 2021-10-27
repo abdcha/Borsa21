@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:intl/intl.dart';
 
 class PriceChart extends StatefulWidget {
   final int cityid;
-  final String fromdate;
-  final String todate;
+  final int fromdate;
+  final int todate;
   final String title;
+  final String type;
   const PriceChart({
     Key? key,
     required this.cityid,
     required this.fromdate,
     required this.todate,
     required this.title,
+    required this.type,
   }) : super(key: key);
 
   @override
@@ -27,38 +29,92 @@ class PriceChart extends StatefulWidget {
 class PriceChartPage extends State<PriceChart> {
   late CurrencyBloc bloc;
   late List<DataChanges> datachange = [];
-  late String fromdate = widget.fromdate;
-  late String todate = widget.todate;
-  late String dropdownvalue = itemsofchart.first.name;
+  // late int fromdate = widget.fromdate;
+  // late int todate = widget.todate;
+  var newFormat = DateFormat("yyyy-MM-dd");
 
+  late String dropdownvalue = itemsofchart.first.name;
+  late int valueofselect;
+  late ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior();
+  late TrackballBehavior _trackballBehavior = TrackballBehavior();
   final List<Item> itemsofchart = [
-    Item(name: 'منذ يوم', from: 'منذ يوم', to: DateTime.now().toString()),
+    Item(name: 'منذ ساعة', from: 'منذ ساعة'),
+    Item(name: 'منذ ثلاثة ساعات', from: 'منذ ثلاثة ساعات'),
+    Item(name: 'منذ سبعة ساعات', from: 'منذ سبعة ساعات'),
     Item(
-        name: 'منذ ثلاثة أيام',
-        from: 'منذ ثلاثة أيام',
-        to: DateTime.now().toString()),
+      name: 'منذ يوم',
+      from: 'منذ يوم',
+    ),
     Item(
-        name: 'منذ سبعة أيام',
-        from: 'منذ سبعة أيام',
-        to: DateTime.now().toString()),
-    Item(name: 'منذ شهر', from: 'منذ شهر', to: DateTime.now().toString()),
+      name: 'منذ ثلاثة أيام',
+      from: 'منذ ثلاثة أيام',
+    ),
+    Item(
+      name: 'منذ سبعة أيام',
+      from: 'منذ سبعة أيام',
+    ),
+    Item(name: 'منذ شهر', from: 'منذ شهر'),
   ];
   bool isSelectd = false;
   getChart() async {
-    if (!isSelectd) {
-      bloc.add(ChartEvent(
-          cityid: widget.cityid, fromdate: fromdate, todate: todate));
+    if (widget.type == "currency") {
+    } else if (widget.type == "transfer") {}
+    if (isSelectd) {
+      datachange.clear();
+      print(dropdownvalue);
+      bloc.add(ChartEvent(cityid: widget.cityid, fromdate: dropdownvalue));
     }
-    bloc.add(ChartEvent(
-        cityid: widget.cityid, fromdate: dropdownvalue, todate: todate));
-    setState(() {
-      isSelectd = true;
-    });
+    if (!isSelectd) {
+      datachange.clear();
+      bloc.add(ChartEvent(cityid: widget.cityid, fromdate: 'منذ ساعة'));
+      setState(() {
+        isSelectd = true;
+      });
+    }
   }
 
   @override
   void initState() {
-    datachange.clear();
+    _zoomPanBehavior = ZoomPanBehavior(
+        enableDoubleTapZooming: true,
+        enablePinching: true,
+        // Enables the selection zooming
+        enableSelectionZooming: true);
+    _trackballBehavior = TrackballBehavior(
+        enable: true,
+        activationMode: ActivationMode.singleTap,
+        lineColor: Colors.red,
+        builder: (BuildContext context, TrackballDetails trackballDetails) {
+          return Container(
+              height: 75,
+              width: 120,
+              decoration: const BoxDecoration(color: Colors.blue),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                      child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: 25,
+                        alignment: Alignment.center,
+                        child: Text(
+                            'العرض ${trackballDetails.point!.open.toString()}'),
+                      ),
+                      Container(
+                          height: 25,
+                          child: Text(
+                              'الطلب ${trackballDetails.point!.close.toString()}')),
+                      Container(
+                          height: 25,
+                          alignment: Alignment.center,
+                          child: Text(
+                              'التاريخ ${newFormat.format(trackballDetails.point!.x)}')),
+                    ],
+                  ))
+                ],
+              ));
+        });
+    // datachange.clear();
     bloc = BlocProvider.of<CurrencyBloc>(context);
     getChart();
     super.initState();
@@ -110,19 +166,25 @@ class PriceChartPage extends State<PriceChart> {
                     ),
                     Spacer(),
                     Container(
-                      child: DropdownButton(
-                        value: dropdownvalue,
-                        icon: Icon(Icons.keyboard_arrow_down),
-                        items: itemsofchart.map((Item items) {
-                          return DropdownMenuItem(
-                              value: items.name, child: Text(items.name));
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          print(newValue);
-                          setState(() {
-                            dropdownvalue = newValue!;
-                          });
-                        },
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: DropdownButton(
+                          value: dropdownvalue,
+                          icon: Icon(Icons.keyboard_arrow_down),
+                          items: itemsofchart.map((Item items) {
+                            return DropdownMenuItem(
+                              value: items.name,
+                              child: Text(items.name),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              dropdownvalue = newValue!;
+                              print(dropdownvalue);
+                              isSelectd = true;
+                            });
+                          },
+                        ),
                       ),
                     ),
                   ],
@@ -130,27 +192,21 @@ class PriceChartPage extends State<PriceChart> {
               ),
               Container(
                 height: (MediaQuery.of(context).size.height - 250),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: SfCartesianChart(
-                      primaryXAxis: CategoryAxis(),
-                      // Chart title
-                      // title: ChartTitle(text: 'أسعار العرض'),
-                      // Enable legend
-                      legend: Legend(isVisible: true),
-                      // Enable tooltip
-                      tooltipBehavior: TooltipBehavior(enable: true),
-                      series: <ChartSeries<DataChanges, String>>[
-                        LineSeries<DataChanges, String>(
-                          dataSource: datachange,
-                          xValueMapper: (DataChanges buy, _) => DateFormat.Hms()
-                              .format(DateTime.parse(buy.updatedAt)),
-                          yValueMapper: (DataChanges buy, _) => buy.buy,
-                          name: 'أسعار العرض',
-                          // Enable data label
-                          // dataLabelSettings: DataLabelSettings(isVisible: true)
-                        )
-                      ]),
+                child: SfCartesianChart(
+                  trackballBehavior: _trackballBehavior,
+                  series: <CandleSeries>[
+                    CandleSeries<DataChanges, DateTime>(
+                      dataSource: datachange,
+                      xValueMapper: (DataChanges s, _) =>
+                          DateTime.parse(s.updatedAt),
+                      lowValueMapper: (DataChanges s, _) => s.sell,
+                      highValueMapper: (DataChanges s, _) => s.buy,
+                      openValueMapper: (DataChanges s, _) => s.sell,
+                      closeValueMapper: (DataChanges s, _) => s.buy,
+                    )
+                  ],
+                  zoomPanBehavior: _zoomPanBehavior,
+                  primaryXAxis: DateTimeAxis(dateFormat: DateFormat.Md()),
                 ),
               ),
             ]),
@@ -162,10 +218,8 @@ class PriceChartPage extends State<PriceChart> {
 class Item {
   late String name;
   late String from;
-  late String to;
   Item({
     required this.name,
     required this.from,
-    required this.to,
   });
 }

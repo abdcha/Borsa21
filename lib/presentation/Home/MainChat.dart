@@ -1,6 +1,7 @@
 import 'package:central_borssa/business_logic/Chat/bloc/chat_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Chat.dart' as MessageOfChat;
+import 'package:central_borssa/presentation/Company/company.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,23 +29,15 @@ class CompanyProfilePage extends State<MainChat> {
   final RefreshController refreshController =
       RefreshController(initialRefresh: true);
   GlobalKey _contentKey = GlobalKey();
-  GlobalKey _refresherKey = GlobalKey();
   int currentPage = 1;
-  late int countItemPerpage = 100;
   final messagebody = TextEditingController();
-  bool isbottom = true;
   late ChatBloc bloc;
   late List<MessageOfChat.Message> messages = [];
   late int companyuser = 0;
   late int totalpost = 1;
-  late String? location;
-  bool isEmpty = true;
   late Channel _ourChannel;
-  late String? test;
-  Future<void> pusherTerster() async {
+  Future<void> messagePusher() async {
     try {
-      SharedPreferences _pref = await SharedPreferences.getInstance();
-      test = _pref.get('roles').toString();
       await Pusher.init(
           'borsa_app',
           PusherOptions(
@@ -52,14 +45,9 @@ class CompanyProfilePage extends State<MainChat> {
               host: 'www.ferasalhallak.online',
               encrypted: false,
               port: 6001));
-      print('1');
-
       Pusher.connect(onConnectionStateChange: (val) {
-        print('2');
         print(val!.currentState);
       }, onError: (error) {
-        print('3');
-
         print(error!.message);
       });
 
@@ -68,19 +56,15 @@ class CompanyProfilePage extends State<MainChat> {
 
       //Bind
       _ourChannel.bind('newMessage', (onEvent) {
-        print('fromhere');
-        print('4');
-
         print(onEvent!.data);
         bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
       });
     } catch (e) {}
   }
 
-  Future<bool> postloading({bool isRefresh = false}) async {
+  Future<bool> messageLoaing({bool isRefresh = false}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     companyuser = int.parse(prefs.get('companyid').toString());
-
     currentPage = 0;
     messages.clear();
     print('is refresh');
@@ -88,13 +72,6 @@ class CompanyProfilePage extends State<MainChat> {
     setState(() {});
 
     currentPage++;
-    // print(companypost.length);
-    // else if (messages.length != totalpost) {
-    //   bloc.add(GetAllMessagesEvent(pageSize: 100, page: currentPage));
-    //   print('Not Empty');
-    //   currentPage++;
-    // }
-    // print(currentPage);
     return true;
   }
 
@@ -102,8 +79,6 @@ class CompanyProfilePage extends State<MainChat> {
     return Directionality(
       textDirection: ui.TextDirection.rtl,
       child: Container(
-        // padding: EdgeInsets.symmetric(horizontal: 8),
-
         height: 45,
         color: Colors.white,
         child: Row(
@@ -116,7 +91,6 @@ class CompanyProfilePage extends State<MainChat> {
                   controller: messagebody,
                   maxLines: null,
                   expands: true,
-                  // keyboardType: TextInputType.multiline,
                   textAlign: TextAlign.right,
                   decoration: InputDecoration.collapsed(hintText: 'الرسالة'),
                   textCapitalization: TextCapitalization.sentences,
@@ -248,7 +222,8 @@ class CompanyProfilePage extends State<MainChat> {
                                     elevation: 1,
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8)),
-                                    color: Color(0xffdcf8c6),
+                                    // color: Color(0xffdcf8c6),
+
                                     margin: EdgeInsets.symmetric(vertical: 2),
                                     child: Stack(
                                       children: [
@@ -259,16 +234,79 @@ class CompanyProfilePage extends State<MainChat> {
                                                 right: 20,
                                                 top: 2,
                                                 bottom: 15),
-                                            child: Text(
-                                              messages[index].companyName,
-                                              textAlign:
-                                                  messages[index].username ==
+                                            child: InkWell(
+                                              child: PopupMenuButton(
+                                                child: Text(
+                                                  messages[index].companyName,
+                                                  textAlign: messages[index]
+                                                              .username ==
                                                           userName
                                                       ? TextAlign.right
                                                       : TextAlign.left,
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                itemBuilder:
+                                                    (BuildContext context) =>
+                                                        <PopupMenuEntry>[
+                                                  PopupMenuItem(
+                                                    child: ListTile(
+                                                      leading: Icon(Icons.phone,
+                                                          color: Color(
+                                                              navbar.hashCode)),
+                                                      title: Text('اتصال'),
+                                                      onTap: () {
+                                                        launch(
+                                                            "tel://${messages[index].userPhone}");
+                                                      },
+                                                    ),
+                                                  ),
+                                                  PopupMenuItem(
+                                                    child: ListTile(
+                                                      leading: Icon(
+                                                        Icons.person_rounded,
+                                                        color: Color(
+                                                            navbar.hashCode),
+                                                      ),
+                                                      title: Text('الشخصيه'),
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  AnyCompanyProfile(
+                                                                    id: messages[
+                                                                            index]
+                                                                        .companyId,
+                                                                    name: messages[
+                                                                            index]
+                                                                        .companyName,
+                                                                  )),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                  PopupMenuItem(
+                                                    child: ListTile(
+                                                      leading: Image.asset(
+                                                        'assest/Images/whatsapp.png',
+                                                        width: 25,
+                                                        height: 25,
+                                                      ),
+                                                      title: Text('الخاص'),
+                                                      onTap: () {
+                                                        whatsappSender(
+                                                            message: "hi",
+                                                            number:
+                                                                messages[index]
+                                                                    .userPhone);
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         if (index < messages.length - 1)
@@ -285,17 +323,85 @@ class CompanyProfilePage extends State<MainChat> {
                                                           right: 20,
                                                           top: 2,
                                                           bottom: 15),
-                                                  child: Text(
-                                                    messages[index].companyName,
-                                                    textAlign: messages[index]
-                                                                .username ==
-                                                            userName
-                                                        ? TextAlign.right
-                                                        : TextAlign.left,
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                                                  child: InkWell(
+                                                    child: PopupMenuButton(
+                                                      child: Text(
+                                                        messages[index]
+                                                            .companyName,
+                                                        textAlign: messages[
+                                                                        index]
+                                                                    .username ==
+                                                                userName
+                                                            ? TextAlign.right
+                                                            : TextAlign.left,
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      itemBuilder: (BuildContext
+                                                              context) =>
+                                                          <PopupMenuEntry>[
+                                                        PopupMenuItem(
+                                                          child: ListTile(
+                                                            leading: Icon(
+                                                                Icons.phone,
+                                                                color: Color(navbar
+                                                                    .hashCode)),
+                                                            title:
+                                                                Text('اتصال'),
+                                                            onTap: () {
+                                                              launch(
+                                                                  "tel://${messages[index].userPhone}");
+                                                            },
+                                                          ),
+                                                        ),
+                                                        PopupMenuItem(
+                                                          child: ListTile(
+                                                            leading: Icon(
+                                                              Icons
+                                                                  .person_rounded,
+                                                              color: Color(navbar
+                                                                  .hashCode),
+                                                            ),
+                                                            title:
+                                                                Text('الشخصيه'),
+                                                            onTap: () {
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            AnyCompanyProfile(
+                                                                              id: messages[index].companyId,
+                                                                              name: messages[index].companyName,
+                                                                            )),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                        PopupMenuItem(
+                                                          child: ListTile(
+                                                            leading:
+                                                                Image.asset(
+                                                              'assest/Images/whatsapp.png',
+                                                              width: 25,
+                                                              height: 25,
+                                                            ),
+                                                            title:
+                                                                Text('الخاص'),
+                                                            onTap: () {
+                                                              whatsappSender(
+                                                                  message: "hi",
+                                                                  number: messages[
+                                                                          index]
+                                                                      .userPhone);
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                         Padding(
@@ -379,11 +485,10 @@ class CompanyProfilePage extends State<MainChat> {
   void initState() {
     bloc = BlocProvider.of<ChatBloc>(context);
     messages.clear();
-    postloading();
-    pusherTerster();
+    messageLoaing();
+    messagePusher();
     sharedValue();
     setState(() {});
-
     super.initState();
   }
 
@@ -494,16 +599,9 @@ class CompanyProfilePage extends State<MainChat> {
                 print(state);
               } else if (state is GetAllMessagesIsLoaded) {
                 print(state);
-
                 messages = state.data.message;
-                // _scrollcontroller.animateTo(
-                //     _scrollcontroller.position.maxScrollExtent,
-                //     duration: Duration(milliseconds: 200),
-                //     curve: Curves.easeOut);
                 totalpost = state.data.total;
-                setState(() {
-                  print('get all message');
-                });
+                setState(() {});
               } else if (state is GetAllMessagesError) {
                 print(state);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -520,11 +618,8 @@ class CompanyProfilePage extends State<MainChat> {
               }
               if (state is SendMessageIsLoaded) {
                 print(state);
-                pusherTerster();
-                // _scrollcontroller.animateTo(
-                //     _scrollcontroller.position.maxScrollExtent,
-                //     duration: Duration(milliseconds: 200),
-                //     curve: Curves.easeOut);
+                messagePusher();
+                setState(() {});
               } else if (state is SendMessageError) {
                 print(state);
                 ScaffoldMessenger.of(context).showSnackBar(

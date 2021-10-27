@@ -43,10 +43,7 @@ class ChatRepository {
         await _dio.post(sendMessageUrl, data: jsonEncode({"message": message}));
     print(response.data['status']);
     var status = response.data['status'];
-    // var allcurrency = Data.fromJson(response.data['data']);
-    // print(allcurrency);
 
-    // print(allcurrency);
     if (status == "success") {
       return Right(status);
     } else {

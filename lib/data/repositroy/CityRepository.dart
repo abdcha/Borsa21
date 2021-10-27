@@ -1,5 +1,6 @@
 import 'package:central_borssa/constants/url.dart';
 import 'package:central_borssa/data/model/Currency.dart';
+import 'package:central_borssa/data/model/Transfer.dart' as tran;
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -30,7 +31,28 @@ class CityRepository {
       if (status == "success") {
         return Right(mycities);
       } else {
-        return Left("error");
+        return Left("here");
+      }
+    } catch (e) {
+      return Left("error");
+    }
+  }
+
+  Future<Either<String, List<tran.Transfer>>> alltransfer() async {
+    try {
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      var _token = _prefs.getString('token');
+
+      _dio..options.headers['authorization'] = 'Bearer $_token';
+
+      var response = await _dio.get(transfersUrl);
+      var status = response.data['status'];
+      var allcurrency = tran.Data.fromJson(response.data['data']);
+
+      if (status == "success") {
+        return Right(allcurrency.transfer);
+      } else {
+        return Left("inside error");
       }
     } catch (e) {
       return Left("error");

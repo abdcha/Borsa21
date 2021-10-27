@@ -6,14 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UpdatePrice extends StatefulWidget {
-  late final int id;
-  late final double buy;
-  late final double sell;
+  final int id;
+  final double buy;
+  final double sell;
+  final String buystate;
+  final String sellstate;
+  final String type;
   UpdatePrice({
     Key? key,
     required this.id,
     required this.buy,
     required this.sell,
+    required this.buystate,
+    required this.sellstate,
+    required this.type,
+
   }) : super(key: key);
   UpdatePricePage createState() => UpdatePricePage();
 }
@@ -22,6 +29,8 @@ class UpdatePricePage extends State<UpdatePrice> {
   late String buyValue;
   late String sellValue;
   late CurrencyBloc currencybloc;
+  late String buyState;
+  late String sellState;
   TextEditingController buyTextEdit = TextEditingController(text: "");
   TextEditingController sellTextEdit = TextEditingController(text: "");
   Future storeBuyandSellValue(String buy, String sell) async {
@@ -207,11 +216,42 @@ class UpdatePricePage extends State<UpdatePrice> {
                         margin: const EdgeInsets.all(25.0),
                         child: ElevatedButton(
                           onPressed: () {
-                            currencybloc.add(UpdatePriceEvent(
-                                id: widget.id,
-                                buy: double.parse(buyTextEdit.text),
-                                sell: double.parse(sellTextEdit.text),
-                                status: "up"));
+                            if (widget.buy != 0) {
+                              print('d');
+                              if (widget.buy > double.parse(buyTextEdit.text)) {
+                                buyState = "down";
+                                print('1');
+                              } else if (widget.buy ==
+                                  double.parse(buyTextEdit.text)) {
+                                buyState = widget.buystate;
+                                print('2');
+                              } else if (widget.buy <
+                                  double.parse(buyTextEdit.text)) {
+                                buyState = "up";
+                                print('3');
+                              }
+                              if (widget.sell >
+                                  double.parse(sellTextEdit.text)) {
+                                sellState = "down";
+                                print('4');
+                              } else if (widget.sell ==
+                                  double.parse(sellTextEdit.text)) {
+                                sellState = widget.buystate;
+                                print('5');
+                              } else if (widget.sell <
+                                  double.parse(sellTextEdit.text)) {
+                                sellState = "up";
+                                print('6');
+                              }
+                              currencybloc.add(UpdatePriceEvent(
+                                  id: widget.id,
+                                  buy: double.parse(buyTextEdit.text),
+                                  sell: double.parse(sellTextEdit.text),
+                                  buystate: buyState,
+                                  sellstate: sellState,
+                                  type: widget.type
+                                  ));
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                               primary: Color(navbar.hashCode)),

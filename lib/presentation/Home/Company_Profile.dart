@@ -1,4 +1,5 @@
 import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
+import 'package:central_borssa/business_logic/Post/bloc/post_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Post/EditORDelete.dart';
@@ -489,8 +490,6 @@ class CompanyProfilePage extends State<CompanyProfile> {
                   print(state);
                 } else if (state is GetAllInformationLoaded) {
                   if (companypost.isEmpty) {
-                    print('length');
-                    companypost.clear();
                     companypost = state.data.posts;
                     totalpost = state.data.total;
                     setState(() {});
@@ -499,6 +498,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
 
                     print('from addall');
                     companypost.addAll(state.data.posts);
+                    setState(() {});
                   } else {
                     print(state);
                   }
@@ -530,7 +530,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
               ),
               onRefresh: () async {
                 postloading(isRefresh: true);
-                await Future.delayed(Duration(milliseconds: 1000));
+                await Future.delayed(Duration(milliseconds: 600));
                 if (mounted) setState(() {});
                 refreshController.refreshCompleted();
               },

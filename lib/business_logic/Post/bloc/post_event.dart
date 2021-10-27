@@ -18,24 +18,6 @@ class AddNewPost extends PostEvent {
   });
 }
 
-// class UpdatePost extends PostEvent {
-//   late final int id;
-//   late final String body;
-//   late final String image;
-//   UpdatePost({
-//     required this.id,
-//     required this.body,
-//     required this.image,
-//   });
-// }
-
-// class DeletePost extends PostEvent {
-//   late final int id;
-
-//   DeletePost({
-//     required this.id,
-//   });
-// }
 
 class GetPostByCityName extends PostEvent {
   late final List<CityId?> postscityId;

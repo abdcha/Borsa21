@@ -1,4 +1,6 @@
 import 'package:central_borssa/data/model/Currency.dart';
+import 'package:central_borssa/data/model/Transfer.dart' as tra;
+
 import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:equatable/equatable.dart';
 
@@ -15,6 +17,20 @@ class GetAllCityState extends BorssaState {
   late final List<CurrencyPrice> cities;
 
   GetAllCityState({
+    required this.cities,
+  });
+}
+
+//transferloaded
+
+class GetAllTransfersLoading extends BorssaState {}
+
+class GetAllTransfersError extends BorssaState {}
+
+class GetAllTransfersLoaded extends BorssaState {
+  late final List<tra.Transfer> cities;
+
+  GetAllTransfersLoaded({
     required this.cities,
   });
 }
