@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
 import 'package:central_borssa/presentation/Post/EditORDelete.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,6 @@ import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_event.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
 import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
@@ -73,22 +73,21 @@ class AllPostPage extends State<AllPost> {
   }
 
   Future<bool> postloading({bool isRefresh = false}) async {
-    setState(() {
-      if (isRefresh) {
-        postbloc.add(
-            GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
-        print('inside');
+    if (isRefresh) {
+      postbloc.add(
+          GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
+      print('inside');
 
-        currentPage++;
-      }
-      if (post.length != totalpost) {
-        print('out');
+      currentPage++;
+    }
+    if (post.length != totalpost) {
+      print('out');
 
-        postbloc.add(
-            GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
-        currentPage++;
-      }
-    });
+      postbloc.add(
+          GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
+      currentPage++;
+    }
+    setState(() {});
 
     return true;
   }
@@ -112,8 +111,8 @@ class AllPostPage extends State<AllPost> {
 
     postloading();
     sharedValue();
-    // companybloc.add(GetAllCompanies());
-    // borssaBloc.add(AllCitiesList());
+    companybloc.add(GetAllCompanies());
+    borssaBloc.add(AllCitiesList());
     super.initState();
   }
 

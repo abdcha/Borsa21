@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CurrencyRepository {
   Dio _dio = Dio();
   Future<Either<String, String>> updatePrice(int id, double buy, double sell,
-      String buystate, String sellstate, String type) async {
+      String buystate, String sellstate, String type, int close) async {
     try {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       var _token = _prefs.get('token');
@@ -24,7 +24,8 @@ class CurrencyRepository {
               "sell_status": sellstate,
               "buy": buy,
               "sell": sell,
-              "buy_status": buystate
+              "buy_status": buystate,
+              "close": close
             }));
         var mystatus = updateResponse.data['status'];
         print(updateResponse);
@@ -41,7 +42,8 @@ class CurrencyRepository {
               "sell_status": sellstate,
               "buy": buy,
               "sell": sell,
-              "buy_status": buystate
+              "buy_status": buystate,
+              "close": close
             }));
         var mystatus = updateResponse.data['status'];
         print(updateResponse);
@@ -59,9 +61,7 @@ class CurrencyRepository {
 
   //Drawer Chart
   Future<Either<String, List<DataChanges>>> drawChart(
-      int cityid, String fromdate) async {
-    print(fromdate);
-
+      int cityid, String fromdate, String type) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var _token = _prefs.get('token');
     _dio.options.headers['authorization'] = 'Bearer $_token';
@@ -75,8 +75,9 @@ class CurrencyRepository {
       endFromdate = new DateTime(now.year, now.month, now.day, now.hour - 1,
               now.second, now.minute)
           .toString();
-      String completeUrl =
-          '$chartUrl$cityid&from_date=$endFromdate&to_date=$now';
+      String completeUrl = type == "currency"
+          ? '$chartUrl$cityid&from_date=$endFromdate&to_date=$now'
+          : '$charttransferUrl$cityid&from_date=$endFromdate&to_date=$now';
       var chartResponse = await _dio.get(
         completeUrl,
       );
@@ -92,8 +93,9 @@ class CurrencyRepository {
               now.second, now.minute)
           .toString();
       print('three hours');
-      String completeUrl =
-          '$chartUrl$cityid&from_date=$endFromdate&to_date=$now';
+      String completeUrl = type == "currency"
+          ? '$chartUrl$cityid&from_date=$endFromdate&to_date=$now'
+          : '$charttransferUrl$cityid&from_date=$endFromdate&to_date=$now';
       var chartResponse = await _dio.get(
         completeUrl,
       );
@@ -124,8 +126,9 @@ class CurrencyRepository {
       endFromdate = new DateTime(now.year, now.month, now.day, now.hour - 6,
               now.second, now.minute)
           .toString();
-      String completeUrl =
-          '$chartUrl$cityid&from_date=$endFromdate&to_date=$now';
+      String completeUrl = type == "currency"
+          ? '$chartUrl$cityid&from_date=$endFromdate&to_date=$now'
+          : '$charttransferUrl$cityid&from_date=$endFromdate&to_date=$now';
       var chartResponse = await _dio.get(
         completeUrl,
       );
@@ -142,8 +145,9 @@ class CurrencyRepository {
       endFromdate = new DateTime(now.year, now.month, now.day - 1, now.hour,
               now.second, now.minute)
           .toString();
-      String completeUrl =
-          '$chartUrl$cityid&from_date=$endFromdate&to_date=$now';
+      String completeUrl = type == "currency"
+          ? '$chartUrl$cityid&from_date=$endFromdate&to_date=$now'
+          : '$charttransferUrl$cityid&from_date=$endFromdate&to_date=$now';
       var chartResponse = await _dio.get(
         completeUrl,
       );
@@ -158,8 +162,9 @@ class CurrencyRepository {
       endFromdate = new DateTime(now.year, now.month, now.day - 3, now.hour,
               now.microsecond, now.minute)
           .toString();
-      String completeUrl =
-          '$chartUrl$cityid&from_date=$endFromdate&to_date=$now';
+      String completeUrl = type == "currency"
+          ? '$chartUrl$cityid&from_date=$endFromdate&to_date=$now'
+          : '$charttransferUrl$cityid&from_date=$endFromdate&to_date=$now';
       var chartResponse = await _dio.get(
         completeUrl,
       );
@@ -176,8 +181,9 @@ class CurrencyRepository {
       endFromdate = new DateTime(now.year, now.month, now.day - 7, now.hour,
               now.microsecond, now.minute)
           .toString();
-      String completeUrl =
-          '$chartUrl$cityid&from_date=$endFromdate&to_date=$now';
+      String completeUrl = type == "currency"
+          ? '$chartUrl$cityid&from_date=$endFromdate&to_date=$now'
+          : '$charttransferUrl$cityid&from_date=$endFromdate&to_date=$now';
       var chartResponse = await _dio.get(
         completeUrl,
       );
@@ -194,8 +200,11 @@ class CurrencyRepository {
       endFromdate = new DateTime(now.year, now.month - 1, now.day, now.hour,
               now.microsecond, now.minute)
           .toString();
-      String completeUrl =
-          '$chartUrl$cityid&from_date=$endFromdate&to_date=$now';
+      print(endFromdate);
+      print(now);
+      String completeUrl = type == "currency"
+          ? '$chartUrl$cityid&from_date=$endFromdate&to_date=$now'
+          : '$charttransferUrl$cityid&from_date=$endFromdate&to_date=$now';
       var chartResponse = await _dio.get(
         completeUrl,
       );
@@ -209,7 +218,9 @@ class CurrencyRepository {
         return Left('error');
       }
     } else {
-      String completeUrl = '$chartUrl$cityid&from_date=$fromdate&to_date=$now';
+      String completeUrl = type == "currency"
+          ? '$chartUrl$cityid&from_date=$endFromdate&to_date=$now'
+          : '$charttransferUrl$cityid&from_date=$endFromdate&to_date=$now';
       var chartResponse = await _dio.get(
         completeUrl,
       );

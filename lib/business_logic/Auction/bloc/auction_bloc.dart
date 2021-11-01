@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:central_borssa/data/model/Auction.dart';
 import 'package:central_borssa/data/repositroy/AuctionRepository.dart';
-import 'package:central_borssa/presentation/Auction/Auction.dart';
 import 'package:equatable/equatable.dart';
 
 part 'auction_event.dart';

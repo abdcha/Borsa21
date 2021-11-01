@@ -11,6 +11,7 @@ class UpdatePrice extends StatefulWidget {
   final double sell;
   final String buystate;
   final String sellstate;
+  final int close;
   final String type;
   UpdatePrice({
     Key? key,
@@ -19,8 +20,8 @@ class UpdatePrice extends StatefulWidget {
     required this.sell,
     required this.buystate,
     required this.sellstate,
+    required this.close,
     required this.type,
-
   }) : super(key: key);
   UpdatePricePage createState() => UpdatePricePage();
 }
@@ -31,6 +32,8 @@ class UpdatePricePage extends State<UpdatePrice> {
   late CurrencyBloc currencybloc;
   late String buyState;
   late String sellState;
+  late bool closeCurrency = widget.close == 1 ? true : false;
+  late int closeCurrencyvalue = widget.close;
   TextEditingController buyTextEdit = TextEditingController(text: "");
   TextEditingController sellTextEdit = TextEditingController(text: "");
   Future storeBuyandSellValue(String buy, String sell) async {
@@ -213,11 +216,30 @@ class UpdatePricePage extends State<UpdatePrice> {
                                     ),
                                   )))),
                       Container(
+                        child: Directionality(
+                          textDirection: TextDirection.rtl,
+                          child: CheckboxListTile(
+                            title: Text(
+                              "إغلاق السوق",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            value: closeCurrency,
+                            onChanged: (newValue) {
+                              setState(() {
+                                closeCurrency = newValue!;
+                                closeCurrencyvalue = newValue == true ? 1 : 0;
+                              });
+                            },
+                            controlAffinity: ListTileControlAffinity
+                                .leading, //  <-- leading Checkbox
+                          ),
+                        ),
+                      ),
+                      Container(
                         margin: const EdgeInsets.all(25.0),
                         child: ElevatedButton(
                           onPressed: () {
                             if (widget.buy != 0) {
-                              print('d');
                               if (widget.buy > double.parse(buyTextEdit.text)) {
                                 buyState = "down";
                                 print('1');
@@ -249,8 +271,9 @@ class UpdatePricePage extends State<UpdatePrice> {
                                   sell: double.parse(sellTextEdit.text),
                                   buystate: buyState,
                                   sellstate: sellState,
-                                  type: widget.type
-                                  ));
+                                  type: widget.type,
+                                  close: closeCurrencyvalue));
+                              print(closeCurrencyvalue);
                             }
                           },
                           style: ElevatedButton.styleFrom(

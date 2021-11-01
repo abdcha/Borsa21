@@ -43,6 +43,7 @@ class CurrencyPrice {
   late int createdBy;
   late int cityId;
   late String createdAt;
+  late int close;
   late String updatedAt;
   late String buyStatus;
   late City city;
@@ -54,6 +55,7 @@ class CurrencyPrice {
     sellStatus = json['sell_status'];
     createdBy = json['created_by'];
     cityId = json['city_id'];
+    close = json['close'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     buyStatus = json['buy_status'];
@@ -68,6 +70,7 @@ class CurrencyPrice {
     data['sell_status'] = this.sellStatus;
     data['created_by'] = this.createdBy;
     data['city_id'] = this.cityId;
+    data['close'] = this.close;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['buy_status'] = this.buyStatus;

@@ -318,7 +318,9 @@ class CompanyProfilePage extends State<CompanyProfile> {
                           margin: const EdgeInsets.only(
                               bottom: 10, left: 10, top: 10, right: 25),
                           child: ReadMoreText(
-                            companypost[index].body,
+                            companypost[index].body == "empty"
+                                ? ""
+                                : companypost[index].body,
                             trimLines: 2,
                             trimMode: TrimMode.Line,
                             trimCollapsedText: 'قرائة المزيد',

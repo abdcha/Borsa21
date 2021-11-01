@@ -7,6 +7,8 @@ final editanddeletePost = 'https://ferasalhallak.online/api/posts/';
 final allPost = 'https://ferasalhallak.online/api/posts';
 final allCompanyPost = 'https://ferasalhallak.online/api/posts/company/';
 final chartUrl = 'https://ferasalhallak.online/api/currencyChart?city_id=';
+final charttransferUrl = 'https://ferasalhallak.online/api/transfersChart?city_id=';
+
 final allCities = 'https://ferasalhallak.online/api/lists/cities';
 final allCompany = 'https://ferasalhallak.online/api/lists/companies';
 final allPostByCityName = 'https://ferasalhallak.online/api/posts?';
@@ -24,3 +26,11 @@ final auctionAddUrl = 'https://ferasalhallak.online/api/auction';
 final auctionGetUrl = 'https://ferasalhallak.online/api/auction';
 //Transfers
 final transfersUrl = 'https://ferasalhallak.online/api/transfers';
+//Global Auction
+final globalAuctionUrl =
+    'https://ferasalhallak.online/api/globalCurrencyPrices';
+//Advertisement
+final advertisementUrl = 'https://ferasalhallak.online/api/advertisement/';
+//Undo
+final undoChangeUrl =
+    'https://ferasalhallak.online/api/currencyPrices/undoLastChange/';

@@ -23,23 +23,26 @@ class AddPostPage extends State<AddPost> {
   late String encodeImage = "";
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   File? mainFile;
-  ScrollController _scrollController = ScrollController();
   Future chooseFile() async {
     final postFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      mainFile = File(postFile!.path);
-    });
-    String baseimage = base64Encode(mainFile!.readAsBytesSync());
-    print(baseimage);
-    String extension = p.extension(postFile!.path);
-    String extensionWithoutDot = extension.substring(1);
+    if (postFile!.path != null) {
+      setState(() {
+        mainFile = File(postFile.path);
+      });
+      String baseimage = base64Encode(mainFile!.readAsBytesSync());
+      print(baseimage);
+      String extension = p.extension(postFile.path);
+      String extensionWithoutDot = extension.substring(1);
 
-    String someWorld = 'data:image/$extensionWithoutDot;base64,';
-    setState(() {
-      mainFile = File(postFile.path);
-      encodeImage = '$someWorld$baseimage';
-      print(encodeImage);
-    });
+      String someWorld = 'data:image/$extensionWithoutDot;base64,';
+      setState(() {
+        mainFile = File(postFile.path);
+        encodeImage = '$someWorld$baseimage';
+        print(encodeImage);
+      });
+    } else {
+      return;
+    }
   }
 
   Future clearFile() async {
@@ -174,7 +177,7 @@ class AddPostPage extends State<AddPost> {
                           expands: true,
                           textAlign: TextAlign.right,
                           validator: (String? value) {
-                            if (value!.isEmpty) {
+                            if (value!.isEmpty && mainFile == null) {
                               return 'الرجاء إدخال المنشور الجديد';
                             }
                             return null;

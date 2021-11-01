@@ -55,7 +55,7 @@ class Posts {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     image = json['image'];
-    body = json['body'];
+    body = json['body'] == null ? "empty" : json['body'];
     userId = json['user_id'];
     companyId = json['company_id'];
     isFollowed = json['is_followed'];

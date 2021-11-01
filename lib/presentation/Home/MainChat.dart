@@ -59,6 +59,7 @@ class CompanyProfilePage extends State<MainChat> {
         print(onEvent!.data);
         bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
       });
+      setState(() {});
     } catch (e) {}
   }
 
@@ -78,47 +79,79 @@ class CompanyProfilePage extends State<MainChat> {
   _sendMessageArea() {
     return Directionality(
       textDirection: ui.TextDirection.rtl,
-      child: Container(
-        height: 45,
-        color: Colors.white,
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Padding(
-                padding:
-                    const EdgeInsets.only(bottom: 8, left: 0, right: 8, top: 8),
-                child: TextField(
-                  controller: messagebody,
-                  maxLines: null,
-                  expands: true,
-                  textAlign: TextAlign.right,
-                  decoration: InputDecoration.collapsed(hintText: 'الرسالة'),
-                  textCapitalization: TextCapitalization.sentences,
-                ),
-              ),
-            ),
-            IconButton(
-              icon: Icon(Icons.send),
-              iconSize: 25,
-              color: Theme.of(context).primaryColor,
-              onPressed: () {
-                if (messagebody.text.isNotEmpty) {
-                  bloc.add(SendMessageEvent(message: messagebody.text));
-                  messagebody.text = "";
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('الرجاء إدخال الرسالة'),
-                      action: SnackBarAction(
-                        label: 'تنبيه',
-                        onPressed: () {},
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width - 60,
+                    child: Card(
+                      margin:
+                          EdgeInsets.only(left: 2, right: 2, bottom: 8, top: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          textAlignVertical: TextAlignVertical.center,
+                          keyboardType: TextInputType.multiline,
+                          controller: messagebody,
+                          maxLines: 3,
+                          minLines: 1,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "الرسالة",
+                            hintStyle: TextStyle(color: Colors.grey),
+                            contentPadding:
+                                EdgeInsets.only(right: 12, bottom: 12),
+                          ),
+                        ),
                       ),
                     ),
-                  );
-                }
-              },
-            ),
-          ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 8,
+                      right: 2,
+                      left: 2,
+                    ),
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Color(navbar.hashCode),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.send,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          if (messagebody.text.isNotEmpty) {
+                            bloc.add(
+                                SendMessageEvent(message: messagebody.text));
+                            messagebody.text = "";
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('الرجاء إدخال الرسالة'),
+                                action: SnackBarAction(
+                                  label: 'تنبيه',
+                                  onPressed: () {},
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -204,27 +237,30 @@ class CompanyProfilePage extends State<MainChat> {
                                               .length
                                               .toDouble() >
                                           23
-                                      ? 300
+                                      ? MediaQuery.of(context).size.width - 115
                                       : messages[index]
                                                   .message
                                                   .length
                                                   .toDouble() >
-                                              16
-                                          ? 230
+                                              18
+                                          ? MediaQuery.of(context).size.width -
+                                              160
                                           : messages[index]
                                                       .message
                                                       .length
                                                       .toDouble() >
                                                   9
-                                              ? 180
+                                              ? MediaQuery.of(context)
+                                                      .size
+                                                      .width -
+                                                  200
                                               : 120,
                                   child: Card(
                                     elevation: 1,
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8)),
                                     // color: Color(0xffdcf8c6),
-
-                                    margin: EdgeInsets.symmetric(vertical: 2),
+                                    margin: EdgeInsets.symmetric(),
                                     child: Stack(
                                       children: [
                                         if (index == messages.length - 1)
@@ -441,10 +477,6 @@ class CompanyProfilePage extends State<MainChat> {
                                               SizedBox(
                                                 width: 5,
                                               ),
-                                              // Icon(
-                                              //   Icons.done_all,
-                                              //   size: 20,
-                                              // ),
                                             ],
                                           ),
                                         ),
@@ -462,9 +494,8 @@ class CompanyProfilePage extends State<MainChat> {
                 ),
               );
             },
-            separatorBuilder: (BuildContext context, int index) =>
-                const Divider(
-              height: 1,
+            separatorBuilder: (BuildContext context, int index) => Divider(
+              color: Colors.grey[300],
             ),
           ),
         ),
@@ -599,9 +630,10 @@ class CompanyProfilePage extends State<MainChat> {
                 print(state);
               } else if (state is GetAllMessagesIsLoaded) {
                 print(state);
+                setState(() {});
+
                 messages = state.data.message;
                 totalpost = state.data.total;
-                setState(() {});
               } else if (state is GetAllMessagesError) {
                 print(state);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -618,15 +650,15 @@ class CompanyProfilePage extends State<MainChat> {
               }
               if (state is SendMessageIsLoaded) {
                 print(state);
-                messagePusher();
                 setState(() {});
+                messagePusher();
               } else if (state is SendMessageError) {
                 print(state);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: const Text('??? ?? ???????'),
+                    content: const Text('خطأ في الإرسال'),
                     action: SnackBarAction(
-                      label: '?????',
+                      label: 'تنبيه',
                       onPressed: () {},
                     ),
                   ),

@@ -121,26 +121,23 @@ class CentralBorssaPage extends State<CentralBorssa> {
   Widget dataTable(List<dynamic> currencyPricelist, String tableName) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 0.0),
-          child: Container(
-            width: 200,
-            child: Card(
-              color: Color(navbar.hashCode),
-              child: Text(
-                tableName == "currency" ? "أسعار الدولار" : "أسعار الحوالات",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
+        Container(
+          width: 200,
+          child: Card(
+            color: Color(0xff7d8a99),
+            child: Text(
+              tableName == "currency" ? "أسعار الدولار" : "أسعار الحوالات",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
           ),
         ),
         Container(
           width: double.infinity,
-          margin: EdgeInsets.only(left: 12, right: 12, bottom: 8),
+          margin: EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 0),
           child: DataTable(
               dataTextStyle: TextStyle(
                 fontSize: 12,
@@ -169,6 +166,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                 inherit: false,
               ),
               columns: [
+                //remove head of table 
                 DataColumn(
                     label: Expanded(
                   child: Container(
@@ -264,6 +262,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                                 sellstate: currencyPricelist[i]
                                                     .sellStatus,
                                                 type: tableName,
+                                                close:
+                                                    currencyPricelist[i].close,
                                               ),
                                             ));
 
@@ -361,6 +361,36 @@ class CentralBorssaPage extends State<CentralBorssa> {
                               );
                             },
                           ),
+                          userPermissions.contains(
+                                      'Update_Auction_Price_Permission') &&
+                                  tableName == "currency"
+                              ? InkWell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: Icon(
+                                      currencyPricelist[i].close == 0
+                                          ? Icons.lock_open_rounded
+                                          //remove
+                                          : Icons.lock_clock_sharp,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PriceChart(
+                                          cityid: currencyPricelist[i].city.id,
+                                          fromdate: 1,
+                                          todate: 1,
+                                          title: currencyPricelist[i].city.name,
+                                          type: tableName,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Container(),
                           // Checkbox(
                           //   checkColor: Colors.white,
                           //   value: isClose,

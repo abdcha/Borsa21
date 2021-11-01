@@ -6,6 +6,7 @@ import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
+import 'dart:ui' as ui;
 
 class PriceChart extends StatefulWidget {
   final int cityid;
@@ -32,6 +33,7 @@ class PriceChartPage extends State<PriceChart> {
   // late int fromdate = widget.fromdate;
   // late int todate = widget.todate;
   var newFormat = DateFormat("yyyy-MM-dd");
+  var newtimeFormat = DateFormat("hh:mm");
 
   late String dropdownvalue = itemsofchart.first.name;
   late int valueofselect;
@@ -58,18 +60,35 @@ class PriceChartPage extends State<PriceChart> {
   bool isSelectd = false;
   getChart() async {
     if (widget.type == "currency") {
-    } else if (widget.type == "transfer") {}
-    if (isSelectd) {
-      datachange.clear();
-      print(dropdownvalue);
-      bloc.add(ChartEvent(cityid: widget.cityid, fromdate: dropdownvalue));
-    }
-    if (!isSelectd) {
-      datachange.clear();
-      bloc.add(ChartEvent(cityid: widget.cityid, fromdate: 'منذ ساعة'));
-      setState(() {
-        isSelectd = true;
-      });
+      if (isSelectd) {
+        datachange.clear();
+        print(dropdownvalue);
+        bloc.add(ChartEvent(
+            cityid: widget.cityid, fromdate: dropdownvalue, type: widget.type));
+      }
+      if (!isSelectd) {
+        datachange.clear();
+        bloc.add(ChartEvent(
+            cityid: widget.cityid, fromdate: 'منذ ساعة', type: widget.type));
+        setState(() {
+          isSelectd = true;
+        });
+      }
+    } else if (widget.type == "transfer") {
+      if (isSelectd) {
+        datachange.clear();
+        print(dropdownvalue);
+        bloc.add(ChartEvent(
+            cityid: widget.cityid, fromdate: dropdownvalue, type: widget.type));
+      }
+      if (!isSelectd) {
+        datachange.clear();
+        bloc.add(ChartEvent(
+            cityid: widget.cityid, fromdate: 'منذ ساعة', type: widget.type));
+        setState(() {
+          isSelectd = true;
+        });
+      }
     }
   }
 
@@ -78,40 +97,58 @@ class PriceChartPage extends State<PriceChart> {
     _zoomPanBehavior = ZoomPanBehavior(
         enableDoubleTapZooming: true,
         enablePinching: true,
+        // zoomMode: ZoomMode.xy,
+        selectionRectColor: Colors.red,
         // Enables the selection zooming
-        enableSelectionZooming: true);
+        enableSelectionZooming: true,
+        enablePanning: true,
+        enableMouseWheelZooming: true);
     _trackballBehavior = TrackballBehavior(
         enable: true,
         activationMode: ActivationMode.singleTap,
-        lineColor: Colors.red,
+        lineColor: Color(navbar.hashCode),
         builder: (BuildContext context, TrackballDetails trackballDetails) {
           return Container(
-              height: 75,
-              width: 120,
-              decoration: const BoxDecoration(color: Colors.blue),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                      child: Column(
-                    children: <Widget>[
-                      Container(
-                        height: 25,
-                        alignment: Alignment.center,
-                        child: Text(
-                            'العرض ${trackballDetails.point!.open.toString()}'),
-                      ),
-                      Container(
-                          height: 25,
-                          child: Text(
-                              'الطلب ${trackballDetails.point!.close.toString()}')),
-                      Container(
-                          height: 25,
-                          alignment: Alignment.center,
-                          child: Text(
-                              'التاريخ ${newFormat.format(trackballDetails.point!.x)}')),
-                    ],
-                  ))
-                ],
+              alignment: AlignmentDirectional.bottomStart,
+              height: 80,
+              width: 150,
+              decoration: const BoxDecoration(color: Colors.grey),
+              child: Directionality(
+                textDirection: ui.TextDirection.rtl,
+                child: Row(
+                  textDirection: ui.TextDirection.rtl,
+                  children: <Widget>[
+                    Container(
+                        child: Column(
+                      children: <Widget>[
+                        Container(
+                            height: 25,
+                            alignment: Alignment.bottomRight,
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 8.0, right: 0),
+                                  child: Text('الوقت'),
+                                ),
+                                Text(newtimeFormat
+                                    .format(trackballDetails.point!.x))
+                              ],
+                            )),
+                        Container(
+                            height: 25,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                                'العرض: ${trackballDetails.point!.y.toString()}')),
+                        Container(
+                            height: 25,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                                'التاريخ: ${newFormat.format(trackballDetails.point!.x)}')),
+                      ],
+                    ))
+                  ],
+                ),
               ));
         });
     // datachange.clear();
@@ -191,24 +228,31 @@ class PriceChartPage extends State<PriceChart> {
                 ),
               ),
               Container(
-                height: (MediaQuery.of(context).size.height - 250),
-                child: SfCartesianChart(
-                  trackballBehavior: _trackballBehavior,
-                  series: <CandleSeries>[
-                    CandleSeries<DataChanges, DateTime>(
-                      dataSource: datachange,
-                      xValueMapper: (DataChanges s, _) =>
-                          DateTime.parse(s.updatedAt),
-                      lowValueMapper: (DataChanges s, _) => s.sell,
-                      highValueMapper: (DataChanges s, _) => s.buy,
-                      openValueMapper: (DataChanges s, _) => s.sell,
-                      closeValueMapper: (DataChanges s, _) => s.buy,
-                    )
-                  ],
-                  zoomPanBehavior: _zoomPanBehavior,
-                  primaryXAxis: DateTimeAxis(dateFormat: DateFormat.Md()),
-                ),
-              ),
+                  height: (MediaQuery.of(context).size.height - 250),
+                  child: SfCartesianChart(
+                    trackballBehavior: _trackballBehavior,
+                    series: <CartesianSeries>[
+                      AreaSeries<DataChanges, DateTime>(
+                          dataSource: datachange,
+                          xValueMapper: (DataChanges data, _) =>
+                              DateTime.parse(data.updatedAt),
+                          yValueMapper: (DataChanges data, _) => data.buy,
+                          dataLabelMapper: (DataChanges data, _) =>
+                              data.updatedAt,
+                          enableTooltip: true),
+                      AreaSeries<DataChanges, DateTime>(
+                          dataSource: datachange,
+                          xValueMapper: (DataChanges data, _) =>
+                              DateTime.parse(data.updatedAt),
+                          color: Colors.red,
+                          yValueMapper: (DataChanges data, _) => data.sell,
+                          dataLabelMapper: (DataChanges data, _) =>
+                              data.updatedAt,
+                          enableTooltip: true),
+                    ],
+                    zoomPanBehavior: _zoomPanBehavior,
+                    primaryXAxis: DateTimeAxis(),
+                  )),
             ]),
           ),
         ));
