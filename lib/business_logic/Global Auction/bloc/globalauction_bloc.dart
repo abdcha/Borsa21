@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:central_borssa/data/model/GlobalAuction.dart';
-import 'package:central_borssa/data/repositroy/GloableAuctionRepository.dart';
+import 'package:central_borssa/data/repositroy/GlobalAuctionRepository.dart';
 import 'package:equatable/equatable.dart';
 
-part 'gloableauction_event.dart';
-part 'gloableauction_state.dart';
+part 'globalauction_event.dart';
+part 'globalauction_state.dart';
 
 class GlobalauctionBloc extends Bloc<GlobalauctionEvent, GlobalauctionState> {
   GlobalAuctionRepository globalAuctionRepository;

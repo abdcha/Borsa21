@@ -22,8 +22,14 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
     CurrencyEvent event,
   ) async* {
     if (event is UpdatePriceEvent) {
-      final updatePriceResponse = await currencyRepository.updatePrice(event.id,
-          event.buy, event.sell, event.buystate, event.sellstate, event.type,event.close);
+      final updatePriceResponse = await currencyRepository.updatePrice(
+          event.id,
+          event.buy,
+          event.sell,
+          event.buystate,
+          event.sellstate,
+          event.type,
+          event.close);
       yield* updatePriceResponse.fold((l) async* {
         print(l);
         yield UpdateBorssaError();
@@ -33,7 +39,7 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
       });
     } else if (event is ChartEvent) {
       final chatResponse = await currencyRepository.drawChart(
-          event.cityid, event.fromdate,event.type);
+          event.cityid, event.fromdate, event.type);
       yield* chatResponse.fold((l) async* {
         print(l);
         ChartBorssaError();

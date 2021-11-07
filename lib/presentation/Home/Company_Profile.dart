@@ -46,6 +46,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
 
     if (isRefresh) {
       companypost.clear();
+      currentPage = 1;
       print(companypost.length);
       currentPage = 1;
       bloc.add(GetAllCompanyInformationsEvent(
@@ -69,7 +70,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
       currentPage++;
     }
     print(companypost.length);
-    if (totalpost != companypost.length) {
+    if (totalpost != companypost.length && !isRefresh) {
       bloc.add(GetAllCompanyInformationsEvent(
           id: companyuser,
           pageSize: countItemPerpage,
@@ -460,7 +461,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
 
   reload() async {
     print('main reload');
-    postloading(isRefresh: true, isEdit: true);
+    postloading(isRefresh: true);
     await Future.delayed(Duration(milliseconds: 500));
   }
 
@@ -484,9 +485,19 @@ class CompanyProfilePage extends State<CompanyProfile> {
         backgroundColor: Colors.grey[300],
         body: MultiBlocListener(
           listeners: [
+            BlocListener<PostBloc, PostState>(
+              listener: (context, state) {
+                if (state is AddPostSuccess) {
+                  print(state);
+                  reload();
+                }
+              },
+            ),
             BlocListener<CompanyBloc, CompanyState>(
               listener: (context, state) {
                 if (state is EditPostLoaded) {
+                  reload();
+                } else if (state is DeletePostLoaded) {
                   reload();
                 } else if (state is GetAllInformationLoading) {
                   print(state);
@@ -497,7 +508,6 @@ class CompanyProfilePage extends State<CompanyProfile> {
                     setState(() {});
                   } else if (companypost.isNotEmpty) {
                     print(companypost.length);
-
                     print('from addall');
                     companypost.addAll(state.data.posts);
                     setState(() {});

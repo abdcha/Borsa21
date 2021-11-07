@@ -1,6 +1,7 @@
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
+import 'package:central_borssa/presentation/Admin/Profile.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -111,7 +112,7 @@ class home_page extends State<HomeOfApp>
         case 0:
           return CentralBorssa();
         case 1:
-          return MainChat();
+          return Profile();
           // ignore: dead_code
           break;
         default:
@@ -242,15 +243,19 @@ class home_page extends State<HomeOfApp>
                           label: 'مزاد العملات',
                           icon: Icon(Icons.attach_money),
                         ),
-                      if (userPermissions.contains('Chat_Permission') ||
-                          userPermissions
-                              .contains('Update_Auction_Price_Permission'))
+                      if (userPermissions.contains('Chat_Permission'))
                         BottomNavigationBarItem(
                           label: 'المحادثة',
                           icon: Icon(Icons.chat_outlined),
                         ),
                       if (userPermissions.contains('Chat_Permission') ||
                           userPermissions.contains('Trader_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'الشخصية',
+                          icon: Icon(Icons.person_rounded),
+                        ),
+                      if (userPermissions
+                          .contains('Update_Auction_Price_Permission'))
                         BottomNavigationBarItem(
                           label: 'الشخصية',
                           icon: Icon(Icons.person_rounded),

@@ -72,17 +72,24 @@ class AllPostPage extends State<AllPost> {
     setState(() {});
   }
 
+  reload() async {
+    print('main reload');
+    postloading(isRefresh: true);
+    setState(() {});
+    await Future.delayed(Duration(milliseconds: 500));
+  }
+
   Future<bool> postloading({bool isRefresh = false}) async {
     if (isRefresh) {
+      currentPage = 1;
+      post.clear();
       postbloc.add(
           GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
       print('inside');
-
       currentPage++;
     }
-    if (post.length != totalpost) {
+    if (post.length != totalpost && !isRefresh) {
       print('out');
-
       postbloc.add(
           GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
       currentPage++;
@@ -681,7 +688,7 @@ class AllPostPage extends State<AllPost> {
                   setState(() {});
                 } else if (state is AddPostSuccess) {
                   print(state);
-                  postloading(isRefresh: true);
+                  reload();
                   setState(() {});
                 }
               },
@@ -733,11 +740,10 @@ class AllPostPage extends State<AllPost> {
                   );
                 } else if (state is DeletePostLoaded) {
                   print(state);
-                  postloading(isRefresh: true);
-                  setState(() {});
+                  reload();
                 } else if (state is EditPostLoaded) {
-                  postloading(isRefresh: true);
-                  setState(() {});
+                  print(state);
+                  reload();
                 }
               },
             ),

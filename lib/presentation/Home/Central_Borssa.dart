@@ -2,6 +2,7 @@ import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/repositroy/CurrencyRepository.dart';
 import 'package:central_borssa/presentation/Auction/Auction.dart';
+import 'package:central_borssa/presentation/Auction/GlobalAuction.dart';
 import 'package:central_borssa/presentation/Auction/Price_Chart.dart';
 import 'package:central_borssa/presentation/Auction/Update_Price.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
@@ -166,7 +167,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                 inherit: false,
               ),
               columns: [
-                //remove head of table 
+                //remove head of table
                 DataColumn(
                     label: Expanded(
                   child: Container(
@@ -361,17 +362,18 @@ class CentralBorssaPage extends State<CentralBorssa> {
                               );
                             },
                           ),
-                          userPermissions.contains(
-                                      'Update_Auction_Price_Permission') &&
+                          userPermissions.contains('Chat_Permission') &&
                                   tableName == "currency"
                               ? InkWell(
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 4),
                                     child: Icon(
                                       currencyPricelist[i].close == 0
-                                          ? Icons.lock_open_rounded
-                                          //remove
-                                          : Icons.lock_clock_sharp,
+                                          ? Icons.lock_clock
+                                          : Icons.lock_open
+
+                                      //remove
+                                      ,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -391,13 +393,37 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                   },
                                 )
                               : Container(),
-                          // Checkbox(
-                          //   checkColor: Colors.white,
-                          //   value: isClose,
-                          //   onChanged: (bool? value) {
-                          //     isClose = value!;
-                          //   },
-                          // ),
+                          userPermissions.contains(
+                                      'Update_Auction_Price_Permission') &&
+                                  tableName == "currency"
+                              ? InkWell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: Icon(
+                                      currencyPricelist[i].close == 1
+                                          ? Icons.lock_clock
+                                          : Icons.lock_open
+                                      //remove
+                                      ,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PriceChart(
+                                          cityid: currencyPricelist[i].city.id,
+                                          fromdate: 1,
+                                          todate: 1,
+                                          title: currencyPricelist[i].city.name,
+                                          type: tableName,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Container()
                         ],
                       ),
                     ))
@@ -561,7 +587,12 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                           primary: Color(navbar.hashCode),
                                           alignment: Alignment.center),
                                       onPressed: () {
-                                        // getChart();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  GlobalAuction()),
+                                        );
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),

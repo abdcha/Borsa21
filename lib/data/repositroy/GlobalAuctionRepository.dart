@@ -14,9 +14,9 @@ class GlobalAuctionRepository {
       _dio..options.headers['authorization'] = 'Bearer $_token';
 
       var response = await _dio.get(globalAuctionUrl);
-      print(response);
       var status = response.data['status'];
       var allcurrency = Data.fromJson(response.data['data']);
+      print('global auctions');
       print(allcurrency);
 
       if (status == "success") {

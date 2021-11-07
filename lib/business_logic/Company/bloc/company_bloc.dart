@@ -33,7 +33,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       });
     } else if (event is GetAllCompanies) {
       yield CompanyNameIsLodaing();
-
       var getAllCompanyInformationsResponse =
           await companyRepository.getAllCompanyName();
       yield* getAllCompanyInformationsResponse.fold((l) async* {
@@ -43,7 +42,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       });
     } else if (event is FollowEvent) {
       yield FollowIsLoading();
-
       var getAllCompanyInformationsResponse =
           await companyRepository.follow(event.id);
       yield* getAllCompanyInformationsResponse.fold((l) async* {
@@ -53,7 +51,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       });
     } else if (event is UnFollowEvent) {
       yield UnFollowIsLoading();
-
       var getAllCompanyInformationsResponse =
           await companyRepository.unFollow(event.id);
       yield* getAllCompanyInformationsResponse.fold((l) async* {
@@ -63,7 +60,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       });
     } else if (event is UpdatePost) {
       yield EditPostLoading();
-
       var updatePostResponse =
           await companyRepository.editPost(event.body, event.image, event.id);
       yield* updatePostResponse.fold((l) async* {
@@ -73,10 +69,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       });
     } else if (event is DeletePost) {
       yield DeletePostLoading();
-      print('post bloc');
-
       var deletePostResponse = await companyRepository.deletePost(event.id);
-
       yield* deletePostResponse.fold((l) async* {
         yield DeletePostError();
       }, (r) async* {

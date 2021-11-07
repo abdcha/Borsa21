@@ -8,6 +8,8 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
 
+import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+
 class PriceChart extends StatefulWidget {
   final int cityid;
   final int fromdate;
@@ -34,11 +36,11 @@ class PriceChartPage extends State<PriceChart> {
   // late int todate = widget.todate;
   var newFormat = DateFormat("yyyy-MM-dd");
   var newtimeFormat = DateFormat("hh:mm");
+  TooltipBehavior _tooltipBehavior = TooltipBehavior();
 
   late String dropdownvalue = itemsofchart.first.name;
   late int valueofselect;
   late ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior();
-  late TrackballBehavior _trackballBehavior = TrackballBehavior();
   final List<Item> itemsofchart = [
     Item(name: 'منذ ساعة', from: 'منذ ساعة'),
     Item(name: 'منذ ثلاثة ساعات', from: 'منذ ثلاثة ساعات'),
@@ -94,63 +96,33 @@ class PriceChartPage extends State<PriceChart> {
 
   @override
   void initState() {
+    // _tooltipBehavior = TooltipBehavior(
+    //     enable: true,
+    //     header: "التفاصيل",
+    //     builder: (dynamic data, dynamic point, dynamic series, int pointIndex,
+    //         int seriesIndex) {
+    //       return Container(
+    //           height: 50,
+    //           width: 100,
+    //           decoration:
+    //               const BoxDecoration(color: Color.fromRGBO(66, 244, 164, 1)),
+    //           child: Row(
+    //             children: <Widget>[
+    //               Container(
+    //                   width: 50, child: Text(series[seriesIndex].toString())),
+    //             ],
+    //           ));
+    //     });
+
     _zoomPanBehavior = ZoomPanBehavior(
         enableDoubleTapZooming: true,
         enablePinching: true,
         // zoomMode: ZoomMode.xy,
         selectionRectColor: Colors.red,
         // Enables the selection zooming
-        enableSelectionZooming: true,
         enablePanning: true,
         enableMouseWheelZooming: true);
-    _trackballBehavior = TrackballBehavior(
-        enable: true,
-        activationMode: ActivationMode.singleTap,
-        lineColor: Color(navbar.hashCode),
-        builder: (BuildContext context, TrackballDetails trackballDetails) {
-          return Container(
-              alignment: AlignmentDirectional.bottomStart,
-              height: 80,
-              width: 150,
-              decoration: const BoxDecoration(color: Colors.grey),
-              child: Directionality(
-                textDirection: ui.TextDirection.rtl,
-                child: Row(
-                  textDirection: ui.TextDirection.rtl,
-                  children: <Widget>[
-                    Container(
-                        child: Column(
-                      children: <Widget>[
-                        Container(
-                            height: 25,
-                            alignment: Alignment.bottomRight,
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, right: 0),
-                                  child: Text('الوقت'),
-                                ),
-                                Text(newtimeFormat
-                                    .format(trackballDetails.point!.x))
-                              ],
-                            )),
-                        Container(
-                            height: 25,
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                                'العرض: ${trackballDetails.point!.y.toString()}')),
-                        Container(
-                            height: 25,
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                                'التاريخ: ${newFormat.format(trackballDetails.point!.x)}')),
-                      ],
-                    ))
-                  ],
-                ),
-              ));
-        });
+
     // datachange.clear();
     bloc = BlocProvider.of<CurrencyBloc>(context);
     getChart();
@@ -230,29 +202,41 @@ class PriceChartPage extends State<PriceChart> {
               Container(
                   height: (MediaQuery.of(context).size.height - 250),
                   child: SfCartesianChart(
-                    trackballBehavior: _trackballBehavior,
-                    series: <CartesianSeries>[
-                      AreaSeries<DataChanges, DateTime>(
-                          dataSource: datachange,
-                          xValueMapper: (DataChanges data, _) =>
-                              DateTime.parse(data.updatedAt),
-                          yValueMapper: (DataChanges data, _) => data.buy,
-                          dataLabelMapper: (DataChanges data, _) =>
-                              data.updatedAt,
-                          enableTooltip: true),
-                      AreaSeries<DataChanges, DateTime>(
-                          dataSource: datachange,
-                          xValueMapper: (DataChanges data, _) =>
-                              DateTime.parse(data.updatedAt),
-                          color: Colors.red,
-                          yValueMapper: (DataChanges data, _) => data.sell,
-                          dataLabelMapper: (DataChanges data, _) =>
-                              data.updatedAt,
-                          enableTooltip: true),
+                    primaryXAxis: CategoryAxis(),
+                    primaryYAxis: NumericAxis(opposedPosition: true),
+                    title: ChartTitle(text: widget.title),
+                    tooltipBehavior: TooltipBehavior(
+                      enable: true,
+                      header: "التفاصيل",
+                    ),
+                    series: <LineSeries<DataChanges, String>>[
+                      LineSeries<DataChanges, String>(
+                        dataSource: datachange,
+                        xValueMapper: (DataChanges sales, _) => sales.updatedAt,
+                        yValueMapper: (DataChanges sales, _) => sales.buy,
+                        markerSettings: MarkerSettings(
+                            isVisible: true, height: 4, width: 4),
+                      )
                     ],
                     zoomPanBehavior: _zoomPanBehavior,
-                    primaryXAxis: DateTimeAxis(),
-                  )),
+                  )
+                  // child: SfCartesianChart(
+                  //   trackballBehavior: _trackballBehavior,
+                  //   series: <CartesianSeries>[
+                  //     AreaSeries<DataChanges, DateTime>(
+                  //         dataSource: datachange,
+                  //         xValueMapper: (DataChanges data, _) =>
+                  //             DateTime.parse(data.updatedAt),
+                  //         yValueMapper: (DataChanges data, _) => data.buy,
+                  //         dataLabelMapper: (DataChanges data, _) =>
+                  //             data.updatedAt,
+                  //         enableTooltip: true),
+
+                  //   ],
+                  //   zoomPanBehavior: _zoomPanBehavior,
+                  //   primaryXAxis: DateTimeAxis(),
+                  // )
+                  ),
             ]),
           ),
         ));

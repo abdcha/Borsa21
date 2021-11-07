@@ -23,8 +23,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'business_logic/Auction/bloc/auction_bloc.dart';
 import 'business_logic/Chat/bloc/chat_bloc.dart';
+import 'business_logic/Global Auction/bloc/globalauction_bloc.dart';
 import 'business_logic/Login/bloc/login_bloc.dart';
 import 'data/repositroy/ChatRepository.dart';
+import 'data/repositroy/GlobalAuctionRepository.dart';
 
 void main() {
   runApp(MyApp());
@@ -124,6 +126,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BlocProvider(
             create: (context) =>
                 AuctionBloc(AuctionInitial(), AuctionRepository()),
+          ),
+          BlocProvider(
+            create: (context) => GlobalauctionBloc(
+                GlobalauctionInitial(), GlobalAuctionRepository()),
           ),
         ],
         child: MaterialApp(

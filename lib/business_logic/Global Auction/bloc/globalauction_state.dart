@@ -1,4 +1,4 @@
-part of 'gloableauction_bloc.dart';
+part of 'globalauction_bloc.dart';
 
 abstract class GlobalauctionState extends Equatable {
   const GlobalauctionState();
