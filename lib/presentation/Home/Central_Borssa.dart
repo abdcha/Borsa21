@@ -17,6 +17,7 @@ import 'package:central_borssa/data/model/Currency.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:central_borssa/data/model/Transfer.dart' as transfer;
+import 'dart:ui' as ui;
 
 class CentralBorssa extends StatefulWidget {
   CentralBorssaPage createState() => CentralBorssaPage();
@@ -50,7 +51,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
     userPhone = prefs.get('userphone').toString();
     userLocation = "Empty";
     userPermissions = prefs.getStringList('permissions')!.toList();
-    var y = userPermissions.contains('Update_Auction_Price_Permission');
+    var y = userPermissions.contains('Trader_Permission');
     print('user permission$y');
     companyuser = int.parse(prefs.get('companyid').toString());
     userType = prefs.get('roles').toString();
@@ -89,33 +90,33 @@ class CentralBorssaPage extends State<CentralBorssa> {
               host: 'www.ferasalhallak.online',
               encrypted: false,
               port: 6001));
+      Pusher.connect(onConnectionStateChange: (val) {
+        print(val!.currentState);
+      }, onError: (error) {
+        print(error!.message);
+      });
+      if (channel == "TransferChannel") {
+        //Subscribe
+        _ourChannel = await Pusher.subscribe('TransferChannel');
+
+        //Bind
+        _ourChannel.bind('Change', (onEvent) {
+          print(onEvent!.data);
+          bloc.add(GetAllTransfersEvent());
+        });
+      }
+      if (channel == "PriceChannel") {
+        //Subscribe
+        _ourChannel = await Pusher.subscribe('PriceChannel');
+
+        //Bind
+        _ourChannel.bind('Change', (onEvent) {
+          print(onEvent!.data);
+          bloc.add(AllCity());
+        });
+      }
     } catch (e) {
       print(e);
-    }
-    Pusher.connect(onConnectionStateChange: (val) {
-      print(val!.currentState);
-    }, onError: (error) {
-      print(error!.message);
-    });
-    if (channel == "TransferChannel") {
-      //Subscribe
-      _ourChannel = await Pusher.subscribe('TransferChannel');
-
-      //Bind
-      _ourChannel.bind('Change', (onEvent) {
-        print(onEvent!.data);
-        bloc.add(GetAllTransfersEvent());
-      });
-    }
-    if (channel == "PriceChannel") {
-      //Subscribe
-      _ourChannel = await Pusher.subscribe('PriceChannel');
-
-      //Bind
-      _ourChannel.bind('Change', (onEvent) {
-        print(onEvent!.data);
-        bloc.add(AllCity());
-      });
     }
   }
 
@@ -255,6 +256,9 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                                   CurrencyInitial(),
                                                   CurrencyRepository()),
                                               child: UpdatePrice(
+                                                cityid: currencyPricelist[i]
+                                                    .city
+                                                    .id,
                                                 id: currencyPricelist[i].id,
                                                 buy: currencyPricelist[i].buy,
                                                 sell: currencyPricelist[i].sell,
@@ -362,8 +366,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                               );
                             },
                           ),
-                          userPermissions.contains('Chat_Permission') &&
-                                  tableName == "currency"
+                          (userPermissions.contains('Chat_Permission') ||
+                                  userPermissions.contains('Trader_Permission'))
                               ? InkWell(
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 4),
@@ -393,9 +397,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                   },
                                 )
                               : Container(),
-                          userPermissions.contains(
-                                      'Update_Auction_Price_Permission') &&
-                                  tableName == "currency"
+                          (userPermissions
+                                  .contains('Update_Auction_Price_Permission'))
                               ? InkWell(
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 4),
@@ -539,83 +542,133 @@ class CentralBorssaPage extends State<CentralBorssa> {
             children: <Widget>[
               isloading
                   ? Container(
-                      child: Center(child: CircularProgressIndicator()),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
                     )
-                  : Container(
-                      child: Column(
-                        children: [
-                          dataTable(currencyprice, "currency"),
-                          istransferloading
-                              ? Container()
-                              : dataTable(transferprice, "transfer"),
-                          Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Row(
-                              children: [
-                                Container(
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        primary: Color(navbar.hashCode),
-                                        alignment: Alignment.center),
-                                    onPressed: () {
-                                      // getChart();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Auction()),
-                                      );
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
+                  : userPermissions.contains('Trader_Permission')
+                      ? Container(
+                          child: Directionality(
+                            textDirection: ui.TextDirection.rtl,
+                            child: Card(
+                              color: Colors.grey,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 400,
+                                    width: 400,
+                                    child: CircleAvatar(
+                                      radius: 30.0,
+                                      backgroundColor: Colors.transparent,
+                                      child:
+                                          Image.asset('assest/Images/Logo.png'),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'هذه الصفحة خاصة بموظفي المصارف ومحلات الصرافة والمتعاملين الرسميين بالبورصات. للحصول على معلومات نرجو التواصل معنا من خلال الرقم التالي 07700198027.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          child: Column(
+                            children: [
+                              istransferloading
+                                  ? Container()
+                                  : dataTable(currencyprice, "currency"),
+                              istransferloading
+                                  ? Container()
+                                  : dataTable(transferprice, "transfer"),
+                              (userPermissions.contains('Trader_Permission') ||
+                                      userPermissions.contains(
+                                          'Update_Auction_Price_Permission'))
+                                  ? Container()
+                                  : Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Row(
                                         children: [
-                                          Icon(Icons.account_balance_sharp),
-                                          Text(
-                                            "البورصة المركزيه",
+                                          Container(
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  primary:
+                                                      Color(navbar.hashCode),
+                                                  alignment: Alignment.center),
+                                              onPressed: () {
+                                                // getChart();
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Auction()),
+                                                );
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  children: [
+                                                    Icon(Icons
+                                                        .account_balance_sharp),
+                                                    Text(
+                                                      "البورصة المركزيه",
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          Container(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    primary:
+                                                        Color(navbar.hashCode),
+                                                    alignment:
+                                                        Alignment.center),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            GlobalAuction()),
+                                                  );
+                                                },
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.public_outlined,
+                                                      ),
+                                                      Text(
+                                                        "البورصة العالميه",
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ),
-                                ),
-                                Spacer(),
-                                Container(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          primary: Color(navbar.hashCode),
-                                          alignment: Alignment.center),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  GlobalAuction()),
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          children: [
-                                            Icon(
-                                              Icons.public_outlined,
-                                            ),
-                                            Text(
-                                              "البورصة العالميه",
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
             ],
           ),
         ),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UpdatePrice extends StatefulWidget {
+  final int cityid;
   final int id;
   final double buy;
   final double sell;
@@ -15,6 +16,7 @@ class UpdatePrice extends StatefulWidget {
   final String type;
   UpdatePrice({
     Key? key,
+    required this.cityid,
     required this.id,
     required this.buy,
     required this.sell,
@@ -32,6 +34,7 @@ class UpdatePricePage extends State<UpdatePrice> {
   late CurrencyBloc currencybloc;
   late String buyState;
   late String sellState;
+  late bool lastupdate = false;
   late bool closeCurrency = widget.close == 1 ? true : false;
   late int closeCurrencyvalue = widget.close;
   TextEditingController buyTextEdit = TextEditingController(text: "");
@@ -93,11 +96,49 @@ class UpdatePricePage extends State<UpdatePrice> {
                     );
                   });
             } else if (state is UpdateBorssaLoading) {
+              // showDialog(
+              //     context: context,
+              //     builder: (context) {
+              //       return Center(child: CircularProgressIndicator());
+              //     });
+            }
+            if (state is UndoUpdateLoaded) {
+              print(state);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('تم حذف التعديل بنجاح'),
+                  action: SnackBarAction(
+                    label: 'تنبيه',
+                    onPressed: () {
+                      // Code to execute.
+                    },
+                  ),
+                ),
+              );
+              Navigator.pop(context, MaterialPageRoute(builder: (context) {
+                return CentralBorssa();
+              }));
+            }
+            if (state is UndoUpdateError) {
               showDialog(
                   context: context,
                   builder: (context) {
-                    return Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: AlertDialog(
+                        title: Text(
+                          'خطأ في المعلومات',
+                          textAlign: TextAlign.right,
+                        ),
+                        content: Text('الرجاء التأكد من صحة المعلومات المدخلة'),
+                      ),
+                    );
                   });
+            } else if (state is UndoUpdateLoading) {
+              // showDialog(
+              //     context: context,
+              //     builder: (context) {
+              //       return Center(child: CircularProgressIndicator());
+              //     });
             }
           },
           child: SingleChildScrollView(
@@ -236,9 +277,38 @@ class UpdatePricePage extends State<UpdatePrice> {
                         ),
                       ),
                       Container(
+                        child: Directionality(
+                          textDirection: TextDirection.rtl,
+                          child: CheckboxListTile(
+                            title: Text(
+                              "التراجع عن آخر تعديل",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            value: lastupdate,
+                            onChanged: (newValue) {
+                              setState(() {
+                                lastupdate = newValue!;
+                              });
+                            },
+                            controlAffinity: ListTileControlAffinity
+                                .leading, //  <-- leading Checkbox
+                          ),
+                        ),
+                      ),
+                      Container(
                         margin: const EdgeInsets.all(25.0),
                         child: ElevatedButton(
                           onPressed: () {
+                            if (lastupdate) {
+                              currencybloc.add(UndoEvent(
+                                  cityid: widget.cityid,
+                                  buy: widget.buy,
+                                  sell: widget.sell,
+                                  sellstatus: widget.buystate,
+                                  buystatus: widget.sellstate,
+                                  type: widget.type,
+                                  close: widget.close));
+                            }
                             if (widget.buy != 0) {
                               if (widget.buy > double.parse(buyTextEdit.text)) {
                                 buyState = "down";
@@ -283,17 +353,6 @@ class UpdatePricePage extends State<UpdatePrice> {
                       ),
                     ],
                   ),
-                  // margin: const EdgeInsets.only(
-                  //     top: 10.0, left: 10.0, right: 10.0, bottom: 10.0),
-                  // child: Card(
-                  //   color: Colors.white,
-                  //   shadowColor: Colors.black,
-                  //   child: Column(
-                  //     children: [
-
-                  //     ],
-                  //   ),
-                  // ),
                 )
               ],
               // ),

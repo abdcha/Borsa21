@@ -358,7 +358,7 @@ class AllPostPage extends State<AllPost> {
                           bottom: 10, left: 25, top: 10, right: 25),
                       child: ReadMoreText(
                         post[index].body == "empty" ? "" : post[index].body,
-                        trimLines: 3,
+                        trimLines: 6,
                         trimMode: TrimMode.Line,
                         trimCollapsedText: 'قرائة المزيد',
                         trimExpandedText: '',

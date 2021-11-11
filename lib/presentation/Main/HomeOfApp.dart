@@ -2,7 +2,10 @@ import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/presentation/Admin/Profile.dart';
+import 'package:central_borssa/presentation/Auction/Auction.dart';
+import 'package:central_borssa/presentation/Auction/GlobalAuction.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
+import 'package:central_borssa/presentation/Trader/Trader.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +18,8 @@ import 'package:central_borssa/presentation/Home/Central_Borssa.dart';
 import '..//Home/MainChat.dart';
 import '../Home/All_post.dart';
 import '../Home/Company_Profile.dart';
+import 'package:dart_ping/dart_ping.dart';
+import 'package:connectivity/connectivity.dart';
 
 class HomeOfApp extends StatefulWidget {
   home_page createState() => home_page();
@@ -35,11 +40,13 @@ class home_page extends State<HomeOfApp>
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = await FirebaseMessaging.instance.getToken();
+
     _loginBloc.add(FireBaseTokenEvent(fcmToken: token));
     userName = prefs.get('username').toString();
     userPhone = prefs.get('userphone').toString();
-    print(userPhone);
+    print(prefs.get('token').toString());
     userLocation = "Empty";
+
     userPermissions = prefs.getStringList('permissions')!.toList();
     var y = userPermissions.contains('Update_Auction_Price_Permission');
     print('user permission$y');
@@ -48,6 +55,17 @@ class home_page extends State<HomeOfApp>
     print(companyuser);
     userType = prefs.get('roles').toString();
     setState(() {});
+  }
+
+  internetCheck() async {
+    final ping = Ping('google.com', count: 5);
+    print('Running command: ${ping.command}');
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      print('I am connected to a mobile network');
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      print(' I am connected to a wifi network');
+    }
   }
 
   fireBase() async {
@@ -100,9 +118,14 @@ class home_page extends State<HomeOfApp>
     } else if (userPermissions.contains('Trader_Permission')) {
       switch (value) {
         case 0:
-          return CentralBorssa();
+          return Trader();
         case 1:
-          return CompanyProfile();
+          return CentralBorssa();
+        case 2:
+          return GlobalAuction();
+        case 3:
+          return Auction();
+
           // ignore: dead_code
           break;
         default:
@@ -139,7 +162,6 @@ class home_page extends State<HomeOfApp>
   }
 
   logout() async {
-    print('from');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
   }
@@ -171,6 +193,13 @@ class home_page extends State<HomeOfApp>
                         print(state);
                       } else if (state is FcmTokenError) {
                         print(state);
+                      } else if (state is MeInformationLoading) {
+                        print(state);
+                      } else if (state is MeInformationLoaded) {
+                        print(state);
+                        logout();
+                      } else if (state is MeInformationError) {
+                        print(state);
                       }
                     },
                     child: callBody(selectedPage),
@@ -190,6 +219,11 @@ class home_page extends State<HomeOfApp>
                           label: 'الرئيسية',
                           icon: Icon(Icons.home),
                         ),
+                      if (userPermissions.contains('Trader_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'الرئيسية',
+                          icon: Icon(Icons.person_rounded),
+                        ),
                       if (userPermissions.contains('Chat_Permission') ||
                           userPermissions.contains('Trader_Permission') ||
                           userPermissions
@@ -198,6 +232,16 @@ class home_page extends State<HomeOfApp>
                           label: 'البورصة',
                           icon: Icon(Icons.attach_money),
                         ),
+                      if (userPermissions.contains('Trader_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'البورصة العالمية',
+                          icon: Icon(Icons.public_outlined),
+                        ),
+                      if (userPermissions.contains('Trader_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'المزاد المركزي',
+                          icon: Icon(Icons.account_balance_sharp),
+                        ),
                       if (userPermissions.contains('Chat_Permission') ||
                           userPermissions
                               .contains('Update_Auction_Price_Permission'))
@@ -205,8 +249,7 @@ class home_page extends State<HomeOfApp>
                           label: 'المحادثة',
                           icon: Icon(Icons.chat_outlined),
                         ),
-                      if (userPermissions.contains('Chat_Permission') ||
-                          userPermissions.contains('Trader_Permission'))
+                      if (userPermissions.contains('Chat_Permission'))
                         BottomNavigationBarItem(
                           label: 'الشخصية',
                           icon: Icon(Icons.person_rounded),
@@ -248,8 +291,7 @@ class home_page extends State<HomeOfApp>
                           label: 'المحادثة',
                           icon: Icon(Icons.chat_outlined),
                         ),
-                      if (userPermissions.contains('Chat_Permission') ||
-                          userPermissions.contains('Trader_Permission'))
+                      if (userPermissions.contains('Chat_Permission'))
                         BottomNavigationBarItem(
                           label: 'الشخصية',
                           icon: Icon(Icons.person_rounded),

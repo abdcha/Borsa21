@@ -19,6 +19,19 @@ class LoginSubmite extends LoginEvent {
   });
 }
 
+class LoginTraderSubmite extends LoginEvent {
+  final String phone;
+  final String password;
+  final String email;
+  final String name;
+  LoginTraderSubmite({
+    required this.phone,
+    required this.password,
+    required this.email,
+    required this.name,
+  });
+}
+
 class MeInformationEvent extends LoginEvent {}
 
 class FireBaseTokenEvent extends LoginEvent {

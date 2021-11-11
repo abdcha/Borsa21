@@ -1,5 +1,4 @@
 import 'package:central_borssa/business_logic/Auction/bloc/auction_bloc.dart';
-import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Auction.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:central_borssa/data/model/Currency.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'dart:ui' as ui;
 import 'package:open_file/open_file.dart';
 
 class Auction extends StatefulWidget {
@@ -188,6 +186,8 @@ class AuctionPage extends State<Auction> {
                       InkWell(
                         onTap: () {
                           print('from file');
+                          print(auctionsfile[i].filePath);
+
                           openfiel(auctionsfile[i].filePath);
                         },
                         child: Icon(

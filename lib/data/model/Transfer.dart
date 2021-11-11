@@ -46,6 +46,7 @@ class Transfer {
   late String buyStatus;
   late String sellStatus;
   late int createdBy;
+  late int close;
   late int cityId;
   late String createdAt;
   late String updatedAt;
@@ -59,6 +60,8 @@ class Transfer {
     sellStatus = json['sell_status'];
     createdBy = json['created_by'];
     cityId = json['city_id'];
+    close = json['close'];
+
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     city = (json['city'] != null ? new City.fromJson(json['city']) : null)!;
@@ -73,6 +76,8 @@ class Transfer {
     data['sell_status'] = this.sellStatus;
     data['created_by'] = this.createdBy;
     data['city_id'] = this.cityId;
+    data['close'] = this.close;
+
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     if (this.city != null) {

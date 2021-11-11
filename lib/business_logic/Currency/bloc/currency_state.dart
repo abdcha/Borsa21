@@ -34,7 +34,12 @@ class UndoUpdateLoading extends CurrencyState {}
 
 class UndoUpdateError extends CurrencyState {}
 
-class UndoUpdateLoaded extends CurrencyState {}
+class UndoUpdateLoaded extends CurrencyState {
+  final String status;
+  UndoUpdateLoaded({
+    required this.status,
+  });
+}
 
 //Close
 

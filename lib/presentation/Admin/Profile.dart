@@ -56,7 +56,9 @@ class ProfilePage extends State<Profile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.get('username').toString();
     userPhone = prefs.get('userphone').toString();
-    userPermissions = prefs.getStringList('permissions')!.toList();
+    if (prefs.getStringList('permissions')!.toList().isNotEmpty) {
+      userPermissions = prefs.getStringList('permissions')!.toList();
+    }
     companyuser = int.parse(prefs.get('companyid').toString());
     userType = prefs.get('roles').toString();
     if (prefs.get('end_at') != null) {

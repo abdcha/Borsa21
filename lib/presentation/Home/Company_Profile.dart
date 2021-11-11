@@ -322,7 +322,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
                             companypost[index].body == "empty"
                                 ? ""
                                 : companypost[index].body,
-                            trimLines: 2,
+                            trimLines: 6,
                             trimMode: TrimMode.Line,
                             trimCollapsedText: 'قرائة المزيد',
                             trimExpandedText: '',

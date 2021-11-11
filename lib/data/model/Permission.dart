@@ -50,8 +50,8 @@ class User {
     createdBy = json['created_by'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    companyid = json['company_id'];
-    cityid = json['city_id'];
+    companyid = json['company_id'] == null ? 0 : json['company_id'];
+    cityid = json['city_id'] == null ? 0 : json['city_id'];
     if (json['end_subscription'] != null) {
       endSubscription = new EndSubscription.fromJson(json['end_subscription']);
     } else {

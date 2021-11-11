@@ -233,4 +233,54 @@ class CurrencyRepository {
       }
     }
   }
+
+  Future<Either<String, String>> undoLastChange(
+      int cityid,
+      double buy,
+      double sell,
+      String type,
+      String buystatus,
+      String sellstatus,
+      int close) async {
+    print(type);
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var _token = _prefs.get('token');
+    _dio.options.headers['authorization'] = 'Bearer $_token';
+    if (type == "transfer") {
+      String completeUrl = '$undoChangeUrl$cityid';
+      print(completeUrl);
+      var updateResponse = await _dio.put(completeUrl,
+          data: jsonEncode({
+            "sell_status": sellstatus,
+            "buy": buy,
+            "sell": sell,
+            "buy_status": buystatus,
+          }));
+      var mystatus = updateResponse.data['status'];
+      print(updateResponse);
+      if (mystatus == "success") {
+        return Right(mystatus);
+      } else {
+        return Left(mystatus);
+      }
+    } else if (type == "currency") {
+      String completeUrl = '$undoChangeUrl$cityid';
+      print(completeUrl);
+      var updateResponse = await _dio.put(completeUrl,
+          data: jsonEncode({
+            "sell_status": sellstatus,
+            "buy": buy,
+            "sell": sell,
+            "buy_status": buystatus,
+          }));
+      var mystatus = updateResponse.data['status'];
+      print(updateResponse);
+      if (mystatus == "success") {
+        return Right(mystatus);
+      } else {
+        return Left(mystatus);
+      }
+    }
+    return Left('erroe');
+  }
 }

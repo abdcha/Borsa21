@@ -27,11 +27,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         print(r);
         yield LoginLoadingState();
 
-        yield UserLoginScreen();  
+        yield UserLoginScreen();
       });
     } else if (event is FireBaseTokenEvent) {
       print('Login bloc');
-        yield FcmTokenLoading();
+      yield FcmTokenLoading();
       var data = await repository.fcmToken(event.fcmToken);
       yield* data.fold((l) async* {
         print(l);
@@ -39,6 +39,40 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       }, (r) async* {
         print(r);
         yield FcmTokenLoaded();
+      });
+    } else if (event is MeInformationEvent) {
+      print('Login bloc');
+      yield MeInformationLoading();
+      var data = await repository.meInformation();
+      yield* data.fold((l) async* {
+        print(l);
+        yield MeInformationError();
+      }, (r) async* {
+        print(r);
+        yield MeInformationLoaded();
+      });
+    } else if (event is MeInformationEvent) {
+      print('Login bloc');
+      yield MeInformationLoading();
+      var data = await repository.meInformation();
+      yield* data.fold((l) async* {
+        print(l);
+        yield MeInformationError();
+      }, (r) async* {
+        print(r);
+        yield MeInformationLoaded();
+      });
+    } else if (event is LoginTraderSubmite) {
+      print('Login bloc');
+      yield LoginTraderLoading();
+      var data = await repository.loginTrader(
+          event.phone, event.password, event.name, event.email);
+      yield* data.fold((l) async* {
+        print(l);
+        yield LoginTraderError();
+      }, (r) async* {
+        print(r);
+        yield LoginTraderLoaded();
       });
     }
   }

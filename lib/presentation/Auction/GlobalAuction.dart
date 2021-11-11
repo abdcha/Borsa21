@@ -26,6 +26,8 @@ class GlobalAuctionPage extends State<GlobalAuction> {
   late String userPhone = "";
   late String userLocation = "";
   late String userType = "";
+  TextEditingController productValueTextEdit = TextEditingController(text: '1');
+  late int productValue = 1;
   TextEditingController productvalue = TextEditingController(text: '1');
   int companyuser = 0;
   late int userActive = 0;
@@ -120,8 +122,10 @@ class GlobalAuctionPage extends State<GlobalAuction> {
           if (state is GetGlobalauctionLoading) {
             print(state);
           } else if (state is GetGlobalauctionLoaded) {
-            print(state);
+            rates = null;
 
+            print(productValue);
+            print(state);
             rates = state.rates;
             setState(() {});
           } else if (state is GetGlobalauctionError) {
@@ -134,10 +138,108 @@ class GlobalAuctionPage extends State<GlobalAuction> {
               Container(
                 child: Column(
                   children: [
+                    rates != null
+                        ? Container(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                            onPressed: () {
+                                              print(productValue);
+                                              setState(() {
+                                                bloc2.add(
+                                                    GetGlobalauctionEvent());
+                                                rates = null;
+                                              });
+                                            },
+                                            child: Text('تحويل')),
+                                      ),
+                                      Spacer(),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                150,
+                                            child: new Theme(
+                                                data: new ThemeData(
+                                                    primaryColor: Colors.red,
+                                                    primaryColorDark:
+                                                        Colors.red,
+                                                    focusColor: Colors.red),
+                                                child: Directionality(
+                                                    textDirection:
+                                                        TextDirection.rtl,
+                                                    child: TextFormField(
+                                                      textAlign:
+                                                          TextAlign.right,
+                                                      cursorColor: Colors.black,
+                                                      controller:
+                                                          productValueTextEdit,
+                                                      // maxLength: 4,
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                      onChanged:
+                                                          (String? value) {
+                                                        setState(() {
+                                                          productValue =
+                                                              int.parse(value!);
+                                                        });
+                                                      },
+                                                      onSaved: (String? value) {
+                                                        setState(() {
+                                                          productValue =
+                                                              int.parse(value!);
+                                                        });
+                                                      },
+                                                      decoration:
+                                                          InputDecoration(
+                                                        contentPadding:
+                                                            EdgeInsets.fromLTRB(
+                                                                0, 0, 40, 35),
+                                                        labelText: 'القيمة',
+                                                        labelStyle: TextStyle(
+                                                          color: Colors.black,
+                                                        ),
+                                                        fillColor: Colors.red,
+                                                        border:
+                                                            OutlineInputBorder(),
+                                                        enabledBorder: new OutlineInputBorder(
+                                                            borderSide:
+                                                                new BorderSide(
+                                                                    color: Color(
+                                                                        navbar
+                                                                            .hashCode))),
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              width: 3,
+                                                              color: Color(navbar
+                                                                  .hashCode)),
+                                                        ),
+                                                      ),
+                                                    )))),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(
+                            child: Center(child: CircularProgressIndicator())),
                     if (rates != null)
                       GlobalTable(
                         r: rates,
-                        product: productvalue.text.toString(),
+                        product: productValue,
                       ),
                   ],
                 ),

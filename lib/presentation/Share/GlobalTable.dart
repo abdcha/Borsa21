@@ -7,7 +7,7 @@ import 'package:central_borssa/data/model/GlobalAuction.dart';
 
 class GlobalTable extends StatefulWidget {
   final Rates? r;
-  final String? product;
+  final int? product;
   const GlobalTable({
     Key? key,
     required this.r,
@@ -18,12 +18,12 @@ class GlobalTable extends StatefulWidget {
 }
 
 class GlobalTablePage extends State<GlobalTable> {
-  late double product;
+  late int product;
   late Rates r;
   @override
   void initState() {
     r = widget.r!;
-    product = double.parse(widget.product!);
+    product = widget.product!;
     setState(() {});
     super.initState();
   }

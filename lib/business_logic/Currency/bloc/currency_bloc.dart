@@ -48,6 +48,24 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
         yield ChartBorssaLoading();
         yield ChartBorssaLoaded(dataChanges: r);
       });
+    } else if (event is UndoEvent) {
+      final chatResponse = await currencyRepository.undoLastChange(
+        event.cityid,
+        event.buy,
+        event.sell,
+        event.type,
+        event.buystatus,
+        event.sellstatus,
+        event.close,
+      );
+      yield* chatResponse.fold((l) async* {
+        print(l);
+        UndoUpdateError();
+      }, (r) async* {
+        print(r);
+        yield UndoUpdateLoading();
+        yield UndoUpdateLoaded(status: r);
+      });
     }
   }
 }

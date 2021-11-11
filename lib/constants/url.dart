@@ -1,4 +1,6 @@
 final baseUrl = 'https://ferasalhallak.online/api/auth/login';
+final logintraderUrl = 'https://ferasalhallak.online/api/auth/registerTrader';
+
 final permissionUrl = 'https://ferasalhallak.online/api/auth/me';
 final allCurrencyUrl = 'https://ferasalhallak.online/api/currencyPrices/';
 final currencyUpdateUrl = 'https://ferasalhallak.online/api/currencyPrices/';
@@ -7,7 +9,8 @@ final editanddeletePost = 'https://ferasalhallak.online/api/posts/';
 final allPost = 'https://ferasalhallak.online/api/posts';
 final allCompanyPost = 'https://ferasalhallak.online/api/posts/company/';
 final chartUrl = 'https://ferasalhallak.online/api/currencyChart?city_id=';
-final charttransferUrl = 'https://ferasalhallak.online/api/transfersChart?city_id=';
+final charttransferUrl =
+    'https://ferasalhallak.online/api/transfersChart?city_id=';
 
 final allCities = 'https://ferasalhallak.online/api/lists/cities';
 final allCompany = 'https://ferasalhallak.online/api/lists/companies';
