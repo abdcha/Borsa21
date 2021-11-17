@@ -120,6 +120,324 @@ class CentralBorssaPage extends State<CentralBorssa> {
     }
   }
 
+  Widget dataTabletransfer(List<dynamic> currencyPricelist, String tableName) {
+    return Column(
+      children: [
+        Container(
+          width: 200,
+          child: Card(
+            color: Color(0xff7d8a99),
+            child: Text(
+              tableName == "currency" ? "أسعار الدولار" : "أسعار الحوالات",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          margin: EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 0),
+          child: DataTable(
+              dataTextStyle: TextStyle(
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+              ),
+              headingRowHeight: 28,
+              horizontalMargin: 5.5,
+              dividerThickness: 2,
+              dataRowHeight: 30,
+              columnSpacing: 3,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: const Color(0xff505D6E),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0x29000000),
+                    offset: Offset(0, 3),
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+              headingRowColor: MaterialStateColor.resolveWith(
+                (states) => Color(0xff7d8a99),
+              ),
+              headingTextStyle: const TextStyle(
+                inherit: false,
+              ),
+              columns: [
+                //remove head of table
+                DataColumn(
+                    label: Expanded(
+                  child: Container(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          'العرض',
+                          style: TextStyle(
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
+                )),
+                DataColumn(
+                    label: Expanded(
+                  child: Container(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          'الطلب',
+                          style: TextStyle(
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
+                )),
+                DataColumn(
+                    label: Expanded(
+                  child: Container(
+                    // color: Colors.red,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: Text(
+                            'المدينة',
+                            style: TextStyle(
+                              color: const Color(0xffffffff),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ))
+              ],
+              rows: [
+                for (int i = 0; i < currencyPricelist.length; i++)
+                  DataRow(cells: [
+                    DataCell(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          currencyPricelist[i].buyStatus == "up"
+                              ? Icon(
+                                  Icons.arrow_circle_up,
+                                  color: Colors.green[700],
+                                )
+                              : Icon(
+                                  Icons.arrow_circle_down,
+                                  color: Colors.red[700],
+                                ),
+                          userPermissions
+                                  .contains('Update_Auction_Price_Permission')
+                              ? InkWell(
+                                  onTap: () {
+                                    var route = new MaterialPageRoute(
+                                        builder: (BuildContext contex) =>
+                                            new BlocProvider(
+                                              create: (context) => CurrencyBloc(
+                                                  CurrencyInitial(),
+                                                  CurrencyRepository()),
+                                              child: UpdatePrice(
+                                                cityid: currencyPricelist[i]
+                                                    .first_city_id,
+                                                id: currencyPricelist[i].id,
+                                                buy: currencyPricelist[i].buy,
+                                                sell: currencyPricelist[i].sell,
+                                                buystate: currencyPricelist[i]
+                                                    .buyStatus,
+                                                sellstate: currencyPricelist[i]
+                                                    .sellStatus,
+                                                type: tableName,
+                                                close:
+                                                    currencyPricelist[i].close,
+                                              ),
+                                            ));
+
+                                    BlocProvider(
+                                        create: (context) => CurrencyBloc(
+                                            CurrencyInitial(),
+                                            CurrencyRepository()));
+                                    Navigator.of(context).push(route);
+                                  },
+                                  child: Text(
+                                    currencyPricelist[i].buy.toString(),
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                )
+                              : InkWell(
+                                  child: Text(
+                                    currencyPricelist[i].buy.toString(),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                )
+                        ],
+                      ),
+
+                      // }
+                    ),
+                    DataCell(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          currencyPricelist[i].sellStatus == "up"
+                              ? Icon(
+                                  Icons.arrow_circle_up,
+                                  color: Colors.green[700],
+                                )
+                              : Icon(
+                                  Icons.arrow_circle_down,
+                                  color: Colors.red[700],
+                                ),
+                          Text(
+                            currencyPricelist[i].sell.toStringAsFixed(2),
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    DataCell(Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            currencyPricelist[i].firstCity.name +
+                                "" +
+                                currencyPricelist[i].secondCity.name,
+                            maxLines: 1,
+                            textWidthBasis: TextWidthBasis.parent,
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: const Color(0xffffffff),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          InkWell(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: Icon(
+                                Icons.remove_red_eye_rounded,
+                                color: Colors.white,
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PriceChart(
+                                    cityid: currencyPricelist[i].city.id,
+                                    fromdate: 1,
+                                    todate: 1,
+                                    title: currencyPricelist[i].city.name,
+                                    type: tableName,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          (userPermissions.contains('Chat_Permission') ||
+                                  userPermissions.contains('Trader_Permission'))
+                              ? InkWell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: Icon(
+                                      currencyPricelist[i].close == 0
+                                          ? Icons.lock_clock
+                                          : Icons.lock_open
+
+                                      //remove
+                                      ,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PriceChart(
+                                          cityid: currencyPricelist[i].city.id,
+                                          fromdate: 1,
+                                          todate: 1,
+                                          title: currencyPricelist[i].city.name,
+                                          type: tableName,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Container(),
+                          (userPermissions
+                                  .contains('Update_Auction_Price_Permission'))
+                              ? InkWell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: Icon(
+                                      currencyPricelist[i].close == 1
+                                          ? Icons.lock_clock
+                                          : Icons.lock_open
+                                      //remove
+                                      ,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PriceChart(
+                                          cityid: currencyPricelist[i].city.id,
+                                          fromdate: 1,
+                                          todate: 1,
+                                          title: currencyPricelist[i].city.name,
+                                          type: tableName,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Container()
+                        ],
+                      ),
+                    ))
+                  ]),
+              ]),
+        ),
+      ],
+    );
+  }
+
   Widget dataTable(List<dynamic> currencyPricelist, String tableName) {
     return Column(
       children: [
@@ -588,84 +906,94 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                   : dataTable(currencyprice, "currency"),
                               istransferloading
                                   ? Container()
-                                  : dataTable(transferprice, "transfer"),
+                                  : dataTabletransfer(
+                                      transferprice, "transfer"),
                               (userPermissions.contains('Trader_Permission') ||
                                       userPermissions.contains(
                                           'Update_Auction_Price_Permission'))
                                   ? Container()
-                                  : Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  primary:
-                                                      Color(navbar.hashCode),
-                                                  alignment: Alignment.center),
-                                              onPressed: () {
-                                                // getChart();
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          Auction()),
-                                                );
-                                              },
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  children: [
-                                                    Icon(Icons
-                                                        .account_balance_sharp),
-                                                    Text(
-                                                      "البورصة المركزيه",
+                                  : istransferloading
+                                      ? Container()
+                                      : Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                child: ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          primary: Color(
+                                                              navbar.hashCode),
+                                                          alignment:
+                                                              Alignment.center),
+                                                  onPressed: () {
+                                                    // getChart();
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Auction()),
+                                                    );
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Column(
+                                                      children: [
+                                                        Icon(Icons
+                                                            .account_balance_sharp),
+                                                        Text(
+                                                          "المزاد المركزي",
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          Container(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    primary:
-                                                        Color(navbar.hashCode),
-                                                    alignment:
-                                                        Alignment.center),
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            GlobalAuction()),
-                                                  );
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.public_outlined,
-                                                      ),
-                                                      Text(
-                                                        "البورصة العالميه",
-                                                      ),
-                                                    ],
                                                   ),
                                                 ),
                                               ),
-                                            ),
+                                              Spacer(),
+                                              Container(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            primary: Color(
+                                                                navbar
+                                                                    .hashCode),
+                                                            alignment: Alignment
+                                                                .center),
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                GlobalAuction()),
+                                                      );
+                                                    },
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Column(
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .public_outlined,
+                                                          ),
+                                                          Text(
+                                                            "البورصة العالميه",
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
+                                        ),
                             ],
                           ),
                         ),

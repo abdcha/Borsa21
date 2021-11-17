@@ -18,6 +18,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (event is StartEvent) {
       yield LoginInitialState();
     } else if (event is LoginSubmite) {
+      yield LoginLoadingState();
       print('Login bloc');
       var data = await repository.login(event.phone, event.password);
       yield* data.fold((l) async* {
@@ -25,8 +26,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         yield ErrorLoginState();
       }, (r) async* {
         print(r);
-        yield LoginLoadingState();
-
         yield UserLoginScreen();
       });
     } else if (event is FireBaseTokenEvent) {

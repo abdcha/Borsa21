@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:central_borssa/data/model/Currency.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
 
 class Auction extends StatefulWidget {
   AuctionPage createState() => AuctionPage();
@@ -22,7 +21,6 @@ class AuctionPage extends State<Auction> {
   late String? test;
   late String startpoint;
   late String endpoint;
-
   late List<String> userPermissions = [];
   late String userName = "";
   late String userPhone = "";
@@ -30,6 +28,8 @@ class AuctionPage extends State<Auction> {
   late String userType = "";
   int companyuser = 0;
   late int userActive = 0;
+  bool _isLoading = false;
+
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.get('username').toString();
@@ -46,7 +46,6 @@ class AuctionPage extends State<Auction> {
   @override
   void initState() {
     bloc = BlocProvider.of<AuctionBloc>(context);
-
     var now = DateTime.now();
     var newFormat = DateFormat("yyyy-MM-dd");
     String updatedDt = newFormat.format(now);
@@ -56,6 +55,14 @@ class AuctionPage extends State<Auction> {
     auctionsfile.clear();
     sharedValue();
     super.initState();
+  }
+
+  openFile(String filePath) async {
+    setState(() {
+      _isLoading = true;
+    });
+    print(_isLoading);
+    // OpenFile.open(filePath);
   }
 
   Widget dataTable() {
@@ -185,10 +192,24 @@ class AuctionPage extends State<Auction> {
                       // ),
                       InkWell(
                         onTap: () {
-                          print('from file');
-                          print(auctionsfile[i].filePath);
-
-                          openfiel(auctionsfile[i].filePath);
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Scaffold(
+                                  appBar: AppBar(
+                                    backgroundColor: Color(navbar.hashCode),
+                                    title: Center(
+                                      child: Text('البورصة المركزية'),
+                                    ),
+                                    actions: [],
+                                  ),
+                                  body: Center(
+                                    child:
+                                        Image.network(auctionsfile[i].filePath),
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                );
+                              });
                         },
                         child: Icon(
                           Icons.file_copy_sharp,
@@ -274,16 +295,16 @@ class AuctionPage extends State<Auction> {
                 ? Container(
                     child: Center(child: CircularProgressIndicator()),
                   )
-                : Container(
-                    child: dataTable(),
+                : Column(
+                    children: [
+                      Container(
+                        child: dataTable(),
+                      ),
+                    ],
                   ),
           ],
         ),
       ),
     );
-  }
-
-  openfiel(String filePath) {
-    OpenFile.open(filePath);
   }
 }

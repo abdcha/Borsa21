@@ -46,11 +46,13 @@ class Transfer {
   late String buyStatus;
   late String sellStatus;
   late int createdBy;
-  late int close;
-  late int cityId;
+  late int firstCityId;
   late String createdAt;
   late String updatedAt;
-  late City city;
+  late int close;
+  late int secondCityId;
+  late FirstCity firstCity;
+  late FirstCity secondCity;
 
   Transfer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -59,12 +61,15 @@ class Transfer {
     buyStatus = json['buy_status'];
     sellStatus = json['sell_status'];
     createdBy = json['created_by'];
-    cityId = json['city_id'];
-    close = json['close'];
-
+    firstCityId = json['first_city_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    city = (json['city'] != null ? new City.fromJson(json['city']) : null)!;
+    close = json['close'];
+    secondCityId = json['second_city_id'];
+
+    firstCity = new FirstCity.fromJson(json['first_city']);
+
+    secondCity = new FirstCity.fromJson(json['second_city']);
   }
 
   Map<String, dynamic> toJson() {
@@ -75,25 +80,24 @@ class Transfer {
     data['buy_status'] = this.buyStatus;
     data['sell_status'] = this.sellStatus;
     data['created_by'] = this.createdBy;
-    data['city_id'] = this.cityId;
-    data['close'] = this.close;
-
+    data['first_city_id'] = this.firstCityId;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-    if (this.city != null) {
-      data['city'] = this.city.toJson();
-    }
+    data['close'] = this.close;
+    data['second_city_id'] = this.secondCityId;
+    data['first_city'] = this.firstCity.toJson();
+    data['second_city'] = this.secondCity.toJson();
     return data;
   }
 }
 
-class City {
+class FirstCity {
   late String name;
   late int id;
 
-  City({required this.name, required this.id});
+  FirstCity({required this.name, required this.id});
 
-  City.fromJson(Map<String, dynamic> json) {
+  FirstCity.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     id = json['id'];
   }

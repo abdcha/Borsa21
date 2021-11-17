@@ -48,7 +48,7 @@ class Data {
 }
 
 class Rates {
-  late PLN hKD;
+  late PLN cNY;
   late PLN cAD;
   late PLN qAR;
   late PLN sAR;
@@ -70,7 +70,7 @@ class Rates {
   late PLN iRR;
 
   Rates.fromJson(Map<String, dynamic> json) {
-    hKD = (json['HKD'] != null ? new PLN.fromJson(json['HKD']) : null)!;
+    cNY = (json['CNY'] != null ? new PLN.fromJson(json['CNY']) : null)!;
     cAD = (json['CAD'] != null ? new PLN.fromJson(json['CAD']) : null)!;
     eUR = (json['EUR'] != null ? new PLN.fromJson(json['EUR']) : null)!;
     gBP = (json['GBP'] != null ? new PLN.fromJson(json['GBP']) : null)!;
@@ -95,8 +95,8 @@ class Rates {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
 
-    if (this.hKD != null) {
-      data['HKD'] = this.hKD.toJson();
+    if (this.cNY != null) {
+      data['CNY'] = this.cNY.toJson();
     }
     if (this.cAD != null) {
       data['CAD'] = this.cAD.toJson();

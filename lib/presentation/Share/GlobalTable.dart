@@ -209,14 +209,14 @@ class GlobalTablePage extends State<GlobalTable> {
                           padding: const EdgeInsets.only(right: 12),
                           child: InkWell(
                             child: Flag.fromCode(
-                              FlagsCode.HK,
+                              FlagsCode.CN,
                               height: 30,
                               width: 30,
                             ),
                           ),
                         ),
                         Text(
-                          'الدرهم الإماراتي',
+                          'يوان صيني',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -229,7 +229,7 @@ class GlobalTablePage extends State<GlobalTable> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          r.hKD.rate,
+                          r.cNY.rate,
                           maxLines: 1,
                           style: TextStyle(
                             fontSize: 14,
@@ -245,7 +245,7 @@ class GlobalTablePage extends State<GlobalTable> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         Text(
-                          (product * double.parse((r.hKD.rate))).toString(),
+                          (product * double.parse((r.cNY.rate))).toString(),
                           maxLines: 1,
                           textWidthBasis: TextWidthBasis.parent,
                           textAlign: TextAlign.end,
@@ -347,14 +347,14 @@ class GlobalTablePage extends State<GlobalTable> {
                           padding: const EdgeInsets.only(right: 12),
                           child: InkWell(
                             child: Flag.fromCode(
-                              FlagsCode.CD,
+                              FlagsCode.CA,
                               height: 30,
                               width: 30,
                             ),
                           ),
                         ),
                         Text(
-                          'الدرهم الإماراتي',
+                          'الدولار الكندي',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -554,75 +554,6 @@ class GlobalTablePage extends State<GlobalTable> {
                           padding: const EdgeInsets.only(right: 12),
                           child: InkWell(
                             child: Flag.fromCode(
-                              FlagsCode.JO,
-                              height: 30,
-                              width: 30,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'دينار أردني',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  DataCell(
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          r.jOD.rate,
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  DataCell(Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Text(
-                          (product * double.parse((r.jOD.rate))).toString(),
-                          maxLines: 1,
-                          textWidthBasis: TextWidthBasis.parent,
-                          textAlign: TextAlign.end,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: const Color(0xffffffff),
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InkWell(
-                            child: Flag.fromCode(
-                              FlagsCode.US,
-                              height: 30,
-                              width: 30,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ))
-                ]),
-                DataRow(cells: [
-                  DataCell(
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 12),
-                          child: InkWell(
-                            child: Flag.fromCode(
                               FlagsCode.TR,
                               height: 30,
                               width: 30,
@@ -699,7 +630,7 @@ class GlobalTablePage extends State<GlobalTable> {
                           ),
                         ),
                         Text(
-                          'حنيه أسترليني',
+                          'جنيه إسترليني',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -906,7 +837,7 @@ class GlobalTablePage extends State<GlobalTable> {
                           ),
                         ),
                         Text(
-                          'كرونة سويدية',
+                          'كرونة نرويجية',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),

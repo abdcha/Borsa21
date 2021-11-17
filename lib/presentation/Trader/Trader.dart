@@ -1,4 +1,7 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:central_borssa/business_logic/Advertisement/bloc/advertisement_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
+import 'package:central_borssa/data/model/Advertisement.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flag/flag_enum.dart';
 import 'package:flag/flag_widget.dart';
@@ -20,6 +23,8 @@ class TraderPage extends State<Trader> {
   late List<City> cities2 = [];
   late List<CurrencyPrice> currencyprice = [];
   late List<transfer.Transfer> transferprice = [];
+  late AdvertisementBloc advertisementbloc;
+  late List<Advertisements> advertisements = [];
 
   late bool isloading = true;
   late bool istransferloading = true;
@@ -52,11 +57,100 @@ class TraderPage extends State<Trader> {
   @override
   void initState() {
     sharedValue();
+    advertisementbloc = BlocProvider.of<AdvertisementBloc>(context);
+    advertisementbloc.add(GetAdvertisementEvent());
 
     super.initState();
   }
 
   Future<void> currencypusher(String channel) async {}
+  final CarouselController _controller = CarouselController();
+  int _current = 0;
+
+  Widget sliderImage() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10, top: 10),
+      child: Column(
+        children: [
+          Card(
+            child: CarouselSlider(
+              carouselController: _controller,
+              options: CarouselOptions(
+                  autoPlay: true,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _current = index;
+                    });
+                  }),
+              items: advertisements
+                  .map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Card(
+                        margin: EdgeInsets.only(
+                          top: 15.0,
+                          bottom: 15.0,
+                        ),
+                        elevation: 5.0,
+                        shadowColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(30.0),
+                          ),
+                          child: Stack(
+                            children: <Widget>[
+                              InkWell(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Center(
+                                          child: Image.network(item.image),
+                                        );
+                                      });
+                                },
+                                child: Image.network(
+                                  item.image,
+                                  fit: BoxFit.fill,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: advertisements.asMap().entries.map((entry) {
+              return GestureDetector(
+                onTap: () => _controller.animateToPage(entry.key),
+                child: Container(
+                  width: 12.0,
+                  height: 12.0,
+                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: (Theme.of(context).brightness == Brightness.dark
+                              ? Color(navbar.hashCode)
+                              : Colors.black)
+                          .withOpacity(_current == entry.key ? 0.9 : 0.4)),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget dataTable(double buy, double sell, String name) {
     return Padding(
@@ -115,7 +209,7 @@ class TraderPage extends State<Trader> {
                       ],
                     )),
                   )),
-                ],
+                ], 
                 rows: [
                   DataRow(cells: [
                     DataCell(
@@ -295,6 +389,7 @@ class TraderPage extends State<Trader> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       drawer: newDrawer(),
       appBar: AppBar(
         title: Center(
@@ -309,36 +404,64 @@ class TraderPage extends State<Trader> {
         ],
         backgroundColor: Color(navbar.hashCode),
       ),
-      body: BlocListener<BorssaBloc, BorssaState>(
-        listener: (context, state) {
-          if (state is BorssaReloadingState) {
-            print(state);
-          } else if (state is GetAllCityState) {
-            print(state);
-            currencyprice = state.cities;
-            setState(() {
-              isloading = false;
-            });
-          } else if (state is BorssaErrorLoading) {
-            print(state);
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<BorssaBloc, BorssaState>(
+            listener: (context, state) {
+              if (state is BorssaReloadingState) {
+                print(state);
+              } else if (state is GetAllCityState) {
+                print(state);
+                currencyprice = state.cities;
+                setState(() {
+                  isloading = false;
+                });
+              } else if (state is BorssaErrorLoading) {
+                print(state);
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('خطأ في التحميل'),
-                action: SnackBarAction(
-                  label: 'تنبيه',
-                  onPressed: () {},
-                ),
-              ),
-            );
-          }
-        },
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('خطأ في التحميل'),
+                    action: SnackBarAction(
+                      label: 'تنبيه',
+                      onPressed: () {},
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+          BlocListener<AdvertisementBloc, AdvertisementState>(
+            listener: (context, state) {
+              if (state is GetAdvertisementLoading) {
+                print(state);
+              } else if (state is GetAdvertisementLoaded) {
+                print(state);
+                advertisements.clear();
+                advertisements = state.allAdvertisements;
+                setState(() {});
+              } else if (state is GetAdvertisementError) {
+                print(state);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('خطأ في التحميل'),
+                    action: SnackBarAction(
+                      label: 'تنبيه',
+                      onPressed: () {},
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               Container(
                 child: Column(
                   children: [
+                    sliderImage(),
                     dataTable(122.2, 1222.9, "بغداد"),
                     dataTable(122.2, 1222.9, "االشمال"),
                     dataTable(122.2, 1222.9, 'االجنوب'),

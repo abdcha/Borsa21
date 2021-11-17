@@ -14,6 +14,7 @@ class LoginRepository {
         data: jsonEncode(({"phone": phone, "password": password})));
     // print(loginResponse);
     if (loginResponse.data['status'] == "success") {
+      print('from login');
       //Start store token
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       var _responsetoken = loginResponse.data['data']['token'];

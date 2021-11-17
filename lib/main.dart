@@ -5,6 +5,7 @@ import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/business_logic/Post/bloc/post_bloc.dart';
+import 'package:central_borssa/data/repositroy/AdvertisementRepository.dart';
 import 'package:central_borssa/data/repositroy/AuctionRepository.dart';
 import 'package:central_borssa/data/repositroy/CityRepository.dart';
 import 'package:central_borssa/data/repositroy/CompanyRepository.dart';
@@ -21,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'business_logic/Advertisement/bloc/advertisement_bloc.dart';
 import 'business_logic/Auction/bloc/auction_bloc.dart';
 import 'business_logic/Chat/bloc/chat_bloc.dart';
 import 'business_logic/Global Auction/bloc/globalauction_bloc.dart';
@@ -130,6 +132,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BlocProvider(
             create: (context) => GlobalauctionBloc(
                 GlobalauctionInitial(), GlobalAuctionRepository()),
+          ),
+          BlocProvider(
+            create: (context) => AdvertisementBloc(
+                AdvertisementInitial(), AdvertisementRepository()),
           ),
         ],
         child: MaterialApp(

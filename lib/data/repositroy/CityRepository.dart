@@ -39,23 +39,19 @@ class CityRepository {
   }
 
   Future<Either<String, List<tran.Transfer>>> alltransfer() async {
-    try {
-      SharedPreferences _prefs = await SharedPreferences.getInstance();
-      var _token = _prefs.getString('token');
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var _token = _prefs.getString('token');
 
-      _dio..options.headers['authorization'] = 'Bearer $_token';
+    _dio..options.headers['authorization'] = 'Bearer $_token';
 
-      var response = await _dio.get(transfersUrl);
-      var status = response.data['status'];
-      var allcurrency = tran.Data.fromJson(response.data['data']);
+    var response = await _dio.get(transfersUrl);
+    var status = response.data['status'];
+    var allcurrency = tran.Data.fromJson(response.data['data']);
 
-      if (status == "success") {
-        return Right(allcurrency.transfer);
-      } else {
-        return Left("inside error");
-      }
-    } catch (e) {
-      return Left("error");
+    if (status == "success") {
+      return Right(allcurrency.transfer);
+    } else {
+      return Left("inside error");
     }
   }
 

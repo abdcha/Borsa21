@@ -115,9 +115,9 @@ class UpdatePricePage extends State<UpdatePrice> {
                   ),
                 ),
               );
-              Navigator.pop(context, MaterialPageRoute(builder: (context) {
-                return CentralBorssa();
-              }));
+              // Navigator.pop(context, MaterialPageRoute(builder: (context) {
+              //   return CentralBorssa();
+              // }));
             }
             if (state is UndoUpdateError) {
               showDialog(

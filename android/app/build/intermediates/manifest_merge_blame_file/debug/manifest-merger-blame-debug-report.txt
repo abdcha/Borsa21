@@ -1,0 +1,385 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.central_borssa"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="16"
+9        android:targetSdkVersion="30" />
+10    <!--
+11         Flutter needs it to communicate with the running application
+12         to allow setting breakpoints, to provide hot reload, etc.
+13    -->
+14    <uses-permission android:name="android.permission.INTERNET" />
+14-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:3:1-62
+14-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:3:18-60
+15    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+15-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:4:1-76
+15-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:4:18-74
+16    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+16-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:5:1-75
+16-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:5:18-73
+17    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+17-->[:wifi_info_flutter] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\wifi_info_flutter\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-76
+17-->[:wifi_info_flutter] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\wifi_info_flutter\intermediates\library_manifest\debug\AndroidManifest.xml:7:22-73
+18    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+18-->[:open_file] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\open_file\intermediates\library_manifest\debug\AndroidManifest.xml:8:5-83
+18-->[:open_file] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\open_file\intermediates\library_manifest\debug\AndroidManifest.xml:8:22-80
+19    <uses-permission android:name="android.permission.WAKE_LOCK" />
+19-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:8:5-68
+19-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:8:22-65
+20    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+20-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:9:5-79
+20-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:9:22-76
+21    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" /> <!-- Required by older versions of Google Play services to create IID tokens -->
+21-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:26:5-110
+21-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:26:22-107
+22    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" /> <!-- Provide required visibility configuration for API level 30 and above -->
+22-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:25:5-82
+22-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:25:22-79
+23    <application
+23-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:9:4-56:19
+24        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+24-->[androidx.core:core:1.1.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\5e65e21a418d1c1d173360865581d002\core-1.1.0\AndroidManifest.xml:24:18-86
+25        android:debuggable="true"
+26        android:icon="@mipmap/ic_launcher"
+26-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:12:9-43
+27        android:label="البورصة المركزية"
+27-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:10:9-41
+28        android:usesCleartextTraffic="true" >
+28-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:11:9-44
+29        <activity
+29-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:13:9-48:20
+30            android:name="com.example.central_borssa.MainActivity"
+30-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:14:13-41
+31            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+31-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:17:13-163
+32            android:hardwareAccelerated="true"
+32-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:18:13-47
+33            android:launchMode="singleTop"
+33-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:15:13-43
+34            android:theme="@style/LaunchTheme"
+34-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:16:13-47
+35            android:windowSoftInputMode="adjustResize" >
+35-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:19:13-55
+36
+37            <!--
+38                 Specifies an Android theme to apply to this Activity as soon as
+39                 the Android process has started. This theme is visible to the user
+40                 while the Flutter UI initializes. After that, this theme continues
+41                 to determine the Window background behind the Flutter UI.
+42            -->
+43            <meta-data
+43-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:24:13-27:17
+44                android:name="io.flutter.embedding.android.NormalTheme"
+44-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:25:15-70
+45                android:resource="@style/NormalTheme" />
+45-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:26:15-52
+46            <!--
+47                 Displays an Android View that continues showing the launch screen
+48                 Drawable until Flutter paints its first frame, then this splash
+49                 screen fades out. A splash screen is useful to avoid any visual
+50                 gap between the end of Android's launch screen and the painting of
+51                 Flutter's first frame.
+52            -->
+53            <meta-data
+53-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:33:21-35:40
+54                android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
+54-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:34:17-82
+55                android:value="true" />
+55-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:35:17-37
+56            <meta-data
+56-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:36:15-38:74
+57                android:name="com.google.firebase.messaging.default_notification_channel_id"
+57-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:37:17-93
+58                android:value="@string/default_notification_channel_id" />
+58-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:38:17-72
+59
+60            <intent-filter>
+60-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:39:13-42:29
+61                <action android:name="android.intent.action.MAIN" />
+61-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:40:17-68
+61-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:40:25-66
+62
+63                <category android:name="android.intent.category.LAUNCHER" />
+63-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:41:17-76
+63-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:41:27-74
+64            </intent-filter>
+65            <intent-filter>
+65-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:43:13-46:29
+66                <action android:name="FLUTTER_NOTIFICATION_CLICK" />
+66-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:44:17-69
+66-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:44:25-66
+67
+68                <category android:name="android.intent.category.DEFAULT" />
+68-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:45:17-76
+68-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:45:27-73
+69            </intent-filter>
+70        </activity>
+71        <!--
+72             Don't delete the meta-data below.
+73             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+74        -->
+75        <meta-data
+75-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:51:9-53:33
+76            android:name="flutterEmbedding"
+76-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:52:13-44
+77            android:value="2" />
+77-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:53:13-30
+78
+79        <provider
+79-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-16:20
+80            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
+80-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-82
+81            android:authorities="com.example.central_borssa.flutter.image_provider"
+81-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-74
+82            android:exported="false"
+82-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-37
+83            android:grantUriPermissions="true" >
+83-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:12:13-47
+84            <meta-data
+84-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-15:75
+85                android:name="android.support.FILE_PROVIDER_PATHS"
+85-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:14:17-67
+86                android:resource="@xml/flutter_image_picker_file_paths" />
+86-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:15:17-72
+87        </provider>
+88        <provider
+88-->[:open_file] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\open_file\intermediates\library_manifest\debug\AndroidManifest.xml:12:9-21:20
+89            android:name="com.crazecoder.openfile.FileProvider"
+89-->[:open_file] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\open_file\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-64
+90            android:authorities="com.example.central_borssa.fileProvider.com.crazecoder.openfile"
+90-->[:open_file] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\open_file\intermediates\library_manifest\debug\AndroidManifest.xml:14:13-88
+91            android:exported="false"
+91-->[:open_file] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\open_file\intermediates\library_manifest\debug\AndroidManifest.xml:15:13-37
+92            android:grantUriPermissions="true" >
+92-->[:open_file] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\open_file\intermediates\library_manifest\debug\AndroidManifest.xml:16:13-47
+93            <meta-data
+93-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-15:75
+94                android:name="android.support.FILE_PROVIDER_PATHS"
+94-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:14:17-67
+95                android:resource="@xml/filepaths" />
+95-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:15:17-72
+96        </provider>
+97
+98        <service
+98-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:12:9-15:72
+99            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingBackgroundService"
+99-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-107
+100            android:exported="false"
+100-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:14:13-37
+101            android:permission="android.permission.BIND_JOB_SERVICE" />
+101-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:15:13-69
+102        <service
+102-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:16:9-22:19
+103            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingService"
+103-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:17:13-97
+104            android:exported="false" >
+104-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:18:13-37
+105            <intent-filter>
+105-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:19:13-21:29
+106                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+106-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:20:17-78
+106-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:20:25-75
+107            </intent-filter>
+108        </service>
+109
+110        <receiver
+110-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:24:9-31:20
+111            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingReceiver"
+111-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:25:13-98
+112            android:exported="true"
+112-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:26:13-36
+113            android:permission="com.google.android.c2dm.permission.SEND" >
+113-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:27:13-73
+114            <intent-filter>
+114-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:28:13-30:29
+115                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+115-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:29:17-81
+115-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:29:25-78
+116            </intent-filter>
+117        </receiver>
+118
+119        <service
+119-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:33:9-37:19
+120            android:name="com.google.firebase.components.ComponentDiscoveryService"
+120-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:33:18-89
+121            android:directBootAware="true"
+121-->[com.google.firebase:firebase-common:20.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\001005f8a6d451731759f26c348a4f28\jetified-firebase-common-20.0.0\AndroidManifest.xml:35:13-43
+122            android:exported="false" >
+122-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:51:13-37
+123            <meta-data
+123-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:34:13-36:85
+124                android:name="com.google.firebase.components:io.flutter.plugins.firebase.messaging.FlutterFirebaseAppRegistrar"
+124-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:35:17-128
+125                android:value="com.google.firebase.components.ComponentRegistrar" />
+125-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:36:17-82
+126            <meta-data
+126-->[:firebase_core] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-11:85
+127                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar"
+127-->[:firebase_core] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:10:17-124
+128                android:value="com.google.firebase.components.ComponentRegistrar" />
+128-->[:firebase_core] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:11:17-82
+129            <meta-data
+129-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:52:13-54:85
+130                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
+130-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:53:17-119
+131                android:value="com.google.firebase.components.ComponentRegistrar" />
+131-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:54:17-82
+132            <meta-data
+132-->[com.google.android.gms:play-services-measurement-api:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\f066b6d2c5d02cfaf39d96481d7e582a\play-services-measurement-api-19.0.2\AndroidManifest.xml:30:13-32:85
+133                android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
+133-->[com.google.android.gms:play-services-measurement-api:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\f066b6d2c5d02cfaf39d96481d7e582a\play-services-measurement-api-19.0.2\AndroidManifest.xml:31:17-139
+134                android:value="com.google.firebase.components.ComponentRegistrar" />
+134-->[com.google.android.gms:play-services-measurement-api:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\f066b6d2c5d02cfaf39d96481d7e582a\play-services-measurement-api-19.0.2\AndroidManifest.xml:32:17-82
+135            <meta-data
+135-->[com.google.firebase:firebase-datatransport:18.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\82b816673af1fa0a7ec30ae3cf988f6d\firebase-datatransport-18.0.0\AndroidManifest.xml:28:13-30:85
+136                android:name="com.google.firebase.components:com.google.firebase.datatransport.TransportRegistrar"
+136-->[com.google.firebase:firebase-datatransport:18.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\82b816673af1fa0a7ec30ae3cf988f6d\firebase-datatransport-18.0.0\AndroidManifest.xml:29:17-115
+137                android:value="com.google.firebase.components.ComponentRegistrar" />
+137-->[com.google.firebase:firebase-datatransport:18.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\82b816673af1fa0a7ec30ae3cf988f6d\firebase-datatransport-18.0.0\AndroidManifest.xml:30:17-82
+138            <meta-data
+138-->[com.google.firebase:firebase-installations:17.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\abda05cc7d8cb833f5002d5354d4a473\firebase-installations-17.0.0\AndroidManifest.xml:18:13-20:85
+139                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar"
+139-->[com.google.firebase:firebase-installations:17.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\abda05cc7d8cb833f5002d5354d4a473\firebase-installations-17.0.0\AndroidManifest.xml:19:17-127
+140                android:value="com.google.firebase.components.ComponentRegistrar" />
+140-->[com.google.firebase:firebase-installations:17.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\abda05cc7d8cb833f5002d5354d4a473\firebase-installations-17.0.0\AndroidManifest.xml:20:17-82
+141        </service>
+142
+143        <provider
+143-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:39:9-43:38
+144            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingInitProvider"
+144-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:40:13-102
+145            android:authorities="com.example.central_borssa.flutterfirebasemessaginginitprovider"
+145-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:41:13-88
+146            android:exported="false"
+146-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:42:13-37
+147            android:initOrder="99" />
+147-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:43:13-35
+148
+149        <activity
+149-->[:url_launcher] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-11:74
+150            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+150-->[:url_launcher] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-74
+151            android:exported="false"
+151-->[:url_launcher] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-37
+152            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+152-->[:url_launcher] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-71
+153
+154        <receiver
+154-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:29:9-33:20
+155            android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
+155-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:30:13-85
+156            android:enabled="true"
+156-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:31:13-35
+157            android:exported="false" >
+157-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:32:13-37
+158        </receiver>
+159
+160        <service
+160-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:35:9-38:40
+161            android:name="com.google.android.gms.measurement.AppMeasurementService"
+161-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:36:13-84
+162            android:enabled="true"
+162-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:37:13-35
+163            android:exported="false" />
+163-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:38:13-37
+164        <service
+164-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:39:9-43:72
+165            android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+165-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:40:13-87
+166            android:enabled="true"
+166-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:41:13-35
+167            android:exported="false"
+167-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:42:13-37
+168            android:permission="android.permission.BIND_JOB_SERVICE" />
+168-->[com.google.android.gms:play-services-measurement:19.0.2] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\b752d4b403be4bda7e7e94461a111ffb\play-services-measurement-19.0.2\AndroidManifest.xml:43:13-69
+169
+170        <receiver
+170-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:28:9-35:20
+171            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+171-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:29:13-78
+172            android:exported="true"
+172-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:30:13-36
+173            android:permission="com.google.android.c2dm.permission.SEND" >
+173-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:31:13-73
+174            <intent-filter>
+174-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:28:13-30:29
+175                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+175-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:29:17-81
+175-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:29:25-78
+176            </intent-filter>
+177        </receiver>
+178        <!--
+179             FirebaseMessagingService performs security checks at runtime,
+180             but set to not exported to explicitly avoid allowing another app to call it.
+181        -->
+182        <service
+182-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:41:9-48:19
+183            android:name="com.google.firebase.messaging.FirebaseMessagingService"
+183-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:42:13-82
+184            android:directBootAware="true"
+184-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:43:13-43
+185            android:exported="false" >
+185-->[com.google.firebase:firebase-messaging:22.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\07ae0add4ebcccbe15970fd0b0c13d46\jetified-firebase-messaging-22.0.0\AndroidManifest.xml:44:13-37
+186            <intent-filter android:priority="-500" >
+186-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:19:13-21:29
+187                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+187-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:20:17-78
+187-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:20:25-75
+188            </intent-filter>
+189        </service>
+190
+191        <provider
+191-->[com.google.firebase:firebase-common:20.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\001005f8a6d451731759f26c348a4f28\jetified-firebase-common-20.0.0\AndroidManifest.xml:26:9-31:39
+192            android:name="com.google.firebase.provider.FirebaseInitProvider"
+192-->[com.google.firebase:firebase-common:20.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\001005f8a6d451731759f26c348a4f28\jetified-firebase-common-20.0.0\AndroidManifest.xml:27:13-77
+193            android:authorities="com.example.central_borssa.firebaseinitprovider"
+193-->[com.google.firebase:firebase-common:20.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\001005f8a6d451731759f26c348a4f28\jetified-firebase-common-20.0.0\AndroidManifest.xml:28:13-72
+194            android:directBootAware="true"
+194-->[com.google.firebase:firebase-common:20.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\001005f8a6d451731759f26c348a4f28\jetified-firebase-common-20.0.0\AndroidManifest.xml:29:13-43
+195            android:exported="false"
+195-->[com.google.firebase:firebase-common:20.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\001005f8a6d451731759f26c348a4f28\jetified-firebase-common-20.0.0\AndroidManifest.xml:30:13-37
+196            android:initOrder="100" />
+196-->[com.google.firebase:firebase-common:20.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\001005f8a6d451731759f26c348a4f28\jetified-firebase-common-20.0.0\AndroidManifest.xml:31:13-36
+197
+198        <meta-data
+198-->[com.google.android.gms:play-services-basement:17.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\6275672990ab7d4a1ba3d57301f94881\jetified-play-services-basement-17.0.0\AndroidManifest.xml:23:9-25:69
+199            android:name="com.google.android.gms.version"
+199-->[com.google.android.gms:play-services-basement:17.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\6275672990ab7d4a1ba3d57301f94881\jetified-play-services-basement-17.0.0\AndroidManifest.xml:24:13-58
+200            android:value="@integer/google_play_services_version" />
+200-->[com.google.android.gms:play-services-basement:17.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\6275672990ab7d4a1ba3d57301f94881\jetified-play-services-basement-17.0.0\AndroidManifest.xml:25:13-66
+201
+202        <service
+202-->[com.google.android.datatransport:transport-backend-cct:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\c690d8f58aa92ce8d722b2b1a4f6cbfa\jetified-transport-backend-cct-3.0.0\AndroidManifest.xml:29:9-35:19
+203            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
+203-->[com.google.android.datatransport:transport-backend-cct:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\c690d8f58aa92ce8d722b2b1a4f6cbfa\jetified-transport-backend-cct-3.0.0\AndroidManifest.xml:30:13-103
+204            android:exported="false" >
+204-->[com.google.android.datatransport:transport-backend-cct:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\c690d8f58aa92ce8d722b2b1a4f6cbfa\jetified-transport-backend-cct-3.0.0\AndroidManifest.xml:31:13-37
+205            <meta-data
+205-->[com.google.android.datatransport:transport-backend-cct:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\c690d8f58aa92ce8d722b2b1a4f6cbfa\jetified-transport-backend-cct-3.0.0\AndroidManifest.xml:32:13-34:39
+206                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
+206-->[com.google.android.datatransport:transport-backend-cct:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\c690d8f58aa92ce8d722b2b1a4f6cbfa\jetified-transport-backend-cct-3.0.0\AndroidManifest.xml:33:17-94
+207                android:value="cct" />
+207-->[com.google.android.datatransport:transport-backend-cct:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\c690d8f58aa92ce8d722b2b1a4f6cbfa\jetified-transport-backend-cct-3.0.0\AndroidManifest.xml:34:17-36
+208        </service>
+209        <service
+209-->[com.google.android.datatransport:transport-runtime:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\a56d8e7e036eecc4c880c0d7ec601e12\jetified-transport-runtime-3.0.0\AndroidManifest.xml:26:9-30:19
+210            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+210-->[com.google.android.datatransport:transport-runtime:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\a56d8e7e036eecc4c880c0d7ec601e12\jetified-transport-runtime-3.0.0\AndroidManifest.xml:27:13-117
+211            android:exported="false"
+211-->[com.google.android.datatransport:transport-runtime:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\a56d8e7e036eecc4c880c0d7ec601e12\jetified-transport-runtime-3.0.0\AndroidManifest.xml:28:13-37
+212            android:permission="android.permission.BIND_JOB_SERVICE" >
+212-->[com.google.android.datatransport:transport-runtime:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\a56d8e7e036eecc4c880c0d7ec601e12\jetified-transport-runtime-3.0.0\AndroidManifest.xml:29:13-69
+213        </service>
+214
+215        <receiver
+215-->[com.google.android.datatransport:transport-runtime:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\a56d8e7e036eecc4c880c0d7ec601e12\jetified-transport-runtime-3.0.0\AndroidManifest.xml:32:9-34:40
+216            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+216-->[com.google.android.datatransport:transport-runtime:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\a56d8e7e036eecc4c880c0d7ec601e12\jetified-transport-runtime-3.0.0\AndroidManifest.xml:33:13-132
+217            android:exported="false" />
+217-->[com.google.android.datatransport:transport-runtime:3.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\a56d8e7e036eecc4c880c0d7ec601e12\jetified-transport-runtime-3.0.0\AndroidManifest.xml:34:13-37
+218    </application>
+219
+220</manifest>

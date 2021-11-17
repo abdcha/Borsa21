@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">286141248419-8muga47nr898av4l8ib6bng7q1ttvssv.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">286141248419</string>
+    <string name="google_api_key" translatable="false">AIzaSyAycDKTu3nW3Jc3Lao8VcJxaUAGiPsl_UQ</string>
+    <string name="google_app_id" translatable="false">1:286141248419:android:d3bb5c450359e527886016</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAycDKTu3nW3Jc3Lao8VcJxaUAGiPsl_UQ</string>
+    <string name="google_storage_bucket" translatable="false">borsa-5bfca.appspot.com</string>
+    <string name="project_id" translatable="false">borsa-5bfca</string>
+</resources>

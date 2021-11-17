@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:central_borssa/business_logic/Advertisement/bloc/advertisement_bloc.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
+import 'package:central_borssa/data/model/Advertisement.dart';
 import 'package:central_borssa/presentation/Post/EditORDelete.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -40,10 +43,12 @@ class AllPostPage extends State<AllPost> {
   late PostBloc postbloc;
   late BorssaBloc borssaBloc;
   late CompanyBloc companybloc;
+  late AdvertisementBloc advertisementbloc;
   late List<Posts> post = [];
   late List<list> cities = [];
   late List<list?> selectedcities = [];
   late List<String> userPermissions = [];
+  late List<Advertisements> advertisements = [];
   late List<CityId> cityid = [];
   final RefreshController refreshController =
       RefreshController(initialRefresh: true);
@@ -58,6 +63,7 @@ class AllPostPage extends State<AllPost> {
   late String userActive = "";
   int companyuser = 0;
   int currentPage = 1;
+  List<CityId> cityidconvert = [];
 
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -72,6 +78,17 @@ class AllPostPage extends State<AllPost> {
     setState(() {});
   }
 
+  addsharedValue(List<CityId> cityid) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> test = [];
+// prefs.getStringList('searchcity')
+    for (var i in cityid) {
+      test.add(i.id.toString());
+    }
+    prefs.setStringList('searchcity', test);
+    setState(() {});
+  }
+
   reload() async {
     print('main reload');
     postloading(isRefresh: true);
@@ -80,22 +97,53 @@ class AllPostPage extends State<AllPost> {
   }
 
   Future<bool> postloading({bool isRefresh = false}) async {
-    if (isRefresh) {
-      currentPage = 1;
-      post.clear();
-      postbloc.add(
-          GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
-      print('inside');
-      currentPage++;
-    }
-    if (post.length != totalpost && !isRefresh) {
-      print('out');
-      postbloc.add(
-          GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
-      currentPage++;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var cityid = prefs.getStringList('searchcity');
+
+    if (cityid != null) {
+      if (cityidconvert.isEmpty)
+        for (var i in cityid) {
+          cityidconvert.add(CityId(id: int.parse(i)));
+        }
+      if (isRefresh) {
+        currentPage = 1;
+        post.clear();
+        print(cityidconvert);
+        postbloc.add(GetPostByCityName(
+          postscityId: cityidconvert,
+          sortby: "desc",
+          page: currentPage,
+          countItemPerpage: countItemPerpage,
+        ));
+        print('inside');
+        currentPage++;
+      }
+      if (post.length != totalpost && !isRefresh) {
+        print('out');
+        postbloc.add(GetPostByCityName(
+            postscityId: cityidconvert,
+            sortby: "desc",
+            page: currentPage,
+            countItemPerpage: countItemPerpage));
+        currentPage++;
+      }
+    } else {
+      if (isRefresh) {
+        currentPage = 1;
+        post.clear();
+        postbloc.add(
+            GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
+        print('inside');
+        currentPage++;
+      }
+      if (post.length != totalpost && !isRefresh) {
+        print('out');
+        postbloc.add(
+            GetAllPost(page: currentPage, countItemPerpage: countItemPerpage));
+        currentPage++;
+      }
     }
     setState(() {});
-
     return true;
   }
 
@@ -115,12 +163,98 @@ class AllPostPage extends State<AllPost> {
     postbloc = BlocProvider.of<PostBloc>(context);
     borssaBloc = BlocProvider.of<BorssaBloc>(context);
     companybloc = BlocProvider.of<CompanyBloc>(context);
-
+    advertisementbloc = BlocProvider.of<AdvertisementBloc>(context);
+    advertisementbloc.add(GetAdvertisementEvent());
     postloading();
     sharedValue();
     companybloc.add(GetAllCompanies());
     borssaBloc.add(AllCitiesList());
     super.initState();
+  }
+
+  Widget sliderImage() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10, top: 10),
+      child: Column(
+        children: [
+          Card(
+            child: CarouselSlider(
+              carouselController: _controller,
+              options: CarouselOptions(
+                  autoPlay: true,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _current = index;
+                    });
+                  }),
+              items: advertisements
+                  .map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Card(
+                        margin: EdgeInsets.only(
+                          top: 15.0,
+                          bottom: 15.0,
+                        ),
+                        elevation: 5.0,
+                        shadowColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(30.0),
+                          ),
+                          child: Stack(
+                            children: <Widget>[
+                              InkWell(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Center(
+                                          child: Image.network(item.image),
+                                        );
+                                      });
+                                },
+                                child: Image.network(
+                                  item.image,
+                                  fit: BoxFit.fill,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: advertisements.asMap().entries.map((entry) {
+              return GestureDetector(
+                onTap: () => _controller.animateToPage(entry.key),
+                child: Container(
+                  width: 12.0,
+                  height: 12.0,
+                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: (Theme.of(context).brightness == Brightness.dark
+                              ? Color(navbar.hashCode)
+                              : Colors.black)
+                          .withOpacity(_current == entry.key ? 0.9 : 0.4)),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
   }
 
   //Carousel tools Start
@@ -137,83 +271,6 @@ class AllPostPage extends State<AllPost> {
       itemBuilder: (BuildContext context, int index) {
         return Column(
           children: [
-            if (index == 0)
-              // Slider Images
-              Container(
-                margin: const EdgeInsets.only(bottom: 10, top: 10),
-                child: Column(
-                  children: [
-                    Card(
-                      child: CarouselSlider(
-                        carouselController: _controller,
-                        options: CarouselOptions(
-                            autoPlay: true,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                // print(index);
-                                _current = index;
-                              });
-                            }),
-                        items: imagesList
-                            .map(
-                              (item) => Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Card(
-                                  margin: EdgeInsets.only(
-                                    top: 15.0,
-                                    bottom: 15.0,
-                                  ),
-                                  elevation: 5.0,
-                                  shadowColor: Colors.black,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(30.0),
-                                    ),
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Image.asset(
-                                          item,
-                                          fit: BoxFit.fill,
-                                          width: double.infinity,
-                                          height: double.infinity,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: imagesList.asMap().entries.map((entry) {
-                        return GestureDetector(
-                          onTap: () => _controller.animateToPage(entry.key),
-                          child: Container(
-                            width: 12.0,
-                            height: 12.0,
-                            margin: EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 4.0),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: (Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Color(navbar.hashCode)
-                                        : Colors.black)
-                                    .withOpacity(
-                                        _current == entry.key ? 0.9 : 0.4)),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-              ),
             Card(
               elevation: 5.0,
               shadowColor: Colors.black,
@@ -502,7 +559,7 @@ class AllPostPage extends State<AllPost> {
                           ),
                           onConfirm: (List<int?> results) {
                             setState(() {
-                              // print(results);
+                              print(results);
                               for (var i = 0; i < results.length; i++) {
                                 cityid.add(CityId(id: results[i].hashCode));
                               }
@@ -523,11 +580,14 @@ class AllPostPage extends State<AllPost> {
                         child: Text('البحث'),
                         onPressed: () {
                           if (cityid.isNotEmpty) {
+                            addsharedValue(cityid);
                             postbloc.add(GetPostByCityName(
-                                postscityId: cityid,
-                                page: 1,
-                                countItemPerpage: 5,
-                                sortby: "desc"));
+                              postscityId: cityidconvert,
+                              sortby: "desc",
+                              page: currentPage,
+                              countItemPerpage: countItemPerpage,
+                            ));
+                            Navigator.pop(context);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -616,11 +676,6 @@ class AllPostPage extends State<AllPost> {
             child: Text('البورصة المركزية'),
           ),
           actions: [
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 4),
-            //   child: InkWell(
-            //       child: Icon(Icons.notification_add_outlined), onTap: () {}),
-            // ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 4),
               child: InkWell(
@@ -683,9 +738,19 @@ class AllPostPage extends State<AllPost> {
                     ),
                   );
                 } else if (state is GetPostByCityNameLoaded) {
-                  print(state.posts.posts.length);
-                  post = state.posts.posts;
-                  setState(() {});
+                  if (post.isEmpty) {
+                    cityid.clear();
+                    post.clear();
+                    print(state);
+                    currentPage = 1;
+                    post = state.posts.posts;
+                    totalpost = state.posts.total;
+                    setState(() {});
+                  } else if (post.isNotEmpty) {
+                    post.addAll(state.posts.posts);
+                    print('not empty');
+                    setState(() {});
+                  }
                 } else if (state is AddPostSuccess) {
                   print(state);
                   reload();
@@ -747,6 +812,31 @@ class AllPostPage extends State<AllPost> {
                 }
               },
             ),
+            BlocListener<AdvertisementBloc, AdvertisementState>(
+              listener: (context, state) {
+                if (state is GetAdvertisementLoading) {
+                  print(state);
+                } else if (state is GetAdvertisementLoaded) {
+                  print(state);
+                  advertisements.clear();
+                  advertisements = state.allAdvertisements;
+                  print(advertisements);
+                  setState(() {});
+                } else if (state is GetAdvertisementError) {
+                  print(state);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('خطأ في التحميل'),
+                      action: SnackBarAction(
+                        label: 'تنبيه',
+                        onPressed: () {},
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
           ],
           child: Container(
             height: double.infinity,
@@ -772,7 +862,14 @@ class AllPostPage extends State<AllPost> {
                 if (mounted) setState(() {});
                 refreshController.loadFailed();
               },
-              child: ourListview(),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    sliderImage(),
+                    ourListview(),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

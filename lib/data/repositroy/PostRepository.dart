@@ -111,7 +111,11 @@ class PostRepository {
   }
 
   Future<Either<String, PostGet>> getAllPostByCityName(
-      List<CityId?> citiesid, String sortby, int pageSize, int page) async {
+    List<CityId?> citiesid,
+    String sortby,
+    int page,
+    int pageSize,
+  ) async {
     try {
       var cities;
       if (citiesid.isNotEmpty) {
@@ -120,10 +124,13 @@ class PostRepository {
       }
       SharedPreferences _pref = await SharedPreferences.getInstance();
       var token = _pref.get('token');
-
+      print(cities);
       dio.options.headers['authorization'] = 'Bearer $token';
-      String fullUrl = "$allPostByCityName&sort=$sortby&city_id=$cities";
+      String fullUrl =
+          "$allPostByCityName&page=$page&sort=desc&pageSize=$pageSize&city_id=$cities";
+      print(fullUrl);
       var getallPost = await dio.get(fullUrl);
+      print('from city name');
       print(getallPost.data);
       var data = new PostGet.fromJson(getallPost.data['data']);
 
@@ -132,24 +139,4 @@ class PostRepository {
       return Left('error');
     }
   }
-
-// Future<Either<String, PostGet>> getAllPostByCityName(
-//       List<list?> citiesName, String sortby, int pageSize, int page) async {
-//     try {
-//       String jsonTutorial = jsonEncode(citiesName);
-//       print(jsonTutorial);
-//       SharedPreferences _pref = await SharedPreferences.getInstance();
-//       var token = _pref.get('token');
-//       dio.options.headers['authorization'] = 'Bearer $token';
-//       String fullUrl =
-//           "$allPostByCityName$page&date=$sortby&pageSize=$pageSize&page=$page";
-//       var getallPost = await dio.get(fullUrl);
-//       print(getallPost.data);
-//       var data = new PostGet.fromJson(getallPost.data['data']);
-
-//       return Right(data);
-//     } catch (e) {
-//       return Left('error');
-//     }
-//   }
 }
