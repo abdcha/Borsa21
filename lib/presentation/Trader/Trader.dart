@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:central_borssa/business_logic/Advertisement/bloc/advertisement_bloc.dart';
+import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Advertisement.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
@@ -8,7 +9,7 @@ import 'package:flag/flag_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
+import 'package:central_borssa/business_logic/Borssa/bloc/borssa_event.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
 import 'package:central_borssa/data/model/Currency.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,6 +61,9 @@ class TraderPage extends State<Trader> {
     advertisementbloc = BlocProvider.of<AdvertisementBloc>(context);
     advertisementbloc.add(GetAdvertisementEvent());
 
+    bloc = BlocProvider.of<BorssaBloc>(context);
+    bloc.add(TraderCurrencyEvent());
+
     super.initState();
   }
 
@@ -73,6 +77,7 @@ class TraderPage extends State<Trader> {
       child: Column(
         children: [
           Card(
+            color: Color(0xff505D6E),
             child: CarouselSlider(
               carouselController: _controller,
               options: CarouselOptions(
@@ -91,7 +96,7 @@ class TraderPage extends State<Trader> {
                           top: 15.0,
                           bottom: 15.0,
                         ),
-                        elevation: 5.0,
+                        elevation: 15.0,
                         shadowColor: Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
@@ -152,133 +157,81 @@ class TraderPage extends State<Trader> {
     );
   }
 
-  Widget dataTable(double buy, double sell, String name) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 25.0,
-      ),
-      child: Column(
-        children: [
+  Widget dataTable(List<dynamic> currencyPricelist) {
+    return Column(
+      children: [
+        for (int i = 0; i < currencyprice.length; i++)
           Container(
             width: double.infinity,
             margin: EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 0),
-            child: DataTable(
-                dataTextStyle: TextStyle(
-                  fontSize: 12,
-                  fontStyle: FontStyle.normal,
-                ),
-                headingRowHeight: 28,
-                horizontalMargin: 5.5,
-                dividerThickness: 2,
-                dataRowHeight: 120,
-                columnSpacing: 3,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: const Color(0xff505D6E),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0x29000000),
-                      offset: Offset(0, 3),
-                      blurRadius: 6,
+            child: Column(
+              children: [
+                DataTable(
+                    dataTextStyle: TextStyle(
+                      fontSize: 12,
+                      fontStyle: FontStyle.normal,
                     ),
-                  ],
-                ),
-                headingRowColor: MaterialStateColor.resolveWith(
-                  (states) => Color(0xff7d8a99),
-                ),
-                headingTextStyle: const TextStyle(
-                  inherit: false,
-                ),
-                columns: [
-                  DataColumn(
-                      label: Expanded(
-                    child: Container(
-                        child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: Text(
-                            name,
-                            style: TextStyle(
-                                color: const Color(0xffffffff),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
-                          ),
-                        )
+                    headingRowHeight: 28,
+                    horizontalMargin: 5.5,
+                    dividerThickness: 2,
+                    dataRowHeight: 110,
+                    columnSpacing: 3,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color(0xff505D6E),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0x29000000),
+                          offset: Offset(0, 3),
+                          blurRadius: 6,
+                        ),
                       ],
-                    )),
-                  )),
-                ], 
-                rows: [
-                  DataRow(cells: [
-                    DataCell(
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
+                    ),
+                    headingRowColor: MaterialStateColor.resolveWith(
+                      (states) => Color(0xff7d8a99),
+                    ),
+                    headingTextStyle: const TextStyle(
+                      inherit: false,
+                    ),
+                    columns: [
+                      DataColumn(
+                          label: Expanded(
+                        child: Container(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Flag.fromCode(
-                                  FlagsCode.IQ,
-                                  height: 30,
-                                  width: 30,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 8.0,
-                                    bottom: 8.0,
-                                    right: 8.0,
-                                  ),
-                                ),
-                                Flag.fromCode(
-                                  FlagsCode.US,
-                                  height: 30,
-                                  width: 30,
-                                ),
-                                Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0, right: 12),
-                                  child: InkWell(
-                                    child: Text(
-                                      buy.toString(),
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0, right: 12),
-                                  child: InkWell(
-                                    child: Text(
-                                      'العرض',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 10, bottom: 10),
-                              child: Row(
+                            Text(
+                              currencyPricelist[i].city.name == 'إربيل'
+                                  ? "الشمال"
+                                  : currencyPricelist[i].city.name == 'بغداد'
+                                      ? "بغداد"
+                                      : currencyPricelist[i].city.name == 'بصرة'
+                                          ? "الجنوب"
+                                          : "",
+                              style: TextStyle(
+                                  color: const Color(0xffffffff),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                            )
+                          ],
+                        )),
+                      )),
+                    ],
+                    rows: [
+                      DataRow(cells: [
+                        DataCell(
+                          Column(
+                            children: [
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Flag.fromCode(
-                                    FlagsCode.IQ,
-                                    height: 30,
-                                    width: 30,
+                                  CircleAvatar(
+                                    backgroundColor: Color(navbar.hashCode),
+                                    child: Flag.fromCode(
+                                      FlagsCode.IQ,
+                                      height: 30,
+                                      width: 30,
+                                    ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
@@ -287,10 +240,42 @@ class TraderPage extends State<Trader> {
                                       right: 8.0,
                                     ),
                                   ),
-                                  Flag.fromCode(
-                                    FlagsCode.US,
-                                    height: 30,
-                                    width: 30,
+                                  CircleAvatar(
+                                    backgroundColor: Color(navbar.hashCode),
+                                    child: Flag.fromCode(
+                                      FlagsCode.US,
+                                      height: 30,
+                                      width: 30,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8.0, right: 12),
+                                    child: InkWell(
+                                      child: Row(
+                                        children: [
+                                          currencyPricelist[i].buyStatus ==
+                                                  "down"
+                                              ? Icon(
+                                                  Icons.call_received,
+                                                  color: Colors.red,
+                                                )
+                                              : Icon(
+                                                  Icons.call_made,
+                                                  color: Colors.green,
+                                                ),
+                                          Text(
+                                            currencyPricelist[i].buy.toString(),
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                   Spacer(),
                                   Padding(
@@ -298,22 +283,7 @@ class TraderPage extends State<Trader> {
                                         top: 8.0, right: 12),
                                     child: InkWell(
                                       child: Text(
-                                        sell.toString(),
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 8.0, right: 18),
-                                    child: InkWell(
-                                      child: Text(
-                                        'الطلب',
+                                        'العرض',
                                         style: TextStyle(
                                           fontSize: 20,
                                           color: Colors.white,
@@ -324,16 +294,93 @@ class TraderPage extends State<Trader> {
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 10, bottom: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: Color(navbar.hashCode),
+                                      child: Flag.fromCode(
+                                        FlagsCode.IQ,
+                                        height: 30,
+                                        width: 30,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 8.0,
+                                        bottom: 8.0,
+                                        right: 8.0,
+                                      ),
+                                    ),
+                                    CircleAvatar(
+                                      backgroundColor: Color(navbar.hashCode),
+                                      child: Flag.fromCode(
+                                        FlagsCode.US,
+                                        height: 30,
+                                        width: 30,
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 8.0, right: 12),
+                                      child: InkWell(
+                                        child: Row(
+                                          children: [
+                                            currencyPricelist[i].sellStatus ==
+                                                    "down"
+                                                ? Icon(
+                                                    Icons.call_received,
+                                                    color: Colors.red,
+                                                  )
+                                                : Icon(
+                                                    Icons.call_made,
+                                                    color: Colors.green,
+                                                  ),
+                                            Text(
+                                              currencyPricelist[i]
+                                                  .sell
+                                                  .toString(),
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 8.0, right: 18),
+                                      child: InkWell(
+                                        child: Text(
+                                          'الطلب',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ]),
-                ]),
+                      ]),
+                    ]),
+              ],
+            ),
           ),
-        ],
-      ),
+      ],
     );
   }
 
@@ -389,7 +436,7 @@ class TraderPage extends State<Trader> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Color(0xff6e7d91),
       drawer: newDrawer(),
       appBar: AppBar(
         title: Center(
@@ -408,15 +455,15 @@ class TraderPage extends State<Trader> {
         listeners: [
           BlocListener<BorssaBloc, BorssaState>(
             listener: (context, state) {
-              if (state is BorssaReloadingState) {
+              if (state is GetTraderCurrencyLoading) {
                 print(state);
-              } else if (state is GetAllCityState) {
+              } else if (state is GetTraderCurrencyLoaded) {
                 print(state);
                 currencyprice = state.cities;
                 setState(() {
                   isloading = false;
                 });
-              } else if (state is BorssaErrorLoading) {
+              } else if (state is GetTraderCurrencyError) {
                 print(state);
 
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -462,9 +509,7 @@ class TraderPage extends State<Trader> {
                 child: Column(
                   children: [
                     sliderImage(),
-                    dataTable(122.2, 1222.9, "بغداد"),
-                    dataTable(122.2, 1222.9, "االشمال"),
-                    dataTable(122.2, 1222.9, 'االجنوب'),
+                    dataTable(currencyprice),
                   ],
                 ),
               ),

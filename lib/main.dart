@@ -1,6 +1,7 @@
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
 import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
+import 'package:central_borssa/business_logic/Company/bloc/company_state.dart';
 import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';

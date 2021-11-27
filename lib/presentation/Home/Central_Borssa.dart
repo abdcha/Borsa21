@@ -19,6 +19,8 @@ import 'package:intl/intl.dart';
 import 'package:central_borssa/data/model/Transfer.dart' as transfer;
 import 'dart:ui' as ui;
 
+import 'package:url_launcher/url_launcher.dart';
+
 class CentralBorssa extends StatefulWidget {
   CentralBorssaPage createState() => CentralBorssaPage();
 }
@@ -78,6 +80,11 @@ class CentralBorssaPage extends State<CentralBorssa> {
     super.initState();
   }
 
+  void whatsappSender({@required number}) async {
+    final String url = "https://api.whatsapp.com/send?phone=$number";
+    await launch(url);
+  }
+
   Future<void> currencypusher(String channel) async {
     try {
       SharedPreferences _pref = await SharedPreferences.getInstance();
@@ -124,7 +131,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
     return Column(
       children: [
         Container(
-          width: 200,
+          width: MediaQuery.of(context).size.width - 24,
           child: Card(
             color: Color(0xff7d8a99),
             child: Text(
@@ -139,7 +146,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
         ),
         Container(
           width: double.infinity,
-          margin: EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 0),
+          margin: EdgeInsets.only(left: 12, right: 12, bottom: 8),
           child: DataTable(
               dataTextStyle: TextStyle(
                 fontSize: 12,
@@ -256,8 +263,11 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                                   CurrencyInitial(),
                                                   CurrencyRepository()),
                                               child: UpdatePrice(
-                                                cityid: currencyPricelist[i]
-                                                    .first_city_id,
+                                                cityid: tableName == "currency"
+                                                    ? currencyPricelist[i]
+                                                        .city
+                                                        .id
+                                                    : currencyPricelist[i].id,
                                                 id: currencyPricelist[i].id,
                                                 buy: currencyPricelist[i].buy,
                                                 sell: currencyPricelist[i].sell,
@@ -357,10 +367,18 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PriceChart(
-                                    cityid: currencyPricelist[i].city.id,
+                                    cityid: tableName == "currency"
+                                        ? currencyPricelist[i].city.id
+                                        : currencyPricelist[i].id,
                                     fromdate: 1,
                                     todate: 1,
-                                    title: currencyPricelist[i].city.name,
+                                    title: tableName == "currency"
+                                        ? currencyPricelist[i].city.name
+                                        : currencyPricelist[i].firstCity.name +
+                                            " " +
+                                            currencyPricelist[i]
+                                                .secondCity
+                                                .name,
                                     type: tableName,
                                   ),
                                 ),
@@ -387,10 +405,20 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => PriceChart(
-                                          cityid: currencyPricelist[i].city.id,
+                                          cityid: tableName == "currency"
+                                              ? currencyPricelist[i].city.id
+                                              : currencyPricelist[i].id,
                                           fromdate: 1,
                                           todate: 1,
-                                          title: currencyPricelist[i].city.name,
+                                          title: tableName == "currency"
+                                              ? currencyPricelist[i].city.name
+                                              : currencyPricelist[i]
+                                                      .firstCity
+                                                      .name +
+                                                  " " +
+                                                  currencyPricelist[i]
+                                                      .secondCity
+                                                      .name,
                                           type: tableName,
                                         ),
                                       ),
@@ -417,10 +445,20 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => PriceChart(
-                                          cityid: currencyPricelist[i].city.id,
+                                          cityid: tableName == "currency"
+                                              ? currencyPricelist[i].city.id
+                                              : currencyPricelist[i].id,
                                           fromdate: 1,
                                           todate: 1,
-                                          title: currencyPricelist[i].city.name,
+                                          title: tableName == "currency"
+                                              ? currencyPricelist[i].city.name
+                                              : currencyPricelist[i]
+                                                      .firstCity
+                                                      .name +
+                                                  " " +
+                                                  currencyPricelist[i]
+                                                      .secondCity
+                                                      .name,
                                           type: tableName,
                                         ),
                                       ),
@@ -442,7 +480,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
     return Column(
       children: [
         Container(
-          width: 200,
+          width: MediaQuery.of(context).size.width - 24,
           child: Card(
             color: Color(0xff7d8a99),
             child: Text(
@@ -674,10 +712,18 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PriceChart(
-                                    cityid: currencyPricelist[i].city.id,
+                                    cityid: tableName == "currency"
+                                        ? currencyPricelist[i].city.id
+                                        : currencyPricelist[i].id,
                                     fromdate: 1,
                                     todate: 1,
-                                    title: currencyPricelist[i].city.name,
+                                    title: tableName == "currency"
+                                        ? currencyPricelist[i].city.name
+                                        : currencyPricelist[i].firstCity.name +
+                                            " " +
+                                            currencyPricelist[i]
+                                                .secondCity
+                                                .name,
                                     type: tableName,
                                   ),
                                 ),
@@ -704,10 +750,20 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => PriceChart(
-                                          cityid: currencyPricelist[i].city.id,
+                                          cityid: tableName == "currency"
+                                              ? currencyPricelist[i].city.id
+                                              : currencyPricelist[i].id,
                                           fromdate: 1,
                                           todate: 1,
-                                          title: currencyPricelist[i].city.name,
+                                          title: tableName == "currency"
+                                              ? currencyPricelist[i].city.name
+                                              : currencyPricelist[i]
+                                                      .firstCity
+                                                      .name +
+                                                  " " +
+                                                  currencyPricelist[i]
+                                                      .secondCity
+                                                      .name,
                                           type: tableName,
                                         ),
                                       ),
@@ -734,10 +790,20 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => PriceChart(
-                                          cityid: currencyPricelist[i].city.id,
+                                          cityid: tableName == "currency"
+                                              ? currencyPricelist[i].city.id
+                                              : currencyPricelist[i].id,
                                           fromdate: 1,
                                           todate: 1,
-                                          title: currencyPricelist[i].city.name,
+                                          title: tableName == "currency"
+                                              ? currencyPricelist[i].city.name
+                                              : currencyPricelist[i]
+                                                      .firstCity
+                                                      .name +
+                                                  " " +
+                                                  currencyPricelist[i]
+                                                      .secondCity
+                                                      .name,
                                           type: tableName,
                                         ),
                                       ),
@@ -807,6 +873,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff6e7d91),
       drawer: newDrawer(),
       appBar: AppBar(
         title: Center(
@@ -833,7 +900,6 @@ class CentralBorssaPage extends State<CentralBorssa> {
             });
           } else if (state is BorssaErrorLoading) {
             print(state);
-
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: const Text('خطأ في التحميل'),
@@ -867,6 +933,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                     )
                   : userPermissions.contains('Trader_Permission')
                       ? Container(
+                          height: MediaQuery.of(context).size.height - 168,
                           child: Directionality(
                             textDirection: ui.TextDirection.rtl,
                             child: Card(
@@ -885,11 +952,16 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'هذه الصفحة خاصة بموظفي المصارف ومحلات الصرافة والمتعاملين الرسميين بالبورصات. للحصول على معلومات نرجو التواصل معنا من خلال الرقم التالي 07700198027.',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 20,
+                                    child: InkWell(
+                                      onTap: () {
+                                        whatsappSender(number: '07700198027');
+                                      },
+                                      child: Text(
+                                        'هذه الصفحة خاصة بموظفي المصارف ومحلات الصرافة والمتعاملين الرسميين بالبورصات. للحصول على معلومات نرجو التواصل معنا من خلال الرقم التالي 07700198027.',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -899,102 +971,104 @@ class CentralBorssaPage extends State<CentralBorssa> {
                           ),
                         )
                       : Container(
-                          child: Column(
-                            children: [
-                              istransferloading
-                                  ? Container()
-                                  : dataTable(currencyprice, "currency"),
-                              istransferloading
-                                  ? Container()
-                                  : dataTabletransfer(
-                                      transferprice, "transfer"),
-                              (userPermissions.contains('Trader_Permission') ||
-                                      userPermissions.contains(
-                                          'Update_Auction_Price_Permission'))
-                                  ? Container()
-                                  : istransferloading
-                                      ? Container()
-                                      : Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                child: ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                          primary: Color(
-                                                              navbar.hashCode),
-                                                          alignment:
-                                                              Alignment.center),
-                                                  onPressed: () {
-                                                    // getChart();
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              Auction()),
-                                                    );
-                                                  },
+                          child: Card(
+                            borderOnForeground: true,
+                            color: Color(0xff6e7d91),
+                            child: Column(
+                              children: [
+                                istransferloading
+                                    ? Container()
+                                    : dataTable(currencyprice, "currency"),
+                                istransferloading
+                                    ? Container()
+                                    : dataTabletransfer(
+                                        transferprice, "transfer"),
+                                (userPermissions
+                                            .contains('Trader_Permission') ||
+                                        userPermissions.contains(
+                                            'Update_Auction_Price_Permission'))
+                                    ? Container()
+                                    : istransferloading
+                                        ? Container()
+                                        : Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: Row(
+                                              children: [
+                                                Spacer(),
+                                                Container(
                                                   child: Padding(
                                                     padding:
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: Column(
                                                       children: [
-                                                        Icon(Icons
-                                                            .account_balance_sharp),
+                                                        InkWell(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          Auction()),
+                                                            );
+                                                          },
+                                                          child: Icon(
+                                                            Icons
+                                                                .account_balance_sharp,
+                                                            color: Colors.white,
+                                                            size: 55,
+                                                          ),
+                                                        ),
+                                                        Text("المزاد المركزي",
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                    .white54)),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 8.0),
+                                                    child: Column(
+                                                      children: [
+                                                        InkWell(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          GlobalAuction()),
+                                                            );
+                                                          },
+                                                          child: Icon(
+                                                            Icons
+                                                                .public_outlined,
+                                                            size: 55,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
                                                         Text(
-                                                          "المزاد المركزي",
+                                                          "البورصة العالميه",
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              color: Colors
+                                                                  .white54),
                                                         ),
                                                       ],
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              Spacer(),
-                                              Container(
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                            primary: Color(
-                                                                navbar
-                                                                    .hashCode),
-                                                            alignment: Alignment
-                                                                .center),
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                GlobalAuction()),
-                                                      );
-                                                    },
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Column(
-                                                        children: [
-                                                          Icon(
-                                                            Icons
-                                                                .public_outlined,
-                                                          ),
-                                                          Text(
-                                                            "البورصة العالميه",
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                                Spacer(),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
             ],

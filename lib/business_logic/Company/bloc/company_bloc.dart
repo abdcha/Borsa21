@@ -1,13 +1,7 @@
-import 'dart:async';
-
-import 'package:bloc/bloc.dart';
-import 'package:central_borssa/data/model/Post/Cities.dart';
-import 'package:central_borssa/data/model/Post/CompanyPost.dart';
+import 'package:central_borssa/business_logic/Company/bloc/company_state.dart';
+import 'package:central_borssa/business_logic/Company/bloc/company_event.dart';
 import 'package:central_borssa/data/repositroy/CompanyRepository.dart';
-import 'package:equatable/equatable.dart';
-
-part 'company_event.dart';
-part 'company_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
   CompanyRepository companyRepository;
@@ -74,6 +68,15 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
         yield DeletePostError();
       }, (r) async* {
         yield DeletePostLoaded(status: r);
+      });
+    } else if (event is GetCompanyInfoEvent) {
+      yield GetCompanyInfoLoading();
+      var deletePostResponse = await companyRepository.getCompanyInfo(event.id);
+      yield* deletePostResponse.fold((l) async* {
+        yield GetCompanyInfoError();
+      }, (r) async* {
+        print('test');
+        yield GetCompanyInfoLoaded(data: r);
       });
     }
   }

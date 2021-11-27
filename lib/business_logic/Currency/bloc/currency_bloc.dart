@@ -38,6 +38,7 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
         yield UpdateBorssaSuccess();
       });
     } else if (event is ChartEvent) {
+      yield ChartBorssaLoading();
       final chatResponse = await currencyRepository.drawChart(
           event.cityid, event.fromdate, event.type);
       yield* chatResponse.fold((l) async* {
@@ -45,7 +46,6 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
         ChartBorssaError();
       }, (r) async* {
         print(r);
-        yield ChartBorssaLoading();
         yield ChartBorssaLoaded(dataChanges: r);
       });
     } else if (event is UndoEvent) {

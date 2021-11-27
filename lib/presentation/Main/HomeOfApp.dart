@@ -68,32 +68,46 @@ class home_page extends State<HomeOfApp>
     }
   }
 
-  fireBase() async {
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
-      print("message open");
-      if (event.notification!.body != null) {
-        if (userPermissions.contains('Chat_Permission')) {
-          if (event.data['type'] == "currency_price_change") {
-            choosePage(1);
-          } else if (event.data['type'] == "renew_subscription") {
-            print(event.data['type']);
-          } else if (event.data['type'] == "new_chat") {
-            print(event.data['type']);
-          } else if (event.data['type'] == "new_followed_post") {
-            print(event.data['type']);
-            var value = event.data['id'];
-            print(value['data']);
-          }
-        } else if (userPermissions.contains('Trader_Permission')) {
-          choosePage(0);
-        } else if (userPermissions
-            .contains('Update_Auction_Price_Permission')) {
-          if (event.data['type'] == "currency_price_change") {
-            choosePage(0);
-          }
-        }
-      }
+  Future fireBase() async {
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
+    //   print("message open");
+    //   if (event.notification!.body != null) {
+    //     if (userPermissions.contains('Chat_Permission')) {
+    //       if (event.data['type'] == "currency_price_change") {
+    //         choosePage(1);
+    //       } else if (event.data['type'] == "renew_subscription") {
+    //         print(event.data['type']);
+    //       } else if (event.data['type'] == "new_chat") {
+    //         print(event.data['type']);
+    //       } else if (event.data['type'] == "new_followed_post") {
+    //         print(event.data['type']);
+    //         var value = event.data['id'];
+    //         print(value['data']);
+    //       }
+    //     } else if (userPermissions.contains('Trader_Permission')) {
+    //       choosePage(0);
+    //     } else if (userPermissions
+    //         .contains('Update_Auction_Price_Permission')) {
+    //       if (event.data['type'] == "currency_price_change") {
+    //         choosePage(0);
+    //       }
+    //     }
+    //   }
+    // });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      print("message recieved");
+      print(event.notification!.body);
     });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
+    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   print(message);
+    //   if (message.data['type'] == "currency_price_change") {
+    //     choosePage(0);
+    //   }
+    // });
   }
 
   @override
@@ -149,6 +163,7 @@ class home_page extends State<HomeOfApp>
   void initState() {
     _loginBloc = BlocProvider.of<LoginBloc>(context);
     fireBase();
+
     navbarbottom = sharedValue();
     super.initState();
   }
@@ -242,12 +257,16 @@ class home_page extends State<HomeOfApp>
                           label: 'المزاد المركزي',
                           icon: Icon(Icons.account_balance_sharp),
                         ),
-                      if (userPermissions.contains('Chat_Permission') ||
-                          userPermissions
-                              .contains('Update_Auction_Price_Permission'))
+                      if (userPermissions.contains('Chat_Permission'))
                         BottomNavigationBarItem(
                           label: 'المحادثة',
                           icon: Icon(Icons.chat_outlined),
+                        ),
+                      if (userPermissions
+                          .contains('Update_Auction_Price_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'الشخصية',
+                          icon: Icon(Icons.person_rounded),
                         ),
                       if (userPermissions.contains('Chat_Permission'))
                         BottomNavigationBarItem(

@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-
 class BorssaEvent extends Equatable {
   const BorssaEvent();
 
@@ -15,3 +14,6 @@ class AllCity extends BorssaEvent {}
 class AllCitiesList extends BorssaEvent {}
 
 class GetAllTransfersEvent extends BorssaEvent {}
+
+// Trader 
+class TraderCurrencyEvent extends BorssaEvent {}

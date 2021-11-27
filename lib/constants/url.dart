@@ -3,11 +3,17 @@ final logintraderUrl = 'https://ferasalhallak.online/api/auth/registerTrader';
 
 final permissionUrl = 'https://ferasalhallak.online/api/auth/me';
 final allCurrencyUrl = 'https://ferasalhallak.online/api/currencyPrices/';
+//curreny
+final traderCurrencyPrices =
+    'https://ferasalhallak.online/api/traderCurrencyPrices';
 final currencyUpdateUrl = 'https://ferasalhallak.online/api/currencyPrices/';
 final addPost = 'https://ferasalhallak.online/api/posts';
 final editanddeletePost = 'https://ferasalhallak.online/api/posts/';
 final allPost = 'https://ferasalhallak.online/api/posts';
 final allCompanyPost = 'https://ferasalhallak.online/api/posts/company/';
+//company info
+final allCompanyinfo = 'https://ferasalhallak.online/api/company/';
+
 final chartUrl = 'https://ferasalhallak.online/api/currencyChart?city_id=';
 final charttransferUrl =
     'https://ferasalhallak.online/api/transfersChart?city_id=';

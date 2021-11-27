@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:central_borssa/constants/url.dart';
 import 'package:central_borssa/data/model/Post/CompanyPost.dart';
+import 'package:central_borssa/data/model/Post/CompanyInfo.dart' as companyinf;
+
 import 'package:dartz/dartz.dart';
 import 'package:central_borssa/data/model/Post/Cities.dart';
 
@@ -28,6 +30,23 @@ class CompanyRepository {
       }
       // print(data.posts);
     } catch (e) {
+      return Left('error');
+    }
+  }
+
+  Future<Either<String, dynamic>> getCompanyInfo(int number) async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    var token = _pref.get('token');
+    _dio.options.headers['authorization'] = 'Bearer $token';
+    String urledit = '$allCompanyinfo$number';
+    print(urledit);
+    print('object');
+    var companyPostResponse = await _dio.get(urledit);
+    var data = new companyinf.Data.fromJson(companyPostResponse.data['data']);
+    print(companyPostResponse);
+    if (data.toString() != "") {
+      return Right(data.company);
+    } else {
       return Left('error');
     }
   }
@@ -92,9 +111,9 @@ class CompanyRepository {
     var token = _pref.get('token');
     _dio.options.headers['authorization'] = 'Bearer $token';
     var postResponse;
-    if (image == "") {
+    if (image == "" && body != "") {
       postResponse = await _dio.put('$editanddeletePost$id',
-          data: jsonEncode(({"body": body})));
+          data: jsonEncode(({"body": body, "image": null})));
     } else if (image != null && image != "") {
       if (image != "https://ferasalhallak.online/uploads/placeholder.jpg" &&
           image != "https://ferasalhallak.onlineno_image") {

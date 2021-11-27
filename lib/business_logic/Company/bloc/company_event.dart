@@ -1,4 +1,5 @@
-part of 'company_bloc.dart';
+
+import 'package:equatable/equatable.dart';
 
 abstract class CompanyEvent extends Equatable {
   const CompanyEvent();
@@ -20,6 +21,13 @@ class GetAllCompanyInformationsEvent extends CompanyEvent {
     required this.pageSize,
     required this.date,
     required this.page,
+  });
+}
+
+class GetCompanyInfoEvent extends CompanyEvent {
+  late final int id;
+  GetCompanyInfoEvent({
+    required this.id,
   });
 }
 

@@ -38,45 +38,6 @@ class PostRepository {
     }
   }
 
-  Future<Either<String, String>> editPost(
-      String body, String? image, int id) async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    var token = _pref.get('token');
-    dio.options.headers['authorization'] = 'Bearer $token';
-    var postResponse;
-    if (image == "") {
-      // print('from  null else');
-      postResponse = await dio.put('$editanddeletePost$id',
-          data: jsonEncode(({"body": body})));
-    } else if (image != null && image != "") {
-      // print('from not null');
-      if (image != "https://ferasalhallak.online/uploads/placeholder.jpg" &&
-          image != "https://ferasalhallak.onlineno_image") {
-        // print('from not null if');
-
-        // print(image);
-        postResponse = await dio.put('$editanddeletePost$id',
-            data: jsonEncode(({"body": body, "image": image})));
-      } else {
-        // print('from not null else');
-
-        postResponse = await dio.put('$editanddeletePost$id',
-            data: jsonEncode(({"body": body, "image": image})));
-      }
-    }
-
-    // print(postResponse.data);
-    // print(postResponse);
-    if (postResponse.data['status'] == "success") {
-      // print('from here');
-      return Right('success');
-    } else if (postResponse.data['status'] == "error") {
-      return Left('error');
-    } else {
-      return Left('error');
-    }
-  }
-
   Future<Either<String, String>> deletePost(int id) async {
     try {
       SharedPreferences _pref = await SharedPreferences.getInstance();

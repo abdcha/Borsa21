@@ -34,15 +34,6 @@ class LoginTradeState extends State<LoginTradepage> {
     super.initState();
   }
 
-  // void iOS_Permission() {
-  //   _firebaseMessaging.requestNotificationPermissions(
-  //       IosNotificationSettings(sound: true, badge: true, alert: true));
-  //   _firebaseMessaging.onIosSettingsRegistered
-  //       .listen((IosNotificationSettings settings) {
-  //     print("Settings registered: $settings");
-  //   });
-  // }
-
   void passwordView() {
     setState(() {
       isHidden = !isHidden;
@@ -118,7 +109,9 @@ class LoginTradeState extends State<LoginTradepage> {
                                           style: TextStyle(color: Colors.white),
                                           controller: phoneNumberTextEdit,
                                           validator: (String? value) {
-                                            if (value!.isEmpty) {
+                                            if (value!.isEmpty ||
+                                                !RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)')
+                                                    .hasMatch(value)) {
                                               return 'إدخال رقم الهاتف';
                                             }
                                             return null;
@@ -167,7 +160,9 @@ class LoginTradeState extends State<LoginTradepage> {
                                           style: TextStyle(color: Colors.white),
                                           controller: emailTextEdit,
                                           validator: (String? value) {
-                                            if (value!.isEmpty) {
+                                            if (value!.isEmpty ||
+                                                !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                                    .hasMatch(value)) {
                                               return 'الرجاء إدخال الإيميل ';
                                             }
                                             return null;
@@ -215,7 +210,9 @@ class LoginTradeState extends State<LoginTradepage> {
                                           style: TextStyle(color: Colors.white),
                                           controller: nameTextEdit,
                                           validator: (String? value) {
-                                            if (value!.isEmpty) {
+                                            if (value!.isEmpty ||
+                                                !RegExp(r"^[a-zA-Z.a-zA-Z.!#$%&'*+-/=?^_`{|}~]+")
+                                                    .hasMatch(value)) {
                                               return 'إدخال اسم المستخدم ';
                                             }
                                             return null;

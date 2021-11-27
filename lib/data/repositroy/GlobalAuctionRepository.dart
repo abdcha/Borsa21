@@ -17,7 +17,7 @@ class GlobalAuctionRepository {
       var status = response.data['status'];
       var allcurrency = Data.fromJson(response.data['data']);
       print('global auctions');
-      print(allcurrency);
+      print(allcurrency.rates.eUR);
 
       if (status == "success") {
         return Right(allcurrency.rates);

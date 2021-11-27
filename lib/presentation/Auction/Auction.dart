@@ -203,11 +203,23 @@ class AuctionPage extends State<Auction> {
                                     ),
                                     actions: [],
                                   ),
-                                  body: Center(
-                                    child:
-                                        Image.network(auctionsfile[i].filePath),
+                                  body: Column(
+                                    children: [
+                                      Center(
+                                        child: Container(
+                                          height: 200,
+                                          width: 200,
+                                          child: Image.asset(
+                                              'assest/Images/Logo.png'),
+                                        ),
+                                      ),
+                                      Center(
+                                        child: Image.network(
+                                            auctionsfile[i].filePath),
+                                      ),
+                                    ],
                                   ),
-                                  backgroundColor: Colors.transparent,
+                                  backgroundColor: Color(0xff6e7d91),
                                 );
                               });
                         },
@@ -271,7 +283,8 @@ class AuctionPage extends State<Auction> {
             print(state);
           } else if (state is GetAuctionLoaded) {
             print(state);
-            auctionsfile = state.auctions;
+            auctionsfile = state.auctions.reversed.toList();
+
             setState(() {
               isloading = false;
             });

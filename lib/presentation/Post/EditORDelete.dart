@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
+import 'package:central_borssa/business_logic/Company/bloc/company_event.dart';
+import 'package:central_borssa/business_logic/Company/bloc/company_state.dart';
 import 'package:central_borssa/presentation/Home/Company_Profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -312,10 +314,21 @@ class EditORDeletePostPage extends State<EditORDelete> {
                                 ));
                               } else if (widget.type == "تعديل المنشور") {
                                 print('edit post');
-                                _CompanyBloc.add(UpdatePost(
-                                    id: widget.id,
+                                if (encodeImage != "") {
+                                  _CompanyBloc.add(UpdatePost(
                                     body: postTextInpput.text,
-                                    image: encodeImage));
+                                    image: encodeImage,
+                                    id: widget.id,
+                                  ));
+                                }
+                                if (encodeImage == "") {
+                                  print(encodeImage);
+                                  _CompanyBloc.add(UpdatePost(
+                                    body: postTextInpput.text,
+                                    image: encodeImage,
+                                    id: widget.id,
+                                  ));
+                                }
                               }
                             },
                             style: ElevatedButton.styleFrom(

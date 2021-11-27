@@ -1,3 +1,6 @@
+import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
+import 'package:central_borssa/business_logic/Company/bloc/company_state.dart';
+import 'package:central_borssa/business_logic/Company/bloc/company_event.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +10,10 @@ import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
 import 'package:central_borssa/data/model/Post/CompanyPost.dart';
+import 'package:central_borssa/data/model/Post/CompanyInfo.dart'
+    as companyInfor;
+
 import 'package:intl/intl.dart';
 
 class AnyCompanyProfile extends StatefulWidget {
@@ -34,7 +39,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
   GlobalKey _refresherKey = GlobalKey();
   int currentPage = 1;
   late int countItemPerpage = 30;
-
+  late companyInfor.Company companyInfo;
   late CompanyBloc bloc;
   late List<Posts> companypost = [];
   late bool followStatus;
@@ -43,7 +48,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
   late int totalpost = 0;
   late String? location;
   bool isEmpty = true;
-
+  bool infoloaded = false;
   Future<bool> postloading({bool isRefresh = false}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     companyuser = int.parse(prefs.get('companyid').toString());
@@ -70,6 +75,152 @@ class CompanyPage extends State<AnyCompanyProfile> {
     return true;
   }
 
+  Widget companyProfile() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10, top: 6),
+      child: Card(
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(
+                bottom: 15,
+                top: 20,
+              ),
+              height: 150,
+              width: 150,
+              child: CircleAvatar(
+                radius: 30.0,
+                backgroundColor: Colors.transparent,
+                backgroundImage: NetworkImage(
+                  companyInfo.image,
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: Text(
+                companyInfo.name,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
+            Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () {
+                            whatsappSender(
+                                message: "hi", number: companyInfo.phone);
+                          },
+                          child: Image.asset(
+                            'assest/Images/whatsapp.png',
+                            width: 25,
+                            height: 25,
+                          ),
+                        ),
+                      ),
+                      // (isFollowed = companypost[index].isFollowed) == 1
+                      //     ? Padding(
+                      //         padding: const EdgeInsets.all(8.0),
+                      //         child: InkWell(
+                      //             onTap: () {
+                      //               bloc.add(UnFollowEvent(
+                      //                   id: companypost[index].companyId));
+                      //             },
+                      //             child: Icon(
+                      //               Icons.add_circle_outline_rounded,
+                      //               color: Colors.blue[400],
+                      //             )),
+                      //       )
+                      //     : Padding(
+                      //         padding: const EdgeInsets.all(8.0),
+                      //         child: InkWell(
+                      //             onTap: () {
+                      //               bloc.add(FollowEvent(
+                      //                   id: companypost[index].companyId));
+                      //             },
+                      //             child:
+                      //                 Icon(Icons.add_circle_outline_rounded)),
+                      //       )
+                    ],
+                  ),
+                )),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 8, top: 8, right: 12, left: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(companyInfo.phone),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: InkWell(
+                        onTap: () {
+                          launch("tel://${companyInfo.phone}");
+                        },
+                        child: Icon(
+                          Icons.phone,
+                          color: Color(navbar.hashCode),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 8, top: 8, right: 12, left: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      companyInfo.address,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Icon(
+                        Icons.location_on,
+                        color: Color(navbar.hashCode),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 8, top: 8, right: 12, left: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      companyInfo.email,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Icon(
+                        Icons.email_sharp,
+                        color: Color(navbar.hashCode),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget ourListview() {
     return Container(
       child: SingleChildScrollView(
@@ -82,158 +233,6 @@ class CompanyPage extends State<AnyCompanyProfile> {
           itemBuilder: (BuildContext context, int index) {
             return Column(
               children: [
-                if (index == 0)
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 10, top: 6),
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(
-                              bottom: 15,
-                              top: 20,
-                            ),
-                            height: 150,
-                            width: 150,
-                            child: CircleAvatar(
-                              radius: 30.0,
-                              backgroundColor: Colors.transparent,
-                              backgroundImage: NetworkImage(
-                                companypost[index].company.image,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              companypost[index].company.name,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ),
-                          Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: InkWell(
-                                        onTap: () {
-                                          whatsappSender(
-                                              message: "hi",
-                                              number: '+9647716600999');
-                                        },
-                                        child: Image.asset(
-                                          'assest/Images/whatsapp.png',
-                                          width: 25,
-                                          height: 25,
-                                        ),
-                                      ),
-                                    ),
-                                    (isFollowed = companypost[index]
-                                                .isFollowed) ==
-                                            1
-                                        ? Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: InkWell(
-                                                onTap: () {
-                                                  bloc.add(UnFollowEvent(
-                                                      id: companypost[index]
-                                                          .companyId));
-                                                },
-                                                child: Icon(
-                                                  Icons
-                                                      .add_circle_outline_rounded,
-                                                  color: Colors.blue[400],
-                                                )),
-                                          )
-                                        : Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: InkWell(
-                                                onTap: () {
-                                                  bloc.add(FollowEvent(
-                                                      id: companypost[index]
-                                                          .companyId));
-                                                },
-                                                child: Icon(Icons
-                                                    .add_circle_outline_rounded)),
-                                          )
-                                  ],
-                                ),
-                              )),
-                          Container(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 8, top: 8, right: 12, left: 12),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(companypost[index].company.phone),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: InkWell(
-                                      onTap: () {
-                                        launch(
-                                            "tel://${companypost[index].company.phone}");
-                                      },
-                                      child: Icon(
-                                        Icons.phone,
-                                        color: Color(navbar.hashCode),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Container(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 8, top: 8, right: 12, left: 12),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    companypost[index].company.address,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Icon(
-                                      Icons.location_on,
-                                      color: Color(navbar.hashCode),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Container(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 8, top: 8, right: 12, left: 12),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    companypost[index].company.email,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Icon(
-                                      Icons.email_sharp,
-                                      color: Color(navbar.hashCode),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 Card(
                   elevation: 5.0,
                   shadowColor: Colors.black,
@@ -412,6 +411,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
   @override
   void initState() {
     bloc = BlocProvider.of<CompanyBloc>(context);
+    bloc.add(GetCompanyInfoEvent(id: widget.id));
     companypost.clear();
     postloading();
     super.initState();
@@ -433,8 +433,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
             listener: (context, state) {
               if (state is GetAllInformationLoading) {
                 print(state);
-              }
-              if (state is GetAllInformationLoaded) {
+              } else if (state is GetAllInformationLoaded) {
                 if (companypost.isEmpty) {
                   print('length');
                   companypost = state.data.posts;
@@ -457,6 +456,12 @@ class CompanyPage extends State<AnyCompanyProfile> {
                     ),
                   ),
                 );
+              } else if (state is GetCompanyInfoLoaded) {
+                print(state);
+                companyInfo = state.data;
+                setState(() {
+                  infoloaded = true;
+                });
               }
             },
           ),
@@ -530,7 +535,14 @@ class CompanyPage extends State<AnyCompanyProfile> {
               if (mounted) setState(() {});
               refreshController.loadFailed();
             },
-            child: ourListview(),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  infoloaded ? companyProfile() : Container(),
+                  ourListview(),
+                ],
+              ),
+            ),
           ),
         ),
       ),

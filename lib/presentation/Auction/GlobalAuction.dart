@@ -3,14 +3,13 @@ import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/GlobalAuction.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Share/GlobalTable.dart';
+import 'package:flag/flag_enum.dart';
+import 'package:flag/flag_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_flutter_pusher/pusher.dart';
-import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
-import 'package:central_borssa/data/model/Currency.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flag/flag.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GlobalAuction extends StatefulWidget {
   GlobalAuctionPage createState() => GlobalAuctionPage();
@@ -19,7 +18,9 @@ class GlobalAuction extends StatefulWidget {
 class GlobalAuctionPage extends State<GlobalAuction> {
   late GlobalauctionBloc bloc2;
   Rates? rates;
-
+  bool isCalculate = false;
+  bool isload = true;
+  int current = 1;
   bool isClose = false;
   late List<String> userPermissions = [];
   late String userName = "";
@@ -48,6 +49,7 @@ class GlobalAuctionPage extends State<GlobalAuction> {
   void initState() {
     bloc2 = BlocProvider.of<GlobalauctionBloc>(context);
     bloc2.add(GetGlobalauctionEvent());
+    sharedValue();
     super.initState();
   }
 
@@ -100,9 +102,1429 @@ class GlobalAuctionPage extends State<GlobalAuction> {
     );
   }
 
+  Widget globaltable(Rates rates) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            width: 200,
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          margin: EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 0),
+          child: DataTable(
+              dataTextStyle: TextStyle(
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+              ),
+              headingRowHeight: 28,
+              horizontalMargin: 5.5,
+              dividerThickness: 2,
+              dataRowHeight: 30,
+              columnSpacing: 3,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: const Color(0xff505D6E),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0x29000000),
+                    offset: Offset(0, 3),
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+              headingRowColor: MaterialStateColor.resolveWith(
+                (states) => Color(0xff7d8a99),
+              ),
+              headingTextStyle: const TextStyle(
+                inherit: false,
+              ),
+              columns: [
+                //remove head of table
+                DataColumn(
+                    label: Expanded(
+                  child: Container(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          'المدينه',
+                          style: TextStyle(
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
+                )),
+                DataColumn(
+                    label: Expanded(
+                  child: Container(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          'السعر',
+                          style: TextStyle(
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
+                )),
+                DataColumn(
+                    label: Expanded(
+                  child: Container(
+                    // color: Colors.red,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: Text(
+                            ' الدولار',
+                            style: TextStyle(
+                              color: const Color(0xffffffff),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ))
+              ],
+              rows: [
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.EU,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'يورو',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.eUR.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.eUR.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.CN,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'يوان صيني',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.cNY.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.cNY.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.AE,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'الدرهم الإماراتي',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.aED.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.aED.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.CA,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'الدولار الكندي',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.cAD.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.cAD.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.QA,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'ريال قطري',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.qAR.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.qAR.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.SA,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'ريال سعودي',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.sAR.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.sAR.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.TR,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'ليرة تركية',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.tRY.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.tRY.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.GB,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'جنيه إسترليني',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.gBP.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.gBP.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.JP,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'ين ياباني',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.jPY.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.jPY.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.SE,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'كرونة سويدية',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.sEK.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.sEK.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.NO,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'كرونة نرويجية',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.nOK.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.nOK.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.DK,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'كرونة دنماركية',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.dKK.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.dKK.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.AZ,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'مانات أذربيجاني',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.aZN.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.aZN.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.LB,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'ليرة لبنانية',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.lBP.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.lBP.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.EG,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'جنيه مصري',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.eGP.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.eGP.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.BH,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'دينار بحريني',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.bHD.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.bHD.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.KW,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'دينار كويتي',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.kWD.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.kWD.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.SY,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'ليرة سورية',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.sYP.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.sYP.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.IR,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'تومان إيراني',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          rates.iRR.rate,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          rates.iRR.rateForAmount,
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            child: Flag.fromCode(
+                              FlagsCode.US,
+                              height: 30,
+                              width: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+              ]),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff6e7d91),
       drawer: newDrawer(),
       appBar: AppBar(
         title: Center(
@@ -122,127 +1544,158 @@ class GlobalAuctionPage extends State<GlobalAuction> {
           if (state is GetGlobalauctionLoading) {
             print(state);
           } else if (state is GetGlobalauctionLoaded) {
-            rates = null;
-
             print(productValue);
             print(state);
             rates = state.rates;
-            setState(() {});
+            setState(() {
+              isCalculate = true;
+            });
           } else if (state is GetGlobalauctionError) {
             print(state);
+          } else if (state is GetProductGlobalauctionLoading) {
+            print(state);
+          } else if (state is GetProductGlobalauctionError) {
+            print(state);
+          } else if (state is GetProductGlobalauctionLoaded) {
+            print(state);
+            rates = state.rates;
+            setState(() {
+              current++;
+            });
           }
         },
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               Container(
-                child: Column(
-                  children: [
-                    rates != null
-                        ? Container(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ElevatedButton(
-                                            onPressed: () {
-                                              print(productValue);
-                                              setState(() {
-                                                bloc2.add(
-                                                    GetGlobalauctionEvent());
-                                                rates = null;
-                                              });
-                                            },
-                                            child: Text('تحويل')),
+                child: isCalculate
+                    ? Card(
+                        color: Color(0xff6e7d91),
+                        elevation: 5.0,
+                        child: Column(
+                          children: [
+                            rates != null
+                                ? Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: ElevatedButton(
+                                                onPressed: () {
+                                                  bloc2.add(
+                                                      ProductGlobalauctionEvent(
+                                                          prodcut:
+                                                              productValue));
+                                                },
+                                                child: Text('تحويل')),
+                                          ),
+                                          Spacer(),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                                height: 35,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    230,
+                                                child: new Theme(
+                                                    data: new ThemeData(
+                                                        primaryColor:
+                                                            Colors.red,
+                                                        primaryColorDark:
+                                                            Colors.red,
+                                                        focusColor: Colors.red),
+                                                    child: Directionality(
+                                                        textDirection:
+                                                            TextDirection.rtl,
+                                                        child: TextFormField(
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                          cursorColor:
+                                                              Colors.black,
+                                                          controller:
+                                                              productValueTextEdit,
+                                                          // maxLength: 4,
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black),
+                                                          onChanged:
+                                                              (String? value) {
+                                                            setState(() {
+                                                              productValue =
+                                                                  int.parse(
+                                                                      value!);
+                                                            });
+                                                          },
+                                                          onSaved:
+                                                              (String? value) {
+                                                            setState(() {
+                                                              productValue =
+                                                                  int.parse(
+                                                                      value!);
+                                                            });
+                                                          },
+                                                          decoration:
+                                                              InputDecoration(
+                                                            contentPadding:
+                                                                EdgeInsets
+                                                                    .fromLTRB(
+                                                                        0,
+                                                                        0,
+                                                                        8,
+                                                                        8),
+                                                            labelStyle:
+                                                                TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                            fillColor:
+                                                                Colors.red,
+                                                            border:
+                                                                OutlineInputBorder(),
+                                                            enabledBorder: new OutlineInputBorder(
+                                                                borderSide: new BorderSide(
+                                                                    color: Colors
+                                                                        .white)),
+                                                            focusedBorder:
+                                                                OutlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                  width: 3,
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ),
+                                                        )))),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 8.0),
+                                            child: Text(
+                                              'قيمة التحويل',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Spacer(),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width -
-                                                150,
-                                            child: new Theme(
-                                                data: new ThemeData(
-                                                    primaryColor: Colors.red,
-                                                    primaryColorDark:
-                                                        Colors.red,
-                                                    focusColor: Colors.red),
-                                                child: Directionality(
-                                                    textDirection:
-                                                        TextDirection.rtl,
-                                                    child: TextFormField(
-                                                      textAlign:
-                                                          TextAlign.right,
-                                                      cursorColor: Colors.black,
-                                                      controller:
-                                                          productValueTextEdit,
-                                                      // maxLength: 4,
-                                                      keyboardType:
-                                                          TextInputType.number,
-                                                      style: TextStyle(
-                                                          color: Colors.black),
-                                                      onChanged:
-                                                          (String? value) {
-                                                        setState(() {
-                                                          productValue =
-                                                              int.parse(value!);
-                                                        });
-                                                      },
-                                                      onSaved: (String? value) {
-                                                        setState(() {
-                                                          productValue =
-                                                              int.parse(value!);
-                                                        });
-                                                      },
-                                                      decoration:
-                                                          InputDecoration(
-                                                        contentPadding:
-                                                            EdgeInsets.fromLTRB(
-                                                                0, 0, 40, 35),
-                                                        labelText: 'القيمة',
-                                                        labelStyle: TextStyle(
-                                                          color: Colors.black,
-                                                        ),
-                                                        fillColor: Colors.red,
-                                                        border:
-                                                            OutlineInputBorder(),
-                                                        enabledBorder: new OutlineInputBorder(
-                                                            borderSide:
-                                                                new BorderSide(
-                                                                    color: Color(
-                                                                        navbar
-                                                                            .hashCode))),
-                                                        focusedBorder:
-                                                            OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              width: 3,
-                                                              color: Color(navbar
-                                                                  .hashCode)),
-                                                        ),
-                                                      ),
-                                                    )))),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : Container(
-                            child: Center(child: CircularProgressIndicator())),
-                    if (rates != null)
-                      GlobalTable(
-                        r: rates,
-                        product: productValue,
-                      ),
-                  ],
-                ),
+                                    ),
+                                  )
+                                : Container(
+                                    child: Center(
+                                        child: CircularProgressIndicator())),
+                            isCalculate ? globaltable(rates!) : Container()
+                          ],
+                        ),
+                      )
+                    : Container(
+                        child: Center(child: CircularProgressIndicator())),
               ),
             ],
           ),

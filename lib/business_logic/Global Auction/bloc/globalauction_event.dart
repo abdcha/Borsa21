@@ -7,5 +7,11 @@ abstract class GlobalauctionEvent extends Equatable {
   List<Object> get props => [];
 }
 
-
 class GetGlobalauctionEvent extends GlobalauctionEvent {}
+
+class ProductGlobalauctionEvent extends GlobalauctionEvent {
+  final int prodcut;
+  ProductGlobalauctionEvent({
+    required this.prodcut,
+  });
+}

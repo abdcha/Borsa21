@@ -1,9 +1,10 @@
-import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:central_borssa/business_logic/Advertisement/bloc/advertisement_bloc.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
+import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
+import 'package:central_borssa/business_logic/Company/bloc/company_state.dart';
 import 'package:central_borssa/data/model/Advertisement.dart';
 import 'package:central_borssa/presentation/Post/EditORDelete.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,7 +20,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_event.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
-import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
+import 'package:central_borssa/business_logic/Company/bloc/company_event.dart';
 import 'package:central_borssa/business_logic/Post/bloc/post_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Post/Cities.dart';

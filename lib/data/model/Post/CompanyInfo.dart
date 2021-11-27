@@ -1,60 +1,62 @@
-class Company {
+class CompanyInfo {
   late Data data;
 
-  Company({required this.data});
+  CompanyInfo({required this.data});
 
-  Company.fromJson(Map<String, dynamic> json) {
+  CompanyInfo.fromJson(Map<String, dynamic> json) {
     data = (json['data'] != null ? new Data.fromJson(json['data']) : null)!;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['data'] = this.data.toJson();
+    if (this.data != null) {
+      data['data'] = this.data.toJson();
+    }
     return data;
   }
 }
 
 class Data {
-  late List<Companies> companies;
-  late int total;
+  late Company company;
 
-  Data({required this.companies, required this.total});
+  Data({required this.company});
 
   Data.fromJson(Map<String, dynamic> json) {
-    if (json['companies'] != null) {
-      companies = <Companies>[];
-      json['companies'].forEach((v) {
-        companies.add(new Companies.fromJson(v));
-      });
-    }
-    total = json['total'];
+    company = (json['company'] != null
+        ? new Company.fromJson(json['company'])
+        : null)!;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['companies'] = this.companies.map((v) => v.toJson()).toList();
-    data['total'] = this.total;
+    if (this.company != null) {
+      data['company'] = this.company.toJson();
+    }
     return data;
   }
 }
 
-class Companies {
+class Company {
   late int id;
   late String createdAt;
   late String updatedAt;
   late String name;
   late String image;
   late String phone;
-  late String location;
+  late int cityId;
+  late String address;
+  late String email;
 
-  Companies.fromJson(Map<String, dynamic> json) {
+  Company.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     name = json['name'];
     image = json['image'];
     phone = json['phone'];
-    location = json['location'];
+    cityId = json['city_id'];
+    address = json['address'];
+    email = json['email'];
   }
 
   Map<String, dynamic> toJson() {
@@ -65,8 +67,9 @@ class Companies {
     data['name'] = this.name;
     data['image'] = this.image;
     data['phone'] = this.phone;
-    data['location'] = this.location;
+    data['city_id'] = this.cityId;
+    data['address'] = this.address;
+    data['email'] = this.email;
     return data;
   }
- 
 }

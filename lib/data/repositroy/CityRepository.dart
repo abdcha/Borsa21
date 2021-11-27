@@ -77,4 +77,30 @@ class CityRepository {
     //   return Left("error");
     // }
   }
+  
+  Future<Either<String, List<CurrencyPrice>>> traderCurrency() async {
+    mycities.clear();
+    try {
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      var _token = _prefs.getString('token');
+
+      _dio..options.headers['authorization'] = 'Bearer $_token';
+
+      var response = await _dio.get(traderCurrencyPrices);
+      var status = response.data['status'];
+      var allcurrency = Data.fromJson(response.data['data']);
+
+      allcurrency.currencyPrice.forEach((v) {
+        mycities.add(v);
+      });
+      if (status == "success") {
+        return Right(mycities);
+      } else {
+        return Left("here");
+      }
+    } catch (e) {
+      return Left("error");
+    }
+  }
+
 }

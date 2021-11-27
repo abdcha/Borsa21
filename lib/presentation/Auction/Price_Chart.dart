@@ -6,9 +6,7 @@ import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
-import 'dart:ui' as ui;
 
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class PriceChart extends StatefulWidget {
   final int cityid;

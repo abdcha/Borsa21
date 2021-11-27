@@ -1,4 +1,7 @@
-part of 'company_bloc.dart';
+import 'package:central_borssa/data/model/Post/Cities.dart';
+import 'package:central_borssa/data/model/Post/CompanyPost.dart';
+import 'package:central_borssa/data/model/Post/CompanyInfo.dart' as companyinfo;
+import 'package:equatable/equatable.dart';
 
 abstract class CompanyState extends Equatable {
   const CompanyState();
@@ -61,7 +64,7 @@ class EditPostLoading extends CompanyState {}
 class EditPostError extends CompanyState {}
 
 class EditPostLoaded extends CompanyState {
-  late final String status;
+  final String status;
   EditPostLoaded({
     required this.status,
   });
@@ -74,8 +77,20 @@ class DeletePostLoading extends CompanyState {}
 class DeletePostError extends CompanyState {}
 
 class DeletePostLoaded extends CompanyState {
-  late final String status;
+  final String status;
   DeletePostLoaded({
     required this.status,
+  });
+}
+
+//info
+class GetCompanyInfoLoading extends CompanyState {}
+
+class GetCompanyInfoError extends CompanyState {}
+
+class GetCompanyInfoLoaded extends CompanyState {
+  final companyinfo.Company data;
+  GetCompanyInfoLoaded({
+    required this.data,
   });
 }

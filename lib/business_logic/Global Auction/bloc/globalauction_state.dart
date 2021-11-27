@@ -20,3 +20,15 @@ class GetGlobalauctionLoaded extends GlobalauctionState {
     required this.rates,
   });
 }
+
+// Global Auction Product
+class GetProductGlobalauctionLoading extends GlobalauctionState {}
+
+class GetProductGlobalauctionError extends GlobalauctionState {}
+
+class GetProductGlobalauctionLoaded extends GlobalauctionState {
+  final Rates rates;
+  GetProductGlobalauctionLoaded({
+    required this.rates,
+  });
+}

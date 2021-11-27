@@ -42,7 +42,6 @@ class BorssaBloc extends Bloc<BorssaEvent, BorssaState> {
       });
     } else if (event is GetAllTransfersEvent) {
       yield GetAllTransfersLoading();
-
       final allCititesResponse = await cityrepository.alltransfer();
       yield* allCititesResponse.fold((l) async* {
         print(l);
@@ -51,6 +50,19 @@ class BorssaBloc extends Bloc<BorssaEvent, BorssaState> {
       }, (r) async* {
         print(r);
         yield GetAllTransfersLoaded(cities: r);
+        print('get all');
+      });
+    }
+    else if (event is TraderCurrencyEvent) {
+      yield GetTraderCurrencyLoading();
+      final allCititesResponse = await cityrepository.traderCurrency();
+      yield* allCititesResponse.fold((l) async* {
+        print(l);
+        print('currency error');
+        yield GetTraderCurrencyError();
+      }, (r) async* {
+        print(r);
+        yield GetTraderCurrencyLoaded(cities: r);
         print('get all');
       });
     }

@@ -1,4 +1,5 @@
 import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
+import 'package:central_borssa/business_logic/Company/bloc/company_state.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flutter/cupertino.dart';

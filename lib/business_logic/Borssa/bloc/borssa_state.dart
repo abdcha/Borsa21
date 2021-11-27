@@ -15,7 +15,6 @@ class BorssaInitial extends BorssaState {}
 
 class GetAllCityState extends BorssaState {
   late final List<CurrencyPrice> cities;
-
   GetAllCityState({
     required this.cities,
   });
@@ -56,6 +55,18 @@ class AllCitiesLoadingError extends BorssaState {}
 class AllCitiesLoaded extends BorssaState {
   late final List<list> cities;
   AllCitiesLoaded({
+    required this.cities,
+  });
+}
+
+// Trader
+class GetTraderCurrencyLoading extends BorssaState {}
+
+class GetTraderCurrencyError extends BorssaState {}
+
+class GetTraderCurrencyLoaded extends BorssaState {
+  late final List<CurrencyPrice> cities;
+  GetTraderCurrencyLoaded({
     required this.cities,
   });
 }
