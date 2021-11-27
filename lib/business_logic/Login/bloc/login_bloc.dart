@@ -50,17 +50,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         print(r);
         yield MeInformationLoaded();
       });
-    } else if (event is MeInformationEvent) {
-      print('Login bloc');
-      yield MeInformationLoading();
-      var data = await repository.meInformation();
-      yield* data.fold((l) async* {
-        print(l);
-        yield MeInformationError();
-      }, (r) async* {
-        print(r);
-        yield MeInformationLoaded();
-      });
     } else if (event is LoginTraderSubmite) {
       print('Login bloc');
       yield LoginTraderLoading();

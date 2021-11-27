@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:badges/badges.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:central_borssa/business_logic/Advertisement/bloc/advertisement_bloc.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
@@ -28,6 +29,7 @@ import 'package:central_borssa/data/model/Post/GetPost.dart';
 import 'package:central_borssa/presentation/Company/company.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Post/add_Post.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class AllPost extends StatefulWidget {
   AllPostPage createState() => AllPostPage();
@@ -55,7 +57,7 @@ class AllPostPage extends State<AllPost> {
       RefreshController(initialRefresh: true);
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
-  late int countItemPerpage = 15;
+  late int countItemPerpage = 5;
   late int totalpost = 0;
   late String userName = "";
   late String userPhone = "";
@@ -65,7 +67,11 @@ class AllPostPage extends State<AllPost> {
   int companyuser = 0;
   int currentPage = 1;
   List<CityId> cityidconvert = [];
+  List<String> cityloaded = [];
+  List<String> _searchcity = [];
+  List<int> cityloadedId = [];
 
+  bool isSerach = false;
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.get('username').toString();
@@ -76,17 +82,33 @@ class AllPostPage extends State<AllPost> {
     if (prefs.get('end_at') != null) {
       userActive = prefs.get('end_at').toString();
     }
+    if (prefs.getStringList('searchcity') != null) {
+      _searchcity = prefs.getStringList('searchcity')!;
+    }
+    cityloadedId.clear();
+    if (_searchcity.isNotEmpty) {
+      for (int i = 0; i < _searchcity.length; i++) {
+        cityloadedId.add(int.parse(_searchcity[i]));
+      }
+    }
+    // for (var i in _searchcity) {
+    //   cityloaded.add(i.id.toString());
+    //   cityloadedId.add(i.id!.toInt());
+    // }
     setState(() {});
   }
 
   addsharedValue(List<CityId> cityid) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> test = [];
-// prefs.getStringList('searchcity')
-    for (var i in cityid) {
-      test.add(i.id.toString());
+    cityloadedId.clear();
+    if (prefs.getStringList('searchcity') != null) {
+      prefs.getStringList('searchcity')!.clear();
     }
-    prefs.setStringList('searchcity', test);
+    for (var i in cityid) {
+      cityloaded.add(i.id.toString());
+      cityloadedId.add(i.id!.toInt());
+    }
+    prefs.setStringList('searchcity', cityloaded);
     setState(() {});
   }
 
@@ -100,8 +122,10 @@ class AllPostPage extends State<AllPost> {
   Future<bool> postloading({bool isRefresh = false}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var cityid = prefs.getStringList('searchcity');
-
+    print('inside postloading');
+    print(cityid);
     if (cityid != null) {
+      print('inside cityid');
       if (cityidconvert.isEmpty)
         for (var i in cityid) {
           cityidconvert.add(CityId(id: int.parse(i)));
@@ -129,6 +153,9 @@ class AllPostPage extends State<AllPost> {
         currentPage++;
       }
     } else {
+      print('else');
+      print(totalpost);
+      print(post.length);
       if (isRefresh) {
         currentPage = 1;
         post.clear();
@@ -179,6 +206,7 @@ class AllPostPage extends State<AllPost> {
       child: Column(
         children: [
           Card(
+            color: Color(0xff6e7d91),
             child: CarouselSlider(
               carouselController: _controller,
               options: CarouselOptions(
@@ -208,23 +236,34 @@ class AllPostPage extends State<AllPost> {
                           ),
                           child: Stack(
                             children: <Widget>[
-                              InkWell(
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return Center(
-                                          child: Image.network(item.image),
-                                        );
-                                      });
-                                },
-                                child: Image.network(
-                                  item.image,
-                                  fit: BoxFit.fill,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                ),
+                              Center(
+                                child: CircularProgressIndicator(),
                               ),
+                              InkWell(
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return Center(
+                                            child: Image.network(item.image),
+                                          );
+                                        });
+                                  },
+                                  child: FadeInImage.memoryNetwork(
+                                    placeholder: kTransparentImage,
+                                    image: item.image,
+                                    fadeInCurve: Curves.bounceIn,
+                                    fit: BoxFit.fill,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                  )
+                                  // child: Image.network(
+                                  //   item.image,
+                                  //   fit: BoxFit.fill,
+                                  //   width: double.infinity,
+                                  //   height: double.infinity,
+                                  // ),
+                                  ),
                             ],
                           ),
                         ),
@@ -240,14 +279,14 @@ class AllPostPage extends State<AllPost> {
               return GestureDetector(
                 onTap: () => _controller.animateToPage(entry.key),
                 child: Container(
-                  width: 12.0,
+                  width: 10.0,
                   height: 12.0,
                   margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: (Theme.of(context).brightness == Brightness.dark
-                              ? Color(navbar.hashCode)
-                              : Colors.black)
+                              ? Colors.white
+                              : Colors.white)
                           .withOpacity(_current == entry.key ? 0.9 : 0.4)),
                 ),
               );
@@ -273,6 +312,9 @@ class AllPostPage extends State<AllPost> {
         return Column(
           children: [
             Card(
+              color: Color(0xff6e7d91),
+
+              // color: Color(0xff505D6E),
               elevation: 5.0,
               shadowColor: Colors.black,
               clipBehavior: Clip.antiAlias,
@@ -291,7 +333,10 @@ class AllPostPage extends State<AllPost> {
                               child: Directionality(
                                 textDirection: ui.TextDirection.rtl,
                                 child: PopupMenuButton(
-                                  icon: Icon(Icons.more_vert),
+                                  icon: Icon(
+                                    Icons.more_vert,
+                                    color: Colors.white,
+                                  ),
                                   itemBuilder: (BuildContext context) =>
                                       <PopupMenuEntry>[
                                     PopupMenuItem(
@@ -346,12 +391,15 @@ class AllPostPage extends State<AllPost> {
                               bottom: 10, top: 15, right: 10),
                           child: Column(
                             children: [
-                              Icon(Icons.location_on_outlined),
+                              Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.white,
+                              ),
                               Text(
                                 post[index].user.city.name,
                                 style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                ),
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white),
                               ),
                             ],
                           )),
@@ -365,6 +413,7 @@ class AllPostPage extends State<AllPost> {
                                   post[index].company.name,
                                   textAlign: TextAlign.right,
                                   style: TextStyle(
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),
                                 ),
@@ -374,12 +423,16 @@ class AllPostPage extends State<AllPost> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(right: 6),
-                                  child: Text(DateFormat.jm().format(
-                                      DateTime.parse(post[index].createdAt))),
+                                  child: Text(
+                                    DateFormat.jm().format(
+                                        DateTime.parse(post[index].createdAt)),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                                 Text(
                                   post[index].user.name,
                                   textAlign: TextAlign.end,
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ],
                             ),
@@ -421,32 +474,50 @@ class AllPostPage extends State<AllPost> {
                         trimCollapsedText: 'قرائة المزيد',
                         trimExpandedText: '',
                         textAlign: TextAlign.right,
+                        moreStyle: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                         style: TextStyle(
-                            color: Colors.black.withOpacity(0.6),
+                            // color: Colors.black.withOpacity(0.6),
+                            color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                       )),
                   Container(
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      right: 10,
-                      left: 10,
+                      margin: const EdgeInsets.only(
+                        top: 10,
+                        right: 10,
+                        left: 10,
+                      ),
+                      child: post[index].image ==
+                                  "https://ferasalhallak.onlineno_image" ||
+                              post[index].image ==
+                                  "https://ferasalhallak.online/uploads/placeholder.jpg"
+                          ? Container()
+                          : FadeInImage.memoryNetwork(
+                              placeholder: kTransparentImage,
+                              image: post[index].image,
+                              fadeInCurve: Curves.bounceIn,
+                              fit: BoxFit.fill,
+                              width: double.infinity,
+                            )
+                      // child: Image.network(
+                      //     post[index].image,
+                      //     fit: BoxFit.fill,
+                      //     width: double.infinity,
+                      //     // height: 200,
+                      //   ),
+                      ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 95, left: 95),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white12, width: 1),
+                      ),
                     ),
-                    child: post[index].image ==
-                                "https://ferasalhallak.onlineno_image" ||
-                            post[index].image ==
-                                "https://ferasalhallak.online/uploads/placeholder.jpg"
-                        ? Container()
-                        : Image.network(
-                            post[index].image,
-                            fit: BoxFit.fill,
-                            width: double.infinity,
-                            // height: 200,
-                          ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(
-                        bottom: 15, left: 15, top: 15, right: 15),
+                    margin:
+                        const EdgeInsets.only(bottom: 15, left: 15, right: 15),
                     child: Column(
                       children: [
                         Row(
@@ -473,7 +544,7 @@ class AllPostPage extends State<AllPost> {
                                 },
                                 child: Icon(
                                   Icons.add_ic_call,
-                                  color: Color(navbar.hashCode),
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -540,6 +611,7 @@ class AllPostPage extends State<AllPost> {
                               .toList(),
                           title: Text("المدن"),
                           selectedColor: Color(navbar.hashCode),
+                          initialValue: cityloadedId,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(
@@ -558,7 +630,7 @@ class AllPostPage extends State<AllPost> {
                               fontSize: 16,
                             ),
                           ),
-                          onConfirm: (List<int?> results) {
+                          onConfirm: (List<dynamic> results) {
                             setState(() {
                               print(results);
                               for (var i = 0; i < results.length; i++) {
@@ -578,12 +650,16 @@ class AllPostPage extends State<AllPost> {
                         style: ElevatedButton.styleFrom(
                             primary: Color(navbar.hashCode),
                             alignment: Alignment.center),
-                        child: Text('البحث'),
+                        child: Text('تم'),
                         onPressed: () {
                           if (cityid.isNotEmpty) {
                             addsharedValue(cityid);
+                            print(cityid.first.id);
+                            setState(() {
+                              isSerach = true;
+                            });
                             postbloc.add(GetPostByCityName(
-                              postscityId: cityidconvert,
+                              postscityId: cityid,
                               sortby: "desc",
                               page: currentPage,
                               countItemPerpage: countItemPerpage,
@@ -669,7 +745,8 @@ class AllPostPage extends State<AllPost> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[300],
+        // backgroundColor: Colors.grey[550],
+        backgroundColor: Color(0xff505D6E),
         drawer: newDrawer(),
         endDrawer: newEndDrawer(),
         appBar: AppBar(
@@ -692,6 +769,23 @@ class AllPostPage extends State<AllPost> {
                 onPressed: () => Scaffold.of(context).openEndDrawer(),
                 tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
               ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: InkWell(
+                  child: Badge(
+                    badgeContent: Text('3'),
+                    child: Icon(Icons.notification_add_outlined),
+                  ),
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Center(
+                            child: Text('data'),
+                          );
+                        });
+                  }),
             ),
           ],
           backgroundColor: Color(navbar.hashCode),
@@ -739,7 +833,7 @@ class AllPostPage extends State<AllPost> {
                     ),
                   );
                 } else if (state is GetPostByCityNameLoaded) {
-                  if (post.isEmpty) {
+                  if (post.isEmpty || isSerach) {
                     cityid.clear();
                     post.clear();
                     print(state);
@@ -747,9 +841,9 @@ class AllPostPage extends State<AllPost> {
                     post = state.posts.posts;
                     totalpost = state.posts.total;
                     setState(() {});
-                  } else if (post.isNotEmpty) {
+                  } else {
+                    print('xxxxxxxx');
                     post.addAll(state.posts.posts);
-                    print('not empty');
                     setState(() {});
                   }
                 } else if (state is AddPostSuccess) {

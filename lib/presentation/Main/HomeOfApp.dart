@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
@@ -11,10 +12,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Home/Central_Borssa.dart';
-
 import '..//Home/MainChat.dart';
 import '../Home/All_post.dart';
 import '../Home/Company_Profile.dart';
@@ -37,11 +36,15 @@ class home_page extends State<HomeOfApp>
   late String userType = "";
   int companyuser = 0;
   late int userActive = 0;
+  int messageUnread = 0;
+  int notificationcount = 0;
   sharedValue() async {
+    print('2');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = await FirebaseMessaging.instance.getToken();
 
     _loginBloc.add(FireBaseTokenEvent(fcmToken: token));
+
     userName = prefs.get('username').toString();
     userPhone = prefs.get('userphone').toString();
     print(prefs.get('token').toString());
@@ -68,7 +71,7 @@ class home_page extends State<HomeOfApp>
     }
   }
 
-  Future fireBase() async {
+  fireBase() async {
     // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
     //   print("message open");
     //   if (event.notification!.body != null) {
@@ -94,20 +97,128 @@ class home_page extends State<HomeOfApp>
     //     }
     //   }
     // });
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      print("message recieved");
-      print(event.notification!.body);
+    FirebaseMessaging.onMessage.handleError((error) {
+      print("Erorrrrrr : ${error.toString()}");
+    }).listen((event) {
+      if (event.data['type'] == "currency_price_change") {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Center(
+                  child: AlertDialog(
+                      title: const Text(''),
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: const <Widget>[
+                            Text('تغير سعر الصرف'),
+                            Text('تم تغير سعر الصرف اليوم من 1422 إلى 1421'),
+                          ],
+                        ),
+                      )));
+            });
+      } else if (event.data['type'] == "new_followed_post") {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Center(
+                  child: AlertDialog(
+                      title: const Text(''),
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: const <Widget>[
+                            Text('بوست جديد'),
+                            Text('لقد نم إضافة بوست جديد من قبل شركة ....'),
+                          ],
+                        ),
+                      )));
+            });
+      } else if (event.data['type'] == "renew_subscription") {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Center(
+                  child: AlertDialog(
+                      title: const Text(''),
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: const <Widget>[
+                            Text('تجديد إشتراك'),
+                            Text('لقد تم تجديد إشتراكّ'),
+                          ],
+                        ),
+                      )));
+            });
+      } else if (event.data['type'] == "new_chat") {
+        setState(() {
+          messageUnread++;
+        });
+        // showDialog(
+        //     context: context,
+        //     builder: (context) {
+        //       return Center(
+        //           child: AlertDialog(
+        //               title: const Text(''),
+        //               content: SingleChildScrollView(
+        //                 child: ListBody(
+        //                   children: const <Widget>[
+        //                     Text('تجديد إشتراك'),
+        //                     Text('لقد تم تجديد إشتراكّ'),
+        //                   ],
+        //                 ),
+        //               )));
+        //     });
+      } else if (event.data['type'] == "broadcast") {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Center(
+                  child: AlertDialog(
+                      title: Directionality(
+                          textDirection: TextDirection.rtl,
+                          child: const Text('البورصة المركزية')),
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: const <Widget>[
+                            Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: Text('test test test')),
+                          ],
+                        ),
+                      )));
+            });
+      } else if (event.data['type'] == "transfer_change") {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Center(
+                  child: AlertDialog(
+                      title: const Text(''),
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: const <Widget>[
+                            Text('تجديد إشتراك'),
+                            Text('لقد تم تجديد إشتراكّ'),
+                          ],
+                        ),
+                      )));
+            });
+      } else if (event.data['type'] == "trader_currency_price_change") {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Center(
+                  child: AlertDialog(
+                      title: const Text('البورصة المركزية'),
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: const <Widget>[
+                            Text('some text from here'),
+                          ],
+                        ),
+                      )));
+            });
+      }
     });
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Message clicked!');
-    });
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   print(message);
-    //   if (message.data['type'] == "currency_price_change") {
-    //     choosePage(0);
-    //   }
-    // });
   }
 
   @override
@@ -162,8 +273,8 @@ class home_page extends State<HomeOfApp>
   @override
   void initState() {
     _loginBloc = BlocProvider.of<LoginBloc>(context);
+    // _loginBloc.add(MeInformationEvent());
     fireBase();
-
     navbarbottom = sharedValue();
     super.initState();
   }
@@ -207,13 +318,6 @@ class home_page extends State<HomeOfApp>
                       } else if (state is FcmTokenLoaded) {
                         print(state);
                       } else if (state is FcmTokenError) {
-                        print(state);
-                      } else if (state is MeInformationLoading) {
-                        print(state);
-                      } else if (state is MeInformationLoaded) {
-                        print(state);
-                        logout();
-                      } else if (state is MeInformationError) {
                         print(state);
                       }
                     },
@@ -260,7 +364,14 @@ class home_page extends State<HomeOfApp>
                       if (userPermissions.contains('Chat_Permission'))
                         BottomNavigationBarItem(
                           label: 'المحادثة',
-                          icon: Icon(Icons.chat_outlined),
+                          icon: Badge(
+                            badgeContent: messageUnread == 0
+                                ? Container(
+                                    color: Colors.transparent,
+                                  )
+                                : Text(messageUnread.toString()),
+                            child: Icon(Icons.chat_outlined),
+                          ),
                         ),
                       if (userPermissions
                           .contains('Update_Auction_Price_Permission'))

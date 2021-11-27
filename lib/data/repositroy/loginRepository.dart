@@ -125,19 +125,9 @@ class LoginRepository {
     _dio.options.headers['authorization'] = 'Bearer $token';
 
     if (token != null) {
-      //Start store token
-      SharedPreferences _prefs = await SharedPreferences.getInstance();
-
-      var loginResponse = await _dio.post(baseUrl,
-          data: jsonEncode(({
-            "phone": _prefs.get('userphone').toString(),
-            "password": _prefs.get('userpassword').toString()
-          })));
-      var _responsetoken = loginResponse.data['data']['token'];
-      _prefs.setString('token', _responsetoken);
+      print('inside');
 
       //User Informations
-      _dio.options.headers['authorization'] = 'Bearer $_responsetoken';
       var permissionResponse = await _dio.get(permissionUrl);
       // print(permissionResponse);
       var userInformations =
@@ -166,7 +156,7 @@ class LoginRepository {
       //User Type
       await _prefs.setString('roles', userInformations.roles.first);
 
-      return Right(loginResponse.data['status']);
+      return Right(permissionResponse.data['status']);
     } else {
       return Left('error');
     }

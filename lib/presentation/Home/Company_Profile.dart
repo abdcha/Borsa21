@@ -17,6 +17,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
+import 'package:central_borssa/data/model/Post/CompanyInfo.dart'
+    as companyInfor;
 
 class CompanyProfile extends StatefulWidget {
   CompanyProfilePage createState() => CompanyProfilePage();
@@ -34,7 +36,8 @@ class CompanyProfilePage extends State<CompanyProfile> {
   GlobalKey _refresherKey = GlobalKey();
   int currentPage = 1;
   late int countItemPerpage = 30;
-
+  late companyInfor.Company companyInfo;
+  bool infoloaded = false;
   late CompanyBloc bloc;
   late List<Posts> companypost = [];
   late int companyuser = 0;
@@ -85,6 +88,152 @@ class CompanyProfilePage extends State<CompanyProfile> {
     return true;
   }
 
+  Widget companyProfile() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10, top: 6),
+      child: Card(
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(
+                bottom: 15,
+                top: 20,
+              ),
+              height: 150,
+              width: 150,
+              child: CircleAvatar(
+                radius: 30.0,
+                backgroundColor: Colors.transparent,
+                backgroundImage: NetworkImage(
+                  companyInfo.image,
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: Text(
+                companyInfo.name,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
+            Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () {
+                            whatsappSender(
+                                message: "hi", number: companyInfo.phone);
+                          },
+                          child: Image.asset(
+                            'assest/Images/whatsapp.png',
+                            width: 25,
+                            height: 25,
+                          ),
+                        ),
+                      ),
+                      // (isFollowed = companypost[index].isFollowed) == 1
+                      //     ? Padding(
+                      //         padding: const EdgeInsets.all(8.0),
+                      //         child: InkWell(
+                      //             onTap: () {
+                      //               bloc.add(UnFollowEvent(
+                      //                   id: companypost[index].companyId));
+                      //             },
+                      //             child: Icon(
+                      //               Icons.add_circle_outline_rounded,
+                      //               color: Colors.blue[400],
+                      //             )),
+                      //       )
+                      //     : Padding(
+                      //         padding: const EdgeInsets.all(8.0),
+                      //         child: InkWell(
+                      //             onTap: () {
+                      //               bloc.add(FollowEvent(
+                      //                   id: companypost[index].companyId));
+                      //             },
+                      //             child:
+                      //                 Icon(Icons.add_circle_outline_rounded)),
+                      //       )
+                    ],
+                  ),
+                )),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 8, top: 8, right: 12, left: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(companyInfo.phone),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: InkWell(
+                        onTap: () {
+                          launch("tel://${companyInfo.phone}");
+                        },
+                        child: Icon(
+                          Icons.phone,
+                          color: Color(navbar.hashCode),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 8, top: 8, right: 12, left: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      companyInfo.address,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Icon(
+                        Icons.location_on,
+                        color: Color(navbar.hashCode),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 8, top: 8, right: 12, left: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      companyInfo.email,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Icon(
+                        Icons.email_sharp,
+                        color: Color(navbar.hashCode),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget ourListview() {
     return Container(
       child: SingleChildScrollView(
@@ -97,107 +246,6 @@ class CompanyProfilePage extends State<CompanyProfile> {
           itemBuilder: (BuildContext context, int index) {
             return Column(
               children: [
-                if (index == 0)
-                  // Slider Images
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 10, top: 6),
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(
-                              bottom: 15,
-                              top: 20,
-                            ),
-                            height: 150,
-                            width: 150,
-                            child: CircleAvatar(
-                              radius: 30.0,
-                              backgroundColor: Colors.transparent,
-                              backgroundImage: NetworkImage(
-                                companypost[index].company.image,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              companypost[index].company.name,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                          ),
-                          Container(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 8, top: 8, right: 12, left: 12),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(companypost[index].company.phone),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: InkWell(
-                                      onTap: () {
-                                        launch(
-                                            "tel://${companypost[index].company.phone}");
-                                      },
-                                      child: Icon(
-                                        Icons.phone,
-                                        color: Color(navbar.hashCode),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Container(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 8, top: 8, right: 12, left: 12),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    companypost[index].company.address,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Icon(
-                                      Icons.location_city,
-                                      color: Color(navbar.hashCode),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Container(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 8, top: 8, right: 12, left: 12),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    companypost[index].company.email,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Icon(
-                                      Icons.email_sharp,
-                                      color: Color(navbar.hashCode),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 Card(
                   elevation: 5.0,
                   shadowColor: Colors.black,
@@ -372,6 +420,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
   @override
   void initState() {
     bloc = BlocProvider.of<CompanyBloc>(context);
+
     companypost.clear();
     postloading();
     sharedValue();
@@ -396,6 +445,8 @@ class CompanyProfilePage extends State<CompanyProfile> {
     if (prefs.get('end_at') != null) {
       userActive = prefs.get('end_at').toString();
     }
+    bloc.add(GetCompanyInfoEvent(id: companyuser));
+
     setState(() {});
   }
 
@@ -501,6 +552,12 @@ class CompanyProfilePage extends State<CompanyProfile> {
                   reload();
                 } else if (state is DeletePostLoaded) {
                   reload();
+                } else if (state is GetCompanyInfoLoaded) {
+                  print(state);
+                  companyInfo = state.data;
+                  setState(() {
+                    infoloaded = true;
+                  });
                 } else if (state is GetAllInformationLoading) {
                   print(state);
                 } else if (state is GetAllInformationLoaded) {
@@ -554,7 +611,14 @@ class CompanyProfilePage extends State<CompanyProfile> {
                 if (mounted) setState(() {});
                 refreshController.loadFailed();
               },
-              child: ourListview(),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    infoloaded ? companyProfile() : Container(),
+                    ourListview(),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

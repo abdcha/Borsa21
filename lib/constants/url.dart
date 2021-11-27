@@ -15,8 +15,7 @@ final allCompanyPost = 'https://ferasalhallak.online/api/posts/company/';
 final allCompanyinfo = 'https://ferasalhallak.online/api/company/';
 
 final chartUrl = 'https://ferasalhallak.online/api/currencyChart?city_id=';
-final charttransferUrl =
-    'https://ferasalhallak.online/api/transfersChart?city_id=';
+final charttransferUrl = 'https://ferasalhallak.online/api/transfersChart?id=';
 
 final allCities = 'https://ferasalhallak.online/api/lists/cities';
 final allCompany = 'https://ferasalhallak.online/api/lists/companies';

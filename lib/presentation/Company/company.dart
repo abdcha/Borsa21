@@ -462,15 +462,9 @@ class CompanyPage extends State<AnyCompanyProfile> {
                 setState(() {
                   infoloaded = true;
                 });
-              }
-            },
-          ),
-          BlocListener<CompanyBloc, CompanyState>(
-            listener: (context, state) {
-              if (state is FollowIsLoading) {
+              } else if (state is FollowIsLoading) {
                 print(state);
-              }
-              if (state is FollowIsLoaded) {
+              } else if (state is FollowIsLoaded) {
                 print(state);
                 followStatus = state.status;
                 setState(() {});
@@ -485,15 +479,9 @@ class CompanyPage extends State<AnyCompanyProfile> {
                     ),
                   ),
                 );
-              }
-            },
-          ),
-          BlocListener<CompanyBloc, CompanyState>(
-            listener: (context, state) {
-              if (state is UnFollowIsLoading) {
+              } else if (state is UnFollowIsLoading) {
                 print(state);
-              }
-              if (state is UnFollowIsLoaded) {
+              } else if (state is UnFollowIsLoaded) {
                 print(state);
                 followStatus = state.status;
                 setState(() {});

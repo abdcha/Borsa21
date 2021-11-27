@@ -77,27 +77,26 @@ class PostRepository {
     int page,
     int pageSize,
   ) async {
-    try {
-      var cities;
-      if (citiesid.isNotEmpty) {
-        cities = jsonEncode(citiesid);
-        // print(cities);
-      }
-      SharedPreferences _pref = await SharedPreferences.getInstance();
-      var token = _pref.get('token');
-      print(cities);
-      dio.options.headers['authorization'] = 'Bearer $token';
-      String fullUrl =
-          "$allPostByCityName&page=$page&sort=desc&pageSize=$pageSize&city_id=$cities";
-      print(fullUrl);
-      var getallPost = await dio.get(fullUrl);
-      print('from city name');
-      print(getallPost.data);
-      var data = new PostGet.fromJson(getallPost.data['data']);
-
-      return Right(data);
-    } catch (e) {
-      return Left('error');
+    var cities;
+    if (citiesid.isNotEmpty) {
+      cities = jsonEncode(citiesid);
+      // print(cities);
     }
+    print('city id');
+    print(cities);
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    var token = _pref.get('token');
+    dio.options.headers['authorization'] = 'Bearer $token';
+    String fullUrl =
+        "$allPostByCityName&page=$page&sort=desc&pageSize=$pageSize";
+
+    print(fullUrl);
+    var getallPost =
+        await dio.get(fullUrl, queryParameters: {"city_id": cities});
+    print('from city name');
+    print(getallPost.data);
+    var data = new PostGet.fromJson(getallPost.data['data']);
+
+    return Right(data);
   }
 }

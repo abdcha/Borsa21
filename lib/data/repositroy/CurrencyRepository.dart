@@ -78,9 +78,11 @@ class CurrencyRepository {
       String completeUrl = type == "currency"
           ? '$chartUrl$cityid&from_date=$endFromdate&to_date=$now'
           : '$charttransferUrl$cityid&from_date=$endFromdate&to_date=$now';
+      print(completeUrl);
       var chartResponse = await _dio.get(
         completeUrl,
       );
+
       print(chartResponse.data);
       if (chartResponse.data['status'] == "success") {
         var response = Data.fromJson(chartResponse.data['data']);

@@ -35,30 +35,30 @@ void main() {
   runApp(MyApp());
 }
 
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-  //   print("message recieved");
-  //   // if (event.notification!.body != null) {
-  //   //   print("body " + event.notification!.body!);
-  //   //   print(event.notification!.bodyLocArgs);
-  //   //   print(event.notification!.titleLocArgs);
-  //   //   print(event.notification);
-  //   // }
+// Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   // FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+//   //   print("message recieved");
+//   //   // if (event.notification!.body != null) {
+//   //   //   print("body " + event.notification!.body!);
+//   //   //   print(event.notification!.bodyLocArgs);
+//   //   //   print(event.notification!.titleLocArgs);
+//   //   //   print(event.notification);
+//   //   // }
 
-  //   // print(event.notification);
-  // });
-  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
-  //   print("message open");
-  //   // print(event.notification!.body);
-  //   if (event.notification!.body != null) {
-  //     print("body " + event.notification!.body!);
-  //     print(event.notification!.bodyLocArgs);
-  //     print(event.notification!.titleLocArgs);
-  //     print(event.data);
-  //     // print(event.notification.);
-  //   }
-  // });
-}
+//   //   // print(event.notification);
+//   // });
+//   // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
+//   //   print("message open");
+//   //   // print(event.notification!.body);
+//   //   if (event.notification!.body != null) {
+//   //     print("body " + event.notification!.body!);
+//   //     print(event.notification!.bodyLocArgs);
+//   //     print(event.notification!.titleLocArgs);
+//   //     print(event.data);
+//   //     // print(event.notification.);
+//   //   }
+//   // });
+// }
 
 class MyApp extends StatelessWidget {
   @override
@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // prefs.clear();
     await Firebase.initializeApp();
     print('firebase');
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
     setState(() {
       if (prefs.getString('token') != null) {
