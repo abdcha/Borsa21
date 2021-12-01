@@ -72,6 +72,8 @@ class home_page extends State<HomeOfApp>
   }
 
   fireBase() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
     //   print("message open");
     //   if (event.notification!.body != null) {
@@ -86,6 +88,10 @@ class home_page extends State<HomeOfApp>
     //         print(event.data['type']);
     //         var value = event.data['id'];
     //         print(value['data']);
+    //       } else if (event.data['type'] == "broadcast") {
+    //         print(event.data['type']);
+    //         var value = event.data['id'];
+    //         print(value['data']);
     //       }
     //     } else if (userPermissions.contains('Trader_Permission')) {
     //       choosePage(0);
@@ -97,6 +103,13 @@ class home_page extends State<HomeOfApp>
     //     }
     //   }
     // });
+//     currency_price_change
+// new_chat
+// broadcast
+// new_followed_post
+// renew_subscription
+// trader_currency_price_change
+// transfer_change
     FirebaseMessaging.onMessage.handleError((error) {
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) {
@@ -168,6 +181,14 @@ class home_page extends State<HomeOfApp>
         //               )));
         //     });
       } else if (event.data['type'] == "broadcast") {
+        print(event.notification!.body);
+        print(event.notification!.title);
+        print(event.data['type']);
+
+        // prefs.setStringList('messages', value)
+        setState(() {
+          notificationcount++;
+        });
         showDialog(
             context: context,
             builder: (context) {
@@ -181,7 +202,7 @@ class home_page extends State<HomeOfApp>
                           children: const <Widget>[
                             Directionality(
                                 textDirection: TextDirection.rtl,
-                                child: Text('test test test')),
+                                child: Text('test')),
                           ],
                         ),
                       )));

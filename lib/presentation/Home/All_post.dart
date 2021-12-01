@@ -70,8 +70,9 @@ class AllPostPage extends State<AllPost> {
   List<String> cityloaded = [];
   List<String> _searchcity = [];
   List<int> cityloadedId = [];
-
+  bool isEmpty = false;
   bool isSerach = false;
+
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.get('username').toString();
@@ -83,32 +84,34 @@ class AllPostPage extends State<AllPost> {
       userActive = prefs.get('end_at').toString();
     }
     if (prefs.getStringList('searchcity') != null) {
+      cityloadedId.clear();
       _searchcity = prefs.getStringList('searchcity')!;
-    }
-    cityloadedId.clear();
-    if (_searchcity.isNotEmpty) {
       for (int i = 0; i < _searchcity.length; i++) {
         cityloadedId.add(int.parse(_searchcity[i]));
       }
     }
-    // for (var i in _searchcity) {
-    //   cityloaded.add(i.id.toString());
-    //   cityloadedId.add(i.id!.toInt());
-    // }
     setState(() {});
   }
 
   addsharedValue(List<CityId> cityid) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     cityloadedId.clear();
+    cityloaded.clear();
     if (prefs.getStringList('searchcity') != null) {
       prefs.getStringList('searchcity')!.clear();
+      for (var i in cityid) {
+        cityloaded.add(i.id.toString());
+        cityloadedId.add(i.id!.toInt());
+      }
+      prefs.setStringList('searchcity', cityloaded);
+    } else if (prefs.getStringList('searchcity') == null) {
+      for (var i in cityid) {
+        cityloaded.add(i.id.toString());
+        cityloadedId.add(i.id!.toInt());
+      }
+      var temp = prefs.setStringList('searchcity', cityloaded);
+      print(temp);
     }
-    for (var i in cityid) {
-      cityloaded.add(i.id.toString());
-      cityloadedId.add(i.id!.toInt());
-    }
-    prefs.setStringList('searchcity', cityloaded);
     setState(() {});
   }
 
@@ -126,10 +129,19 @@ class AllPostPage extends State<AllPost> {
     print(cityid);
     if (cityid != null) {
       print('inside cityid');
-      if (cityidconvert.isEmpty)
+      if (cityidconvert.isEmpty) {
         for (var i in cityid) {
           cityidconvert.add(CityId(id: int.parse(i)));
         }
+      } else if (cityidconvert.isNotEmpty) {
+        cityidconvert.clear();
+        for (var i in cityid) {
+          print('test');
+          print(i);
+          cityidconvert.add(CityId(id: int.parse(i)));
+        }
+      }
+
       if (isRefresh) {
         currentPage = 1;
         post.clear();
@@ -145,6 +157,8 @@ class AllPostPage extends State<AllPost> {
       }
       if (post.length != totalpost && !isRefresh) {
         print('out');
+        print(currentPage);
+
         postbloc.add(GetPostByCityName(
             postscityId: cityidconvert,
             sortby: "desc",
@@ -153,6 +167,7 @@ class AllPostPage extends State<AllPost> {
         currentPage++;
       }
     } else {
+      // print(cityid!.length);
       print('else');
       print(totalpost);
       print(post.length);
@@ -633,7 +648,9 @@ class AllPostPage extends State<AllPost> {
                           onConfirm: (List<dynamic> results) {
                             setState(() {
                               print(results);
+                              cityid.clear();
                               for (var i = 0; i < results.length; i++) {
+                                print('object');
                                 cityid.add(CityId(id: results[i].hashCode));
                               }
                               // print(selectedcities);
@@ -653,17 +670,19 @@ class AllPostPage extends State<AllPost> {
                         child: Text('تم'),
                         onPressed: () {
                           if (cityid.isNotEmpty) {
+                            print('from here');
                             addsharedValue(cityid);
-                            print(cityid.first.id);
                             setState(() {
                               isSerach = true;
                             });
+                            currentPage = 1;
                             postbloc.add(GetPostByCityName(
                               postscityId: cityid,
                               sortby: "desc",
                               page: currentPage,
                               countItemPerpage: countItemPerpage,
                             ));
+                            currentPage++;
                             Navigator.pop(context);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -779,10 +798,66 @@ class AllPostPage extends State<AllPost> {
                   ),
                   onTap: () {
                     showDialog(
+                        // barrierColor: Colors.transparent,
                         context: context,
                         builder: (context) {
-                          return Center(
-                            child: Text('data'),
+                          return Directionality(
+                            textDirection: ui.TextDirection.rtl,
+                            child: Center(
+                              child: Container(
+                                  width: MediaQuery.of(context).size.width - 80,
+                                  height:
+                                      MediaQuery.of(context).size.height - 350,
+                                  child: Card(
+                                    child: Column(
+                                      children: [
+                                        Card(
+                                          child: Row(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      'البورصة المركزية',
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                    ),
+                                                    Text(
+                                                      'بعض من النصوص من أجل التوضيح',
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        Card(
+                                          child: Row(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      'البورصة المركزية',
+                                                    ),
+                                                    Text(
+                                                        'بعض من النصوص من أجل التوضيح')
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )),
+                            ),
                           );
                         });
                   }),
@@ -834,15 +909,14 @@ class AllPostPage extends State<AllPost> {
                   );
                 } else if (state is GetPostByCityNameLoaded) {
                   if (post.isEmpty || isSerach) {
-                    cityid.clear();
                     post.clear();
                     print(state);
-                    currentPage = 1;
                     post = state.posts.posts;
                     totalpost = state.posts.total;
-                    setState(() {});
-                  } else {
-                    print('xxxxxxxx');
+                    setState(() {
+                      isSerach = false;
+                    });
+                  } else if (!isSerach) {
                     post.addAll(state.posts.posts);
                     setState(() {});
                   }

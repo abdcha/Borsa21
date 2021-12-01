@@ -88,11 +88,10 @@ class PostRepository {
     var token = _pref.get('token');
     dio.options.headers['authorization'] = 'Bearer $token';
     String fullUrl =
-        "$allPostByCityName&page=$page&sort=desc&pageSize=$pageSize";
+        "$allPostByCityName&page=$page&sort=desc&pageSize=$pageSize&city_id=$cities";
 
     print(fullUrl);
-    var getallPost =
-        await dio.get(fullUrl, queryParameters: {"city_id": cities});
+    var getallPost = await dio.get(fullUrl);
     print('from city name');
     print(getallPost.data);
     var data = new PostGet.fromJson(getallPost.data['data']);
