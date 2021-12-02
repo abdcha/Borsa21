@@ -36,7 +36,9 @@ dependencies:
   flutter_offline: ^2.0.0
   image_picker: ^0.8.4
   multi_select_flutter: ^4.0.0
-  my_flutter_pusher: ^1.0.0
+  #my_flutter_pusher: ^1.0.0
+  flutter_pusher: ^1.0.3
+
   open_file: ^3.2.1
   pull_to_refresh: ^2.0.0
   readmore: ^2.1.0
