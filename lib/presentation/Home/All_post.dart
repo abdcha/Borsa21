@@ -221,7 +221,7 @@ class AllPostPage extends State<AllPost> {
       child: Column(
         children: [
           Card(
-            color: Color(0xff6e7d91),
+            color: Colors.white,
             child: CarouselSlider(
               carouselController: _controller,
               options: CarouselOptions(
@@ -300,8 +300,8 @@ class AllPostPage extends State<AllPost> {
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: (Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Colors.white)
+                              ? Colors.black
+                              : Colors.black)
                           .withOpacity(_current == entry.key ? 0.9 : 0.4)),
                 ),
               );
@@ -327,7 +327,7 @@ class AllPostPage extends State<AllPost> {
         return Column(
           children: [
             Card(
-              color: Color(0xff6e7d91),
+              color: Colors.white,
 
               // color: Color(0xff505D6E),
               elevation: 5.0,
@@ -350,7 +350,7 @@ class AllPostPage extends State<AllPost> {
                                 child: PopupMenuButton(
                                   icon: Icon(
                                     Icons.more_vert,
-                                    color: Colors.white,
+                                    color: Colors.black,
                                   ),
                                   itemBuilder: (BuildContext context) =>
                                       <PopupMenuEntry>[
@@ -408,19 +408,20 @@ class AllPostPage extends State<AllPost> {
                             children: [
                               Icon(
                                 Icons.location_on_outlined,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
                               Text(
                                 post[index].user.city.name,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w300,
-                                    color: Colors.white),
+                                    color: Colors.black),
                               ),
                             ],
                           )),
                       Spacer(),
                       Container(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Row(
                               children: [
@@ -428,7 +429,7 @@ class AllPostPage extends State<AllPost> {
                                   post[index].company.name,
                                   textAlign: TextAlign.right,
                                   style: TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),
                                 ),
@@ -439,15 +440,18 @@ class AllPostPage extends State<AllPost> {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 6),
                                   child: Text(
-                                    DateFormat.jm().format(
-                                        DateTime.parse(post[index].createdAt)),
-                                    style: TextStyle(color: Colors.white),
+                                    DateFormat.Md().format(DateTime.parse(
+                                            post[index].createdAt)) +
+                                        " " +
+                                        DateFormat.jm().format(DateTime.parse(
+                                            post[index].createdAt)),
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                 ),
                                 Text(
                                   post[index].user.name,
                                   textAlign: TextAlign.end,
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: Colors.black),
                                 ),
                               ],
                             ),
@@ -493,7 +497,7 @@ class AllPostPage extends State<AllPost> {
                             fontSize: 18, fontWeight: FontWeight.bold),
                         style: TextStyle(
                             // color: Colors.black.withOpacity(0.6),
-                            color: Colors.white,
+                            color: Colors.black,
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                       )),
@@ -526,7 +530,7 @@ class AllPostPage extends State<AllPost> {
                     padding: const EdgeInsets.only(right: 95, left: 95),
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white12, width: 1),
+                        border: Border.all(color: Colors.black12, width: 1),
                       ),
                     ),
                   ),
@@ -559,7 +563,7 @@ class AllPostPage extends State<AllPost> {
                                 },
                                 child: Icon(
                                   Icons.add_ic_call,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 ),
                               ),
                             ),
@@ -720,12 +724,15 @@ class AllPostPage extends State<AllPost> {
           new Container(
             child: new DrawerHeader(
                 child: new CircleAvatar(
-              backgroundColor: navbar,
+              radius: 30.0,
+              child: Image.asset(
+                'assest/Images/mainlogo.jpg',
+              ),
             )),
             color: Colors.grey[300],
           ),
           new Container(
-              color: Colors.white30,
+              color: Colors.white,
               child: Center(
                 child: new Column(
                   children: <Widget>[
@@ -765,7 +772,7 @@ class AllPostPage extends State<AllPost> {
   Widget build(BuildContext context) {
     return Scaffold(
         // backgroundColor: Colors.grey[550],
-        backgroundColor: Color(0xff505D6E),
+        backgroundColor: Colors.grey[400],
         drawer: newDrawer(),
         endDrawer: newEndDrawer(),
         appBar: AppBar(
@@ -818,16 +825,22 @@ class AllPostPage extends State<AllPost> {
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      'البورصة المركزية',
-                                                      textAlign:
-                                                          TextAlign.start,
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          'البورصة المركزية',
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Text(
-                                                      'بعض من النصوص من أجل التوضيح',
-                                                      textAlign:
-                                                          TextAlign.start,
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          'بعض من النصوص من أجل التوضيح',
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
@@ -842,6 +855,8 @@ class AllPostPage extends State<AllPost> {
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
                                                       'البورصة المركزية',

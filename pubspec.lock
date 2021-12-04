@@ -265,13 +265,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.3"
-  flutter_pusher:
-    dependency: "direct main"
-    description:
-      name: flutter_pusher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.3"
   flutter_svg:
     dependency: transitive
     description:
@@ -345,13 +338,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
-  json_annotation:
-    dependency: transitive
-    description:
-      name: json_annotation
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.1"
   matcher:
     dependency: transitive
     description:
@@ -475,6 +461,13 @@ packages:
     dependency: "direct main"
     description:
       name: pull_to_refresh
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  pusher_client:
+    dependency: "direct main"
+    description:
+      name: pusher_client
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"

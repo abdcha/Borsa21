@@ -2,14 +2,12 @@ import 'package:central_borssa/business_logic/Global%20Auction/bloc/globalauctio
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/GlobalAuction.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
-import 'package:central_borssa/presentation/Share/GlobalTable.dart';
 import 'package:flag/flag_enum.dart';
 import 'package:flag/flag_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class GlobalAuction extends StatefulWidget {
   GlobalAuctionPage createState() => GlobalAuctionPage();
@@ -1525,7 +1523,7 @@ class GlobalAuctionPage extends State<GlobalAuction> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff6e7d91),
-      drawer: newDrawer(),
+      drawer: null,
       appBar: AppBar(
         title: Center(
           child: Text('البورصة العالمية'),
@@ -1565,139 +1563,172 @@ class GlobalAuctionPage extends State<GlobalAuction> {
           }
         },
         child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Container(
-                child: isCalculate
-                    ? Card(
-                        color: Color(0xff6e7d91),
-                        elevation: 5.0,
-                        child: Column(
-                          children: [
-                            rates != null
-                                ? Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: ElevatedButton(
-                                                onPressed: () {
-                                                  bloc2.add(
-                                                      ProductGlobalauctionEvent(
-                                                          prodcut:
-                                                              productValue));
-                                                },
-                                                child: Text('تحويل')),
-                                          ),
-                                          Spacer(),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Container(
-                                                height: 35,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                    230,
-                                                child: new Theme(
-                                                    data: new ThemeData(
-                                                        primaryColor:
-                                                            Colors.red,
-                                                        primaryColorDark:
-                                                            Colors.red,
-                                                        focusColor: Colors.red),
-                                                    child: Directionality(
-                                                        textDirection:
-                                                            TextDirection.rtl,
-                                                        child: TextFormField(
-                                                          textAlign:
-                                                              TextAlign.right,
-                                                          cursorColor:
-                                                              Colors.black,
-                                                          controller:
-                                                              productValueTextEdit,
-                                                          // maxLength: 4,
-                                                          keyboardType:
-                                                              TextInputType
-                                                                  .number,
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.black),
-                                                          onChanged:
-                                                              (String? value) {
-                                                            setState(() {
-                                                              productValue =
-                                                                  int.parse(
-                                                                      value!);
-                                                            });
-                                                          },
-                                                          onSaved:
-                                                              (String? value) {
-                                                            setState(() {
-                                                              productValue =
-                                                                  int.parse(
-                                                                      value!);
-                                                            });
-                                                          },
-                                                          decoration:
-                                                              InputDecoration(
-                                                            contentPadding:
-                                                                EdgeInsets
-                                                                    .fromLTRB(
-                                                                        0,
-                                                                        0,
-                                                                        8,
-                                                                        8),
-                                                            labelStyle:
-                                                                TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
-                                                            fillColor:
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Card(
+              color: Color(0xff7d8a99),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                side: new BorderSide(color: Colors.white),
+              ),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    child: isCalculate && rates != null
+                        ? Card(
+                            color: Color(0xff6e7d91),
+                            elevation: 5.0,
+                            child: Column(
+                              children: [
+                                rates != null
+                                    ? Container(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    bloc2.add(
+                                                        ProductGlobalauctionEvent(
+                                                            prodcut:
+                                                                productValue));
+                                                  },
+                                                  child: Text('تحويل'),
+                                                  style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all<Color>(Color(
+                                                                  0xff6e7d99)),
+                                                      shadowColor:
+                                                          MaterialStateProperty
+                                                              .all<Color>(Colors
+                                                                  .black)),
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                    height: 30,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width -
+                                                            230,
+                                                    child: new Theme(
+                                                        data: new ThemeData(
+                                                            primaryColor:
                                                                 Colors.red,
-                                                            border:
-                                                                OutlineInputBorder(),
-                                                            enabledBorder: new OutlineInputBorder(
-                                                                borderSide: new BorderSide(
-                                                                    color: Colors
-                                                                        .white)),
-                                                            focusedBorder:
-                                                                OutlineInputBorder(
-                                                              borderSide: BorderSide(
-                                                                  width: 3,
+                                                            primaryColorDark:
+                                                                Colors.red,
+                                                            focusColor:
+                                                                Colors.red),
+                                                        child: Directionality(
+                                                            textDirection:
+                                                                TextDirection
+                                                                    .rtl,
+                                                            child:
+                                                                TextFormField(
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .right,
+                                                              cursorColor:
+                                                                  Colors.white,
+                                                              controller:
+                                                                  productValueTextEdit,
+                                                              // maxLength: 4,
+                                                              keyboardType:
+                                                                  TextInputType
+                                                                      .number,
+                                                              style: TextStyle(
                                                                   color: Colors
                                                                       .white),
-                                                            ),
-                                                          ),
-                                                        )))),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 8.0),
-                                            child: Text(
-                                              'قيمة التحويل',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
+                                                              onChanged:
+                                                                  (String?
+                                                                      value) {
+                                                                setState(() {
+                                                                  productValue =
+                                                                      int.parse(
+                                                                          value!);
+                                                                });
+                                                              },
+                                                              onSaved: (String?
+                                                                  value) {
+                                                                setState(() {
+                                                                  productValue =
+                                                                      int.parse(
+                                                                          value!);
+                                                                });
+                                                              },
+                                                              decoration:
+                                                                  InputDecoration(
+                                                                contentPadding:
+                                                                    EdgeInsets
+                                                                        .fromLTRB(
+                                                                            0,
+                                                                            0,
+                                                                            8,
+                                                                            8),
+                                                                labelStyle:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                ),
+                                                                fillColor:
+                                                                    Colors.red,
+                                                                border:
+                                                                    OutlineInputBorder(),
+                                                                enabledBorder: new OutlineInputBorder(
+                                                                    borderSide:
+                                                                        new BorderSide(
+                                                                            color:
+                                                                                Colors.white)),
+                                                                focusedBorder:
+                                                                    OutlineInputBorder(
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          width:
+                                                                              3,
+                                                                          color:
+                                                                              Colors.white),
+                                                                ),
+                                                              ),
+                                                            )))),
                                               ),
-                                            ),
+                                              Spacer(),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 8.0),
+                                                child: Text(
+                                                  'قيمة التحويل',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                : Container(
-                                    child: Center(
-                                        child: CircularProgressIndicator())),
-                            isCalculate ? globaltable(rates!) : Container()
-                          ],
-                        ),
-                      )
-                    : Container(
-                        child: Center(child: CircularProgressIndicator())),
+                                        ),
+                                      )
+                                    : Container(
+                                        child: Center(
+                                            child:
+                                                CircularProgressIndicator())),
+                                isCalculate ? globaltable(rates!) : Container()
+                              ],
+                            ),
+                          )
+                        : Container(
+                            child: Center(child: CircularProgressIndicator())),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

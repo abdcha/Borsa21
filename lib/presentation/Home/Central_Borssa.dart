@@ -13,7 +13,9 @@ import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_flutter_pusher/pusher.dart';
+//import 'package:my_flutter_pusher/pusher.dart';
+import 'package:pusher_client/pusher_client.dart';
+
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_event.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
@@ -34,7 +36,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
   late List<City> cities2 = [];
   late List<CurrencyPrice> currencyprice = [];
   late List<transfer.Transfer> transferprice = [];
-  late bool isloading = true;
+  late bool isloading = false;
   late bool istransferloading = true;
   late BorssaBloc bloc;
   late LoginBloc loginbloc;
@@ -50,6 +52,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
   late String userLocation = "";
   late String userType = "";
   int companyuser = 0;
+  late PusherClient pusher;
   // ignore: avoid_init_to_null
   late String? userActive = null;
   sharedValue() async {
@@ -102,45 +105,64 @@ class CentralBorssaPage extends State<CentralBorssa> {
   }
 
   Future<void> currencypusher(String channel) async {
-    try {
-      SharedPreferences _pref = await SharedPreferences.getInstance();
-      test = _pref.get('roles').toString();
-      // print(test);
-      await Pusher.init(
-          'borsa_app',
-          PusherOptions(
-              cluster: 'mt1',
-              host: 'www.ferasalhallak.online',
-              encrypted: false,
-              port: 6001));
-      Pusher.connect(onConnectionStateChange: (val) {
-        print(val!.currentState);
-      }, onError: (error) {
-        print(error!.message);
+    print('good step');
+    PusherOptions options = PusherOptions(
+      host: 'www.ferasalhallak.online',
+      wsPort: 6001,
+      encrypted: false,
+    );
+    pusher = PusherClient('borsa_app', options, autoConnect: true);
+    pusher.connect();
+    pusher.onConnectionStateChange((state) {
+      print(state!.currentState);
+    });
+    pusher.onConnectionError((error) {
+      print("error: ${error!.message}");
+    });
+
+    if (channel == "PriceChannel") {
+      _ourChannel = pusher.subscribe('PriceChannel');
+
+      _ourChannel.bind('Change', (onEvent) {
+        print(onEvent!.data);
+        bloc.add(AllCity());
       });
-      if (channel == "TransferChannel") {
-        //Subscribe
-        _ourChannel = await Pusher.subscribe('TransferChannel');
-
-        //Bind
-        _ourChannel.bind('Change', (onEvent) {
-          print(onEvent!.data);
-          bloc.add(GetAllTransfersEvent());
-        });
-      }
-      if (channel == "PriceChannel") {
-        //Subscribe
-        _ourChannel = await Pusher.subscribe('PriceChannel');
-
-        //Bind
-        _ourChannel.bind('Change', (onEvent) {
-          print(onEvent!.data);
-          bloc.add(AllCity());
-        });
-      }
-    } catch (e) {
-      print(e);
     }
+    // SharedPreferences _pref = await SharedPreferences.getInstance();
+    // test = _pref.get('roles').toString();
+    // // print(test);
+    // await Pusher.init(
+    //     'borsa_app',
+    //     PusherOptions(
+    //         cluster: 'mt1',
+    //         host: 'www.ferasalhallak.online',
+    //         encrypted: false,
+    //         port: 6001));
+    // Pusher.connect(onConnectionStateChange: (val) {
+    //   print(val!.currentState);
+    // }, onError: (error) {
+    //   print(error!.message);
+    // });
+    // if (channel == "TransferChannel") {
+    //   //Subscribe
+    //   _ourChannel = await Pusher.subscribe('TransferChannel');
+
+    //   //Bind
+    //   _ourChannel.bind('Change', (onEvent) {
+    //     print(onEvent!.data);
+    //     bloc.add(GetAllTransfersEvent());
+    //   });
+    // }
+    // if (channel == "PriceChannel") {
+    //   //Subscribe
+    //   _ourChannel = await Pusher.subscribe('PriceChannel');
+
+    //   //Bind
+    //   _ourChannel.bind('Change', (onEvent) {
+    //     print(onEvent!.data);
+    //     bloc.add(AllCity());
+    //   });
+    // }
   }
 
   Widget dataTabletransfer(List<dynamic> currencyPricelist, String tableName) {
@@ -152,23 +174,19 @@ class CentralBorssaPage extends State<CentralBorssa> {
       ),
       child: Column(
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width - 24,
-            child: Card(
-              color: Color(0xff7d8a99),
-              child: Text(
-                tableName == "currency" ? "أسعار الدولار" : "أسعار الحوالات",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              tableName == "currency" ? "أسعار الدولار" : "أسعار الحوالات",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
           ),
           Container(
             width: double.infinity,
-            margin: EdgeInsets.only(left: 12, right: 12, bottom: 8),
             child: DataTable(
                 dataTextStyle: TextStyle(
                   fontSize: 12,
@@ -510,34 +528,24 @@ class CentralBorssaPage extends State<CentralBorssa> {
     return Card(
       color: Color(0xff7d8a99),
       shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
         side: new BorderSide(color: Colors.white),
       ),
-
-      // shape: StadiumBorder(
-      //   side: BorderSide(
-      //     color: Colors.black,
-      //     width: 2.0,
-      //   ),
-      // ),
       child: Column(
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width - 24,
-            child: Card(
-              color: Color(0xff7d8a99),
-              child: Text(
-                tableName == "currency" ? "أسعار الدولار" : "أسعار الحوالات",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              tableName == "currency" ? "أسعار الدولار" : "أسعار الحوالات",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
           ),
           Container(
             width: double.infinity,
-            margin: EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 0),
             child: DataTable(
                 dataTextStyle: TextStyle(
                   fontSize: 12,
@@ -1044,10 +1052,9 @@ class CentralBorssaPage extends State<CentralBorssa> {
                             ),
                           ),
                         )
-                      : Container(
-                          child: Card(
-                            borderOnForeground: true,
-                            color: Color(0xff6e7d91),
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
                             child: Column(
                               children: [
                                 istransferloading

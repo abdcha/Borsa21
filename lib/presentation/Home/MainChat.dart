@@ -6,7 +6,6 @@ import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_flutter_pusher/pusher.dart';
 
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,32 +34,32 @@ class CompanyProfilePage extends State<MainChat> {
   late List<MessageOfChat.Message> messages = [];
   late int companyuser = 0;
   late int totalpost = 1;
-  late Channel _ourChannel;
+  // late Channel _ourChannel;
   Future<void> messagePusher() async {
-    try {
-      await Pusher.init(
-          'borsa_app',
-          PusherOptions(
-              cluster: 'mt1',
-              host: 'www.ferasalhallak.online',
-              encrypted: false,
-              port: 6001));
-      Pusher.connect(onConnectionStateChange: (val) {
-        print(val!.currentState);
-      }, onError: (error) {
-        print(error!.message);
-      });
+    // try {
+    //   await Pusher.init(
+    //       'borsa_app',
+    //       PusherOptions(
+    //           cluster: 'mt1',
+    //           host: 'www.ferasalhallak.online',
+    //           encrypted: false,
+    //           port: 6001));
+    //   Pusher.connect(onConnectionStateChange: (val) {
+    //     print(val!.currentState);
+    //   }, onError: (error) {
+    //     print(error!.message);
+    //   });
 
-      //Subscribe
-      _ourChannel = await Pusher.subscribe('MessageChannel');
+    //   //Subscribe
+    //   _ourChannel = await Pusher.subscribe('MessageChannel');
 
-      //Bind
-      _ourChannel.bind('newMessage', (onEvent) {
-        print(onEvent!.data);
-        bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
-      });
-      setState(() {});
-    } catch (e) {}
+    //   //Bind
+    //   _ourChannel.bind('newMessage', (onEvent) {
+    //     print(onEvent!.data);
+    //     bloc.add(GetAllMessagesEvent(pageSize: 100, page: 1));
+    //   });
+    //   setState(() {});
+    // } catch (e) {}
   }
 
   Future<bool> messageLoaing({bool isRefresh = false}) async {

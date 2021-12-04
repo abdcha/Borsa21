@@ -312,6 +312,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
                           Spacer(),
                           Container(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Row(
                                   children: [
@@ -328,9 +329,16 @@ class CompanyProfilePage extends State<CompanyProfile> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.only(right: 6),
-                                      child: Text(DateFormat.Hm().format(
-                                          DateTime.parse(
-                                              companypost[index].createdAt))),
+                                      child: Text(
+                                        DateFormat.Md().format(DateTime.parse(
+                                                companypost[index].createdAt)) +
+                                            " " +
+                                            DateFormat.jm().format(
+                                                DateTime.parse(
+                                                    companypost[index]
+                                                        .createdAt)),
+                                        style: TextStyle(color: Colors.black),
+                                      ),
                                     ),
                                     Text(
                                       companypost[index].user.name,
