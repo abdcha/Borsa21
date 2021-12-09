@@ -161,154 +161,85 @@ class TraderPage extends State<Trader> {
     return Column(
       children: [
         for (int i = 0; i < currencyprice.length; i++)
-          Card(
-            elevation: 4,
-            shadowColor: Colors.black,
-            color: Color(0xff7d8a99),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              side: new BorderSide(color: Colors.white),
-            ),
-            child: Container(
-              width: double.infinity,
+          Container(
+            width: double.infinity,
+            child: Card(
+              // color: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                side: new BorderSide(color: Colors.white),
+              ),
               margin: EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 0),
-              child: Column(
-                children: [
-                  DataTable(
-                      dataTextStyle: TextStyle(
-                        fontSize: 12,
-                        fontStyle: FontStyle.normal,
-                      ),
-                      headingRowHeight: 28,
-                      horizontalMargin: 5.5,
-                      dividerThickness: 2,
-                      dataRowHeight: 110,
-                      columnSpacing: 3,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xff505D6E),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0x29000000),
-                            offset: Offset(0, 3),
-                            blurRadius: 6,
-                          ),
-                        ],
-                      ),
-                      headingRowColor: MaterialStateColor.resolveWith(
-                        (states) => Color(0xff7d8a99),
-                      ),
-                      headingTextStyle: const TextStyle(
-                        inherit: false,
-                      ),
-                      columns: [
-                        DataColumn(
-                            label: Expanded(
-                          child: Container(
-                              child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                currencyPricelist[i].city.name == 'إربيل'
-                                    ? "الشمال"
-                                    : currencyPricelist[i].city.name == 'بغداد'
-                                        ? "بغداد"
-                                        : currencyPricelist[i].city.name ==
-                                                'بصرة'
-                                            ? "الجنوب"
-                                            : "",
-                                style: TextStyle(
-                                    color: const Color(0xffffffff),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18),
-                              )
-                            ],
-                          )),
-                        )),
-                      ],
-                      rows: [
-                        DataRow(cells: [
-                          DataCell(
-                            Column(
+              // elevation: 4,
+              // shadowColor: Colors.black,
+              // color: Color(0xff7d8a99),
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.circular(15.0),
+              //   side: new BorderSide(color: Colors.white),
+              // ),
+              child: Container(
+                // width: double.infinity,
+                child: Column(
+                  children: [
+                    DataTable(
+                        dataTextStyle: TextStyle(
+                          fontSize: 12,
+                          fontStyle: FontStyle.normal,
+                        ),
+                        headingRowHeight: 28,
+                        horizontalMargin: 5.5,
+                        dividerThickness: 2,
+                        dataRowHeight: 110,
+                        columnSpacing: 3,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: const Color(0xff505D6E),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0x29000000),
+                              offset: Offset(0, 3),
+                              blurRadius: 6,
+                            ),
+                          ],
+                        ),
+                        headingRowColor: MaterialStateColor.resolveWith(
+                          (states) => Color(0xff7d8a99),
+                        ),
+                        headingTextStyle: const TextStyle(
+                          inherit: false,
+                        ),
+                        columns: [
+                          DataColumn(
+                              label: Expanded(
+                            child: Container(
+                                child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundColor: Color(navbar.hashCode),
-                                      child: Flag.fromCode(
-                                        FlagsCode.IQ,
-                                        height: 30,
-                                        width: 30,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 8.0,
-                                        bottom: 8.0,
-                                        right: 8.0,
-                                      ),
-                                    ),
-                                    CircleAvatar(
-                                      backgroundColor: Color(navbar.hashCode),
-                                      child: Flag.fromCode(
-                                        FlagsCode.US,
-                                        height: 30,
-                                        width: 30,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 8.0, right: 12),
-                                      child: InkWell(
-                                        child: Row(
-                                          children: [
-                                            currencyPricelist[i].buyStatus ==
-                                                    "down"
-                                                ? Icon(
-                                                    Icons.call_received,
-                                                    color: Colors.red,
-                                                  )
-                                                : Icon(
-                                                    Icons.call_made,
-                                                    color: Colors.green,
-                                                  ),
-                                            Text(
-                                              currencyPricelist[i]
-                                                  .buy
-                                                  .toString(),
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 8.0, right: 12),
-                                      child: InkWell(
-                                        child: Text(
-                                          'العرض',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10, bottom: 10),
-                                  child: Row(
+                                Text(
+                                  currencyPricelist[i].city.name == 'إربيل'
+                                      ? "الشمال"
+                                      : currencyPricelist[i].city.name ==
+                                              'بغداد'
+                                          ? "بغداد"
+                                          : currencyPricelist[i].city.name ==
+                                                  'بصرة'
+                                              ? "الجنوب"
+                                              : "",
+                                  style: TextStyle(
+                                      color: const Color(0xffffffff),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                )
+                              ],
+                            )),
+                          )),
+                        ],
+                        rows: [
+                          DataRow(cells: [
+                            DataCell(
+                              Column(
+                                children: [
+                                  Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       CircleAvatar(
@@ -341,7 +272,7 @@ class TraderPage extends State<Trader> {
                                         child: InkWell(
                                           child: Row(
                                             children: [
-                                              currencyPricelist[i].sellStatus ==
+                                              currencyPricelist[i].buyStatus ==
                                                       "down"
                                                   ? Icon(
                                                       Icons.call_received,
@@ -353,7 +284,7 @@ class TraderPage extends State<Trader> {
                                                     ),
                                               Text(
                                                 currencyPricelist[i]
-                                                    .sell
+                                                    .buy
                                                     .toString(),
                                                 style: TextStyle(
                                                   fontSize: 20,
@@ -368,10 +299,10 @@ class TraderPage extends State<Trader> {
                                       Spacer(),
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            top: 8.0, right: 18),
+                                            top: 8.0, right: 12),
                                         child: InkWell(
                                           child: Text(
-                                            'الطلب',
+                                            'العرض',
                                             style: TextStyle(
                                               fontSize: 20,
                                               color: Colors.white,
@@ -382,13 +313,94 @@ class TraderPage extends State<Trader> {
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 10, bottom: 10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundColor:
+                                              Color(navbar.hashCode),
+                                          child: Flag.fromCode(
+                                            FlagsCode.IQ,
+                                            height: 30,
+                                            width: 30,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 8.0,
+                                            bottom: 8.0,
+                                            right: 8.0,
+                                          ),
+                                        ),
+                                        CircleAvatar(
+                                          backgroundColor:
+                                              Color(navbar.hashCode),
+                                          child: Flag.fromCode(
+                                            FlagsCode.US,
+                                            height: 30,
+                                            width: 30,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 8.0, right: 12),
+                                          child: InkWell(
+                                            child: Row(
+                                              children: [
+                                                currencyPricelist[i]
+                                                            .sellStatus ==
+                                                        "down"
+                                                    ? Icon(
+                                                        Icons.call_received,
+                                                        color: Colors.red,
+                                                      )
+                                                    : Icon(
+                                                        Icons.call_made,
+                                                        color: Colors.green,
+                                                      ),
+                                                Text(
+                                                  currencyPricelist[i]
+                                                      .sell
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 8.0, right: 18),
+                                          child: InkWell(
+                                            child: Text(
+                                              'الطلب',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                          ]),
                         ]),
-                      ]),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -470,6 +482,7 @@ class TraderPage extends State<Trader> {
               if (state is GetTraderCurrencyLoading) {
                 print(state);
               } else if (state is GetTraderCurrencyLoaded) {
+                currencyprice.clear();
                 print(state);
                 currencyprice = state.cities;
                 setState(() {
