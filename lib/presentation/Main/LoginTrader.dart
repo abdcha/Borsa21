@@ -43,6 +43,9 @@ class LoginTradeState extends State<LoginTradepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(navbar.hashCode),
+        ),
         backgroundColor: Color(navbar.hashCode),
         body: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) {
@@ -80,7 +83,7 @@ class LoginTradeState extends State<LoginTradepage> {
           child: Center(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.only(right: 16.0, left: 16, bottom: 16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -306,6 +309,11 @@ class LoginTradeState extends State<LoginTradepage> {
                                 : Container(
                                     margin: const EdgeInsets.only(top: 20.0),
                                     child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        primary: navbar, // background
+                                        // onPrimary: navbar,
+                                        shadowColor: Color(0xff132133),
+                                      ),
                                       onPressed: () {
                                         if (formKey.currentState!.validate()) {
                                           authloginBloc.add(LoginTraderSubmite(

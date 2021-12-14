@@ -107,7 +107,7 @@ class AllPostPage extends State<AllPost> {
             prefs.getStringList('MessageBody') != null) {
           print('ss');
           countofMessage = prefs.getInt('countofMessage')!;
-          // MessageBody = prefs.getStringList('MessageBody')!;
+          MessageBody = prefs.getStringList('MessageBody')!;
           if (body != null) {
             countofMessage++;
             MessageBody.add(body);
@@ -117,7 +117,6 @@ class AllPostPage extends State<AllPost> {
             prefs.setStringList('MessageBody', MessageBody);
             prefs.setInt('countofMessage', countofMessage);
           } else {
-            countofMessage = 0;
             print(body);
             countofMessage++;
             MessageBody.add(body!);
@@ -125,6 +124,13 @@ class AllPostPage extends State<AllPost> {
             prefs.setStringList('MessageBody', MessageBody);
             prefs.setInt('countofMessage', countofMessage);
           }
+        } else {
+          print(body);
+          countofMessage++;
+          MessageBody.add(body!);
+          print(MessageBody);
+          prefs.setStringList('MessageBody', MessageBody);
+          prefs.setInt('countofMessage', countofMessage);
         }
       }
     });
@@ -481,13 +487,15 @@ class AllPostPage extends State<AllPost> {
                                         " " +
                                         DateFormat.jm().format(DateTime.parse(
                                             post[index].createdAt)),
-                                    style: TextStyle(color: Colors.black),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 10),
                                   ),
                                 ),
                                 Text(
                                   post[index].user.name,
                                   textAlign: TextAlign.end,
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 10),
                                 ),
                               ],
                             ),
@@ -529,13 +537,11 @@ class AllPostPage extends State<AllPost> {
                         trimCollapsedText: 'قرائة المزيد',
                         trimExpandedText: '',
                         textAlign: TextAlign.right,
-                        moreStyle: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                        // moreStyle: TextStyle(fontSize: 14),
                         style: TextStyle(
                             // color: Colors.black.withOpacity(0.6),
                             color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
+                            fontSize: 16),
                       )),
                   Container(
                       margin: const EdgeInsets.only(
@@ -864,44 +870,47 @@ class AllPostPage extends State<AllPost> {
                                   width: MediaQuery.of(context).size.width - 80,
                                   height:
                                       MediaQuery.of(context).size.height - 350,
-                                  child: Card(
-                                    child: Column(
-                                      children: [
-                                        for (int i = 0;
-                                            i < MessageBody.length;
-                                            i++)
-                                          Card(
-                                            child: Row(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                            'البورصة المركزية',
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                            MessageBody[i],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
+                                  child: SingleChildScrollView(
+                                    child: Card(
+                                      child: Column(
+                                        children: [
+                                          for (int i = MessageBody.length - 1;
+                                              i >= 0;
+                                              i--)
+                                            Card(
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                              'البورصة المركزية',
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                              MessageBody[i],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   )),
                             ),

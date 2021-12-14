@@ -41,6 +41,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
   late bool istransferloading = true;
   late BorssaBloc bloc;
   late LoginBloc loginbloc;
+  late String temp2 = "ss";
 
   late String? test;
   late String startpoint;
@@ -81,43 +82,67 @@ class CentralBorssaPage extends State<CentralBorssa> {
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) {
       if (event.data['type'] == "currency_price_change") {
+        String? temp = event.notification!.body;
+        temp2 = temp!;
         print('------');
         print(event.notification?.title.toString());
         print(event.notification?.body.toString());
         print('------');
 
         bloc.add(AllCity());
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Center(
-                  child: AlertDialog(
-                      title: const Text(''),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: const <Widget>[
-                            Text(''),
-                            Text('تم تغير سعر الصرف اليوم من 1422 إلى 1421'),
-                          ],
-                        ),
-                      )));
-            });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(temp2),
+            action: SnackBarAction(
+              label: 'تنبيه',
+              onPressed: () {},
+            ),
+          ),
+        );
+        // showDialog(
+        //     context: context,
+        //     builder: (context) {
+        //       return Container(
+        //         color: Colors.transparent,
+        //         height: 30,
+        //         child: AlertDialog(
+        //             content: SingleChildScrollView(
+        //           child: ListBody(
+        //             children: <Widget>[
+        //               Padding(
+        //                   padding: EdgeInsets.only(left: 8.0),
+        //                   child: Center(
+        //                     child: Text(temp2),
+        //                   )),
+        //             ],
+        //           ),
+        //         )),
+        //       );
+        //     });
+        // Navigator.pushReplacement(context,
+        //     MaterialPageRoute(builder: (context) {
+        //   return CentralBorssa();
+        // }));
+        // Navigator.pop(context);
       } else if (event.data['type'] == "transfer_change") {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Center(
-                  child: AlertDialog(
-                      title: const Text(''),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: const <Widget>[
-                            Text('تجديد إشتراك'),
-                            Text('لقد تم تجديد إشتراكّ'),
-                          ],
-                        ),
-                      )));
-            });
+        // showDialog(
+        //     context: context,
+        //     builder: (context) {
+        //       Future.delayed(Duration(milliseconds: 12), () {
+        //         Navigator.of(context).pop(true);
+        //       });
+        //       return AlertDialog(
+        //           title: const Text(''),
+        //           content: SingleChildScrollView(
+        //             child: ListBody(
+        //               children: const <Widget>[
+        //                 Text('تجديد إشتراك'),
+        //                 Text('لقد تم تجديد إشتراكّ'),
+        //               ],
+        //             ),
+        //           ));
+        //     });
+
       } else if (event.data['type'] == "trader_currency_price_change") {
         showDialog(
             context: context,
@@ -231,7 +256,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
       color: Color(0xff7d8a99),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
-        side: new BorderSide(color: Colors.white),
+        side: new BorderSide(color: Colors.white, width: 2),
       ),
       child: Column(
         children: [
@@ -250,84 +275,47 @@ class CentralBorssaPage extends State<CentralBorssa> {
             height: 210,
             width: double.infinity,
             child: SingleChildScrollView(
-              child: DataTable(
-                  dataTextStyle: TextStyle(
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic,
-                  ),
-                  headingRowHeight: 28,
-                  horizontalMargin: 5.5,
-                  dividerThickness: 2,
-                  dataRowHeight: 30,
-                  columnSpacing: 3,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: const Color(0xff505D6E),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0x29000000),
-                        offset: Offset(0, 3),
-                        blurRadius: 6,
-                      ),
-                    ],
-                  ),
-                  headingRowColor: MaterialStateColor.resolveWith(
-                    (states) => Color(0xff7d8a99),
-                  ),
-                  headingTextStyle: const TextStyle(
-                    inherit: false,
-                  ),
-                  columns: [
-                    //remove head of table
-                    DataColumn(
-                        label: Expanded(
-                      child: Container(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Text(
-                              'العرض',
-                              style: TextStyle(
-                                color: const Color(0xffffffff),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          )
-                        ],
-                      )),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Container(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Text(
-                              'الطلب',
-                              style: TextStyle(
-                                color: const Color(0xffffffff),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          )
-                        ],
-                      )),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Container(
-                        // color: Colors.red,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+              child: Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.white12),
+                child: DataTable(
+                    dataTextStyle: TextStyle(
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic,
+                    ),
+                    headingRowHeight: 28,
+                    horizontalMargin: 5.5,
+                    dividerThickness: 2,
+                    dataRowHeight: 30,
+                    columnSpacing: 3,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: const Color(0xff505D6E),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0x29000000),
+                          offset: Offset(0, 3),
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                    headingRowColor: MaterialStateColor.resolveWith(
+                      (states) => Color(0xff7d8a99),
+                    ),
+                    headingTextStyle: const TextStyle(
+                      inherit: false,
+                    ),
+                    columns: [
+                      //remove head of table
+                      DataColumn(
+                          label: Expanded(
+                        child: Container(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(right: 8),
                               child: Text(
-                                'المدينة',
+                                'العرض',
                                 style: TextStyle(
                                   color: const Color(0xffffffff),
                                   fontWeight: FontWeight.bold,
@@ -335,126 +323,541 @@ class CentralBorssaPage extends State<CentralBorssa> {
                               ),
                             )
                           ],
-                        ),
-                      ),
-                    ))
-                  ],
-                  rows: [
-                    for (int i = 0; i < currencyPricelist.length; i++)
-                      DataRow(cells: [
-                        DataCell(
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              currencyPricelist[i].buyStatus == "up"
-                                  ? Icon(
-                                      Icons.arrow_circle_up,
-                                      color: Colors.green[700],
-                                    )
-                                  : Icon(
-                                      Icons.arrow_circle_down,
-                                      color: Colors.red[700],
-                                    ),
-                              userPermissions.contains(
-                                      'Update_Auction_Price_Permission')
-                                  ? InkWell(
-                                      onTap: () {
-                                        var route = new MaterialPageRoute(
-                                            builder: (BuildContext contex) =>
-                                                new BlocProvider(
-                                                  create: (context) =>
-                                                      CurrencyBloc(
-                                                          CurrencyInitial(),
-                                                          CurrencyRepository()),
-                                                  child: UpdatePrice(
-                                                    cityid: tableName ==
-                                                            "currency"
-                                                        ? currencyPricelist[i]
-                                                            .city
-                                                            .id
-                                                        : currencyPricelist[i]
-                                                            .id,
-                                                    id: currencyPricelist[i].id,
-                                                    buy: currencyPricelist[i]
-                                                        .buy,
-                                                    sell: currencyPricelist[i]
-                                                        .sell,
-                                                    buystate:
-                                                        currencyPricelist[i]
-                                                            .buyStatus,
-                                                    sellstate:
-                                                        currencyPricelist[i]
-                                                            .sellStatus,
-                                                    type: tableName,
-                                                    close: currencyPricelist[i]
-                                                        .close,
-                                                  ),
-                                                ));
-
-                                        BlocProvider(
-                                            create: (context) => CurrencyBloc(
-                                                CurrencyInitial(),
-                                                CurrencyRepository()));
-                                        Navigator.of(context).push(route);
-                                      },
-                                      child: Text(
-                                        currencyPricelist[i].buy.toString(),
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    )
-                                  : InkWell(
-                                      child: Text(
-                                        currencyPricelist[i].buy.toString(),
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    )
-                            ],
-                          ),
-
-                          // }
-                        ),
-                        DataCell(
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              currencyPricelist[i].sellStatus == "up"
-                                  ? Icon(
-                                      Icons.arrow_circle_up,
-                                      color: Colors.green[700],
-                                    )
-                                  : Icon(
-                                      Icons.arrow_circle_down,
-                                      color: Colors.red[700],
-                                    ),
-                              Text(
-                                currencyPricelist[i].sell.toStringAsFixed(2),
-                                maxLines: 1,
+                        )),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Container(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Text(
+                                'الطلب',
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400,
+                                  color: const Color(0xffffffff),
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
+                            )
+                          ],
+                        )),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Container(
+                          // color: Colors.red,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: Text(
+                                  'المدينة',
+                                  style: TextStyle(
+                                    color: const Color(0xffffffff),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
                             ],
                           ),
                         ),
-                        DataCell(Container(
+                      ))
+                    ],
+                    rows: [
+                      for (int i = 0; i < currencyPricelist.length; i++)
+                        DataRow(cells: [
+                          DataCell(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                currencyPricelist[i].buyStatus == "up"
+                                    ? Icon(
+                                        Icons.arrow_circle_up,
+                                        color: Colors.green[700],
+                                      )
+                                    : Icon(
+                                        Icons.arrow_circle_down,
+                                        color: Colors.red[700],
+                                      ),
+                                userPermissions.contains(
+                                        'Update_Auction_Price_Permission')
+                                    ? InkWell(
+                                        onTap: () {
+                                          var route = new MaterialPageRoute(
+                                              builder: (BuildContext contex) =>
+                                                  new BlocProvider(
+                                                    create: (context) =>
+                                                        CurrencyBloc(
+                                                            CurrencyInitial(),
+                                                            CurrencyRepository()),
+                                                    child: UpdatePrice(
+                                                      cityid: tableName ==
+                                                              "currency"
+                                                          ? currencyPricelist[i]
+                                                              .city
+                                                              .id
+                                                          : currencyPricelist[i]
+                                                              .id,
+                                                      id: currencyPricelist[i]
+                                                          .id,
+                                                      buy: currencyPricelist[i]
+                                                          .buy,
+                                                      sell: currencyPricelist[i]
+                                                          .sell,
+                                                      buystate:
+                                                          currencyPricelist[i]
+                                                              .buyStatus,
+                                                      sellstate:
+                                                          currencyPricelist[i]
+                                                              .sellStatus,
+                                                      type: tableName,
+                                                      close:
+                                                          currencyPricelist[i]
+                                                              .close,
+                                                    ),
+                                                  ));
+
+                                          BlocProvider(
+                                              create: (context) => CurrencyBloc(
+                                                  CurrencyInitial(),
+                                                  CurrencyRepository()));
+                                          Navigator.of(context).push(route);
+                                        },
+                                        child: Text(
+                                          currencyPricelist[i].buy.toString(),
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      )
+                                    : InkWell(
+                                        child: Text(
+                                          currencyPricelist[i].buy.toString(),
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      )
+                              ],
+                            ),
+
+                            // }
+                          ),
+                          DataCell(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                currencyPricelist[i].sellStatus == "up"
+                                    ? Icon(
+                                        Icons.arrow_circle_up,
+                                        color: Colors.green[700],
+                                      )
+                                    : Icon(
+                                        Icons.arrow_circle_down,
+                                        color: Colors.red[700],
+                                      ),
+                                Text(
+                                  currencyPricelist[i].sell.toStringAsFixed(2),
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          DataCell(Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Text(
+                                  currencyPricelist[i].firstCity.name +
+                                      "" +
+                                      currencyPricelist[i].secondCity.name,
+                                  maxLines: 1,
+                                  textWidthBasis: TextWidthBasis.parent,
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: const Color(0xffffffff),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                InkWell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: Icon(
+                                      Icons.remove_red_eye_rounded,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PriceChart(
+                                          cityid: tableName == "currency"
+                                              ? currencyPricelist[i].city.id
+                                              : currencyPricelist[i].id,
+                                          fromdate: 1,
+                                          todate: 1,
+                                          title: tableName == "currency"
+                                              ? currencyPricelist[i].city.name
+                                              : currencyPricelist[i]
+                                                      .firstCity
+                                                      .name +
+                                                  " " +
+                                                  currencyPricelist[i]
+                                                      .secondCity
+                                                      .name,
+                                          type: tableName,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                (userPermissions.contains('Chat_Permission') ||
+                                        userPermissions
+                                            .contains('Trader_Permission'))
+                                    ? InkWell(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 4),
+                                          child: Icon(
+                                            currencyPricelist[i].close == 0
+                                                ? Icons.lock_clock
+                                                : Icons.lock_open
+
+                                            //remove
+                                            ,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PriceChart(
+                                                cityid: tableName == "currency"
+                                                    ? currencyPricelist[i]
+                                                        .city
+                                                        .id
+                                                    : currencyPricelist[i].id,
+                                                fromdate: 1,
+                                                todate: 1,
+                                                title: tableName == "currency"
+                                                    ? currencyPricelist[i]
+                                                        .city
+                                                        .name
+                                                    : currencyPricelist[i]
+                                                            .firstCity
+                                                            .name +
+                                                        " " +
+                                                        currencyPricelist[i]
+                                                            .secondCity
+                                                            .name,
+                                                type: tableName,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      )
+                                    : Container(),
+                                (userPermissions.contains(
+                                        'Update_Auction_Price_Permission'))
+                                    ? InkWell(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 4),
+                                          child: Icon(
+                                            currencyPricelist[i].close == 1
+                                                ? Icons.lock_clock
+                                                : Icons.lock_open
+                                            //remove
+                                            ,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PriceChart(
+                                                cityid: tableName == "currency"
+                                                    ? currencyPricelist[i]
+                                                        .city
+                                                        .id
+                                                    : currencyPricelist[i].id,
+                                                fromdate: 1,
+                                                todate: 1,
+                                                title: tableName == "currency"
+                                                    ? currencyPricelist[i]
+                                                        .city
+                                                        .name
+                                                    : currencyPricelist[i]
+                                                            .firstCity
+                                                            .name +
+                                                        " " +
+                                                        currencyPricelist[i]
+                                                            .secondCity
+                                                            .name,
+                                                type: tableName,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      )
+                                    : Container()
+                              ],
+                            ),
+                          ))
+                        ]),
+                    ]),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget dataTable(List<dynamic> currencyPricelist, String tableName) {
+    return Card(
+      color: Color(0xff7d8a99),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+        side: new BorderSide(color: Colors.white, width: 2),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              tableName == "currency" ? "أسعار الدولار" : "أسعار الحوالات",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+          ),
+          Container(
+            height: 270,
+            width: double.infinity,
+            child: SingleChildScrollView(
+              child: Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.white12),
+                child: DataTable(
+                    dataTextStyle: TextStyle(
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic,
+                    ),
+                    headingRowHeight: 28,
+                    horizontalMargin: 5.5,
+                    dividerThickness: 2,
+                    dataRowHeight: 30,
+                    columnSpacing: 3,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: const Color(0xff505D6E),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0x29000000),
+                          offset: Offset(0, 3),
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                    headingRowColor: MaterialStateColor.resolveWith(
+                      (states) => Color(0xff7d8a99),
+                    ),
+                    headingTextStyle: const TextStyle(
+                      inherit: false,
+                    ),
+                    columns: [
+                      //remove head of table
+                      DataColumn(
+                          label: Expanded(
+                        child: Container(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Text(
+                                'العرض',
+                                style: TextStyle(
+                                  color: const Color(0xffffffff),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          ],
+                        )),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Container(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Text(
+                                'الطلب',
+                                style: TextStyle(
+                                  color: const Color(0xffffffff),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          ],
+                        )),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Container(
+                          // color: Colors.red,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: Text(
+                                  'المدينة',
+                                  style: TextStyle(
+                                    color: const Color(0xffffffff),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ))
+                    ],
+                    rows: [
+                      for (int i = 0; i < currencyPricelist.length; i++)
+                        DataRow(cells: [
+                          DataCell(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                currencyPricelist[i].buyStatus == "up"
+                                    ? Icon(
+                                        Icons.arrow_circle_up,
+                                        color: Colors.green[700],
+                                      )
+                                    : Icon(
+                                        Icons.arrow_circle_down,
+                                        color: Colors.red[700],
+                                      ),
+                                userPermissions.contains(
+                                        'Update_Auction_Price_Permission')
+                                    ? InkWell(
+                                        onTap: () {
+                                          var route = new MaterialPageRoute(
+                                              builder: (BuildContext contex) =>
+                                                  new BlocProvider(
+                                                    create: (context) =>
+                                                        CurrencyBloc(
+                                                            CurrencyInitial(),
+                                                            CurrencyRepository()),
+                                                    child: UpdatePrice(
+                                                      cityid:
+                                                          currencyPricelist[i]
+                                                              .city
+                                                              .id,
+                                                      id: currencyPricelist[i]
+                                                          .id,
+                                                      buy: currencyPricelist[i]
+                                                          .buy,
+                                                      sell: currencyPricelist[i]
+                                                          .sell,
+                                                      buystate:
+                                                          currencyPricelist[i]
+                                                              .buyStatus,
+                                                      sellstate:
+                                                          currencyPricelist[i]
+                                                              .sellStatus,
+                                                      type: tableName,
+                                                      close:
+                                                          currencyPricelist[i]
+                                                              .close,
+                                                    ),
+                                                  ));
+
+                                          BlocProvider(
+                                              create: (context) => CurrencyBloc(
+                                                  CurrencyInitial(),
+                                                  CurrencyRepository()));
+                                          Navigator.of(context).push(route);
+                                        },
+                                        child: Text(
+                                          currencyPricelist[i].buy.toString(),
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      )
+                                    : InkWell(
+                                        child: Text(
+                                          currencyPricelist[i].buy.toString(),
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      )
+                              ],
+                            ),
+
+                            // }
+                          ),
+                          DataCell(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                currencyPricelist[i].sellStatus == "up"
+                                    ? Icon(
+                                        Icons.arrow_circle_up,
+                                        color: Colors.green[700],
+                                      )
+                                    : Icon(
+                                        Icons.arrow_circle_down,
+                                        color: Colors.red[700],
+                                      ),
+                                Text(
+                                  currencyPricelist[i].sell.toStringAsFixed(2),
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          DataCell(Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
                               Text(
-                                currencyPricelist[i].firstCity.name +
-                                    "" +
-                                    currencyPricelist[i].secondCity.name,
+                                currencyPricelist[i].city.name,
                                 maxLines: 1,
                                 textWidthBasis: TextWidthBasis.parent,
                                 textAlign: TextAlign.end,
@@ -584,365 +987,10 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                     )
                                   : Container()
                             ],
-                          ),
-                        ))
-                      ]),
-                  ]),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget dataTable(List<dynamic> currencyPricelist, String tableName) {
-    return Card(
-      color: Color(0xff7d8a99),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-        side: new BorderSide(color: Colors.white),
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              tableName == "currency" ? "أسعار الدولار" : "أسعار الحوالات",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-          ),
-          Container(
-            height: 270,
-            width: double.infinity,
-            child: SingleChildScrollView(
-              child: DataTable(
-                  dataTextStyle: TextStyle(
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic,
-                  ),
-                  headingRowHeight: 28,
-                  horizontalMargin: 5.5,
-                  dividerThickness: 2,
-                  dataRowHeight: 30,
-                  columnSpacing: 3,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: const Color(0xff505D6E),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0x29000000),
-                        offset: Offset(0, 3),
-                        blurRadius: 6,
-                      ),
-                    ],
-                  ),
-                  headingRowColor: MaterialStateColor.resolveWith(
-                    (states) => Color(0xff7d8a99),
-                  ),
-                  headingTextStyle: const TextStyle(
-                    inherit: false,
-                  ),
-                  columns: [
-                    //remove head of table
-                    DataColumn(
-                        label: Expanded(
-                      child: Container(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Text(
-                              'العرض',
-                              style: TextStyle(
-                                color: const Color(0xffffffff),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          )
-                        ],
-                      )),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Container(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Text(
-                              'الطلب',
-                              style: TextStyle(
-                                color: const Color(0xffffffff),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          )
-                        ],
-                      )),
-                    )),
-                    DataColumn(
-                        label: Container(
-                      // color: Colors.red,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Text(
-                              'المدينة',
-                              style: TextStyle(
-                                color: const Color(0xffffffff),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ))
-                  ],
-                  rows: [
-                    for (int i = 0; i < currencyPricelist.length; i++)
-                      DataRow(cells: [
-                        DataCell(
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              currencyPricelist[i].buyStatus == "up"
-                                  ? Icon(
-                                      Icons.arrow_circle_up,
-                                      color: Colors.green[700],
-                                    )
-                                  : Icon(
-                                      Icons.arrow_circle_down,
-                                      color: Colors.red[700],
-                                    ),
-                              userPermissions.contains(
-                                      'Update_Auction_Price_Permission')
-                                  ? InkWell(
-                                      onTap: () {
-                                        var route = new MaterialPageRoute(
-                                            builder: (BuildContext contex) =>
-                                                new BlocProvider(
-                                                  create: (context) =>
-                                                      CurrencyBloc(
-                                                          CurrencyInitial(),
-                                                          CurrencyRepository()),
-                                                  child: UpdatePrice(
-                                                    cityid: currencyPricelist[i]
-                                                        .city
-                                                        .id,
-                                                    id: currencyPricelist[i].id,
-                                                    buy: currencyPricelist[i]
-                                                        .buy,
-                                                    sell: currencyPricelist[i]
-                                                        .sell,
-                                                    buystate:
-                                                        currencyPricelist[i]
-                                                            .buyStatus,
-                                                    sellstate:
-                                                        currencyPricelist[i]
-                                                            .sellStatus,
-                                                    type: tableName,
-                                                    close: currencyPricelist[i]
-                                                        .close,
-                                                  ),
-                                                ));
-
-                                        BlocProvider(
-                                            create: (context) => CurrencyBloc(
-                                                CurrencyInitial(),
-                                                CurrencyRepository()));
-                                        Navigator.of(context).push(route);
-                                      },
-                                      child: Text(
-                                        currencyPricelist[i].buy.toString(),
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    )
-                                  : InkWell(
-                                      child: Text(
-                                        currencyPricelist[i].buy.toString(),
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    )
-                            ],
-                          ),
-
-                          // }
-                        ),
-                        DataCell(
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              currencyPricelist[i].sellStatus == "up"
-                                  ? Icon(
-                                      Icons.arrow_circle_up,
-                                      color: Colors.green[700],
-                                    )
-                                  : Icon(
-                                      Icons.arrow_circle_down,
-                                      color: Colors.red[700],
-                                    ),
-                              Text(
-                                currencyPricelist[i].sell.toStringAsFixed(2),
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        DataCell(Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Text(
-                              currencyPricelist[i].city.name,
-                              maxLines: 1,
-                              textWidthBasis: TextWidthBasis.parent,
-                              textAlign: TextAlign.end,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: const Color(0xffffffff),
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 4),
-                                child: Icon(
-                                  Icons.remove_red_eye_rounded,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PriceChart(
-                                      cityid: tableName == "currency"
-                                          ? currencyPricelist[i].city.id
-                                          : currencyPricelist[i].id,
-                                      fromdate: 1,
-                                      todate: 1,
-                                      title: tableName == "currency"
-                                          ? currencyPricelist[i].city.name
-                                          : currencyPricelist[i]
-                                                  .firstCity
-                                                  .name +
-                                              " " +
-                                              currencyPricelist[i]
-                                                  .secondCity
-                                                  .name,
-                                      type: tableName,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            (userPermissions.contains('Chat_Permission') ||
-                                    userPermissions
-                                        .contains('Trader_Permission'))
-                                ? InkWell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 4),
-                                      child: Icon(
-                                        currencyPricelist[i].close == 0
-                                            ? Icons.lock_clock
-                                            : Icons.lock_open
-
-                                        //remove
-                                        ,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => PriceChart(
-                                            cityid: tableName == "currency"
-                                                ? currencyPricelist[i].city.id
-                                                : currencyPricelist[i].id,
-                                            fromdate: 1,
-                                            todate: 1,
-                                            title: tableName == "currency"
-                                                ? currencyPricelist[i].city.name
-                                                : currencyPricelist[i]
-                                                        .firstCity
-                                                        .name +
-                                                    " " +
-                                                    currencyPricelist[i]
-                                                        .secondCity
-                                                        .name,
-                                            type: tableName,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  )
-                                : Container(),
-                            (userPermissions.contains(
-                                    'Update_Auction_Price_Permission'))
-                                ? InkWell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 4),
-                                      child: Icon(
-                                        currencyPricelist[i].close == 1
-                                            ? Icons.lock_clock
-                                            : Icons.lock_open
-                                        //remove
-                                        ,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => PriceChart(
-                                            cityid: tableName == "currency"
-                                                ? currencyPricelist[i].city.id
-                                                : currencyPricelist[i].id,
-                                            fromdate: 1,
-                                            todate: 1,
-                                            title: tableName == "currency"
-                                                ? currencyPricelist[i].city.name
-                                                : currencyPricelist[i]
-                                                        .firstCity
-                                                        .name +
-                                                    " " +
-                                                    currencyPricelist[i]
-                                                        .secondCity
-                                                        .name,
-                                            type: tableName,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  )
-                                : Container()
-                          ],
-                        ))
-                      ])
-                  ]),
+                          ))
+                        ])
+                    ]),
+              ),
             ),
           ),
         ],

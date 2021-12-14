@@ -689,14 +689,12 @@ class CompanyProfilePage extends State<MainChat> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Directionality(
-                                    textDirection: ui.TextDirection.rtl,
-                                    child: Text(
-                                      'قريباً...',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 26, color: Colors.black),
-                                    ),
-                                  ),
+                                      textDirection: ui.TextDirection.rtl,
+                                      child: Icon(
+                                        Icons.lock_clock,
+                                        size: 100,
+                                        color: Colors.white,
+                                      )),
                                 ),
                               ],
                             ),

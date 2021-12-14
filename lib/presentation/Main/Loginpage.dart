@@ -113,7 +113,9 @@ class _MyHomePageState extends State<Loginpage> {
                                           textAlign: TextAlign.right,
                                           cursorColor: Colors.white,
                                           keyboardType: TextInputType.number,
-                                          style: TextStyle(color: Colors.white),
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
                                           controller: phoneNumberTextEdit,
                                           validator: (String? value) {
                                             if (value!.isEmpty) {
@@ -212,6 +214,11 @@ class _MyHomePageState extends State<Loginpage> {
                                     child: Column(
                                       children: [
                                         ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            primary: navbar, // background
+                                            // onPrimary: navbar,
+                                            shadowColor: Color(0xff132133),
+                                          ),
                                           onPressed: () {
                                             if (formKey.currentState!
                                                 .validate()) {
@@ -234,7 +241,11 @@ class _MyHomePageState extends State<Loginpage> {
                                                 ),
                                               );
                                             },
-                                            child: Text('إنشاء حساب'))
+                                            child: Text(
+                                              'إنشاء حساب',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ))
                                       ],
                                     ),
                                   ),

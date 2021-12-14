@@ -37,6 +37,8 @@ class home_page extends State<HomeOfApp>
   late int userActive = 0;
   int messageUnread = 0;
   int notificationcount = 0;
+  late String temp2 = "ss";
+
   sharedValue() async {
     print('2');
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -113,37 +115,42 @@ class home_page extends State<HomeOfApp>
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) {
       if (event.data['type'] == "new_followed_post") {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Center(
-                  child: AlertDialog(
-                      title: const Text(''),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: const <Widget>[
-                            Text('بوست جديد'),
-                            Text('لقد نم إضافة بوست جديد من قبل شركة ....'),
-                          ],
-                        ),
-                      )));
-            });
+        String? temp = event.notification!.body;
+        temp2 = temp!;
+        print('------');
+        print(event.notification?.title.toString());
+        print(event.notification?.body.toString());
+        print('------');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(temp2),
+            action: SnackBarAction(
+              label: 'تنبيه',
+              onPressed: () {},
+            ),
+          ),
+        );
       } else if (event.data['type'] == "renew_subscription") {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Center(
-                  child: AlertDialog(
-                      title: const Text(''),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: const <Widget>[
-                            Text('تجديد إشتراك'),
-                            Text('لقد تم تجديد إشتراكّ'),
-                          ],
-                        ),
-                      )));
-            });
+        String? temp = event.notification!.body;
+        temp2 = temp!;
+        print('------');
+        print(event.notification?.title.toString());
+        print(event.notification?.body.toString());
+        print('------');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(temp2),
+            action: SnackBarAction(
+              label: 'تنبيه',
+              onPressed: () {},
+            ),
+          ),
+        );
+        setState(() {
+          selectedPage = 1;
+        });
       } else if (event.data['type'] == "new_chat") {
         setState(() {
           messageUnread++;
@@ -164,35 +171,73 @@ class home_page extends State<HomeOfApp>
         //               )));
         //     });
       } else if (event.data['type'] == "broadcast") {
-        print(event.notification!.body);
-        print(event.notification!.title);
-        print(event.data['type']);
+        String? temp = event.notification!.body;
+        temp2 = temp!;
+        print('------');
+        print(event.notification?.title.toString());
+        print(event.notification?.body.toString());
+        print('------');
 
-        // prefs.setStringList('messages', value)
-        setState(() {
-          notificationcount++;
-        });
-        String temp = "";
-        String? test = event.notification?.body;
-        if (test != null) {
-          temp = test;
-        }
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Center(
-                  child: AlertDialog(
-                      title: Directionality(
-                          textDirection: TextDirection.rtl,
-                          child: const Text('البورصة المركزية')),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: const <Widget>[
-                            Text('ss'),
-                          ],
-                        ),
-                      )));
-            });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(temp2),
+            action: SnackBarAction(
+              label: 'تنبيه',
+              onPressed: () {},
+            ),
+          ),
+        );
+      } else if (event.data['type'] == "currency_price_change") {
+        String? temp = event.notification!.body;
+        temp2 = temp!;
+        print('------');
+        print(event.notification?.title.toString());
+        print(event.notification?.body.toString());
+        print('------');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(temp2),
+            action: SnackBarAction(
+              label: 'تنبيه',
+              onPressed: () {},
+            ),
+          ),
+        );
+      } else if (event.data['type'] == "transfer_change") {
+        String? temp = event.notification!.body;
+        temp2 = temp!;
+        print('------');
+        print(event.notification?.title.toString());
+        print(event.notification?.body.toString());
+        print('------');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(temp2),
+            action: SnackBarAction(
+              label: 'تنبيه',
+              onPressed: () {},
+            ),
+          ),
+        );
+      } else if (event.data['type'] == "trader_currency_price_change") {
+        String? temp = event.notification!.body;
+        temp2 = temp!;
+        print('------');
+        print(event.notification?.title.toString());
+        print(event.notification?.body.toString());
+        print('------');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(temp2),
+            action: SnackBarAction(
+              label: 'تنبيه',
+              onPressed: () {},
+            ),
+          ),
+        );
       }
     });
   }

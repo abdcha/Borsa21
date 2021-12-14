@@ -137,40 +137,41 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             home: FutureBuilder(
-          future: test,
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                print('HomeOfApp');
+              future: test,
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    print('HomeOfApp');
 
-                return HomeOfApp();
-              case ConnectionState.waiting:
-                print('waiting');
-                return Welcome();
-              case ConnectionState.active:
-                print('active');
+                    return HomeOfApp();
+                  case ConnectionState.waiting:
+                    print('waiting');
+                    return Welcome();
+                  case ConnectionState.active:
+                    print('active');
 
-                return Loginpage();
-              case ConnectionState.done:
-                print('done');
-                if (token == "" || token == 'error') {
-                  print('hi $token');
-                  return Loginpage();
-                } else {
-                  return HomeOfApp();
+                    return Loginpage();
+                  case ConnectionState.done:
+                    print('done');
+                    if (token == "" || token == 'error') {
+                      print('hi $token');
+                      return Loginpage();
+                    } else {
+                      return HomeOfApp();
+                    }
+                    // ignore: dead_code
+                    break;
+                  default:
+                    print('default');
+
+                    return Container(
+                        child: Center(
+                      child: CircularProgressIndicator(),
+                    ));
                 }
-                // ignore: dead_code
-                break;
-              default:
-                print('default');
-
-                return Container(
-                    child: Center(
-                  child: CircularProgressIndicator(),
-                ));
-            }
-          },
-        )));
+              },
+            )));
   }
 }
