@@ -3,7 +3,6 @@ import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Chat.dart' as MessageOfChat;
 import 'package:central_borssa/presentation/Company/company.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -606,18 +605,14 @@ class CompanyProfilePage extends State<MainChat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: newDrawer(),
+      // drawer: newDrawer(),
       appBar: AppBar(
-        title: Center(
-          child: Text('البورصة المركزية'),
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: InkWell(
-                child: Icon(Icons.notification_add_outlined), onTap: () {}),
+        title: Container(
+          height: 50,
+          child: Center(
+            child: Image.asset('assest/Images/test2.png'),
           ),
-        ],
+        ),
         backgroundColor: Color(navbar.hashCode),
       ),
       backgroundColor: Colors.grey[300],
@@ -672,7 +667,43 @@ class CompanyProfilePage extends State<MainChat> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ourListview(),
+                child: true
+                    ? Container(
+                        height: MediaQuery.of(context).size.height - 168,
+                        child: Directionality(
+                          textDirection: ui.TextDirection.rtl,
+                          child: Card(
+                            color: Colors.grey,
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: 400,
+                                  width: 400,
+                                  child: CircleAvatar(
+                                    radius: 30.0,
+                                    backgroundColor: Colors.transparent,
+                                    child:
+                                        Image.asset('assest/Images/Logo.png'),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Directionality(
+                                    textDirection: ui.TextDirection.rtl,
+                                    child: Text(
+                                      'قريباً...',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 26, color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    : ourListview(),
               ),
             ],
           ),

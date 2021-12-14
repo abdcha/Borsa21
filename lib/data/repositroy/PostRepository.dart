@@ -44,7 +44,7 @@ class PostRepository {
       var token = _pref.get('token');
       dio.options.headers['authorization'] = 'Bearer $token';
       var postResponse;
-      String url = 'https://ferasalhallak.online/api/posts/$id';
+      String url = 'https://centralborsa.com/api/posts/$id';
       postResponse = await dio.delete(url);
       if (postResponse.data['status'] == "success") {
         return Right('success');
@@ -64,7 +64,7 @@ class PostRepository {
     var token = _pref.get('token');
     dio.options.headers['authorization'] = 'Bearer $token';
     String fullUrl =
-        "https://ferasalhallak.online/api/posts?page=$page&sort=desc&pageSize=$count";
+        "https://centralborsa.com/api/posts?page=$page&sort=desc&pageSize=$count";
     var getallPost = await dio.get(fullUrl);
     var data = new PostGet.fromJson(getallPost.data['data']);
     print(getallPost);

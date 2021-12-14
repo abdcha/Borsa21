@@ -6,7 +6,6 @@ import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Post/EditORDelete.dart';
 import 'package:central_borssa/presentation/Post/add_Post.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -394,9 +393,9 @@ class CompanyProfilePage extends State<CompanyProfile> {
                         margin: const EdgeInsets.only(
                             top: 10, right: 10, left: 10, bottom: 20),
                         child: companypost[index].image ==
-                                    "https://ferasalhallak.onlineno_image" ||
+                                    "https://centralborsa.comno_image" ||
                                 companypost[index].image ==
-                                    "https://ferasalhallak.online/uploads/placeholder.jpg"
+                                    "https://centralborsa.com/uploads/placeholder.jpg"
                             ? Container()
                             : Image.network(
                                 companypost[index].image,
@@ -529,18 +528,14 @@ class CompanyProfilePage extends State<CompanyProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: newDrawer(),
+        // drawer: newDrawer(),
         appBar: AppBar(
-          title: Center(
-            child: Text('البورصة المركزية'),
-          ),
-          actions: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: InkWell(
-                  child: Icon(Icons.notification_add_outlined), onTap: () {}),
+          title: Container(
+            height: 50,
+            child: Center(
+              child: Image.asset('assest/Images/test2.png'),
             ),
-          ],
+          ),
           backgroundColor: Color(navbar.hashCode),
         ),
         backgroundColor: Colors.grey[300],
@@ -572,6 +567,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
                   if (companypost.isEmpty) {
                     companypost = state.data.posts;
                     totalpost = state.data.total;
+
                     setState(() {});
                   } else if (companypost.isNotEmpty) {
                     print(companypost.length);

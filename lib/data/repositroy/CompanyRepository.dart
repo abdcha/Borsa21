@@ -115,8 +115,8 @@ class CompanyRepository {
       postResponse = await _dio.put('$editanddeletePost$id',
           data: jsonEncode(({"body": body, "image": null})));
     } else if (image != null && image != "") {
-      if (image != "https://ferasalhallak.online/uploads/placeholder.jpg" &&
-          image != "https://ferasalhallak.onlineno_image") {
+      if (image != "https://centralborsa.com/uploads/placeholder.jpg" &&
+          image != "https://centralborsa.comno_image") {
         postResponse = await _dio.put('$editanddeletePost$id',
             data: jsonEncode(({"body": body, "image": image})));
       } else {
@@ -141,7 +141,7 @@ class CompanyRepository {
       var token = _pref.get('token');
       _dio.options.headers['authorization'] = 'Bearer $token';
       var postResponse;
-      String url = 'https://ferasalhallak.online/api/posts/$id';
+      String url = 'https://centralborsa.com/api/posts/$id';
       postResponse = await _dio.delete(url);
       print(postResponse);
 

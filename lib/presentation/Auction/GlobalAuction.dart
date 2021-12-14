@@ -4,7 +4,6 @@ import 'package:central_borssa/data/model/GlobalAuction.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flag/flag_enum.dart';
 import 'package:flag/flag_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -103,12 +102,12 @@ class GlobalAuctionPage extends State<GlobalAuction> {
   Widget globaltable(Rates rates) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            width: 200,
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.all(8.0),
+        //   child: Container(
+        //     width: 200,
+        //   ),
+        // ),
         Container(
           width: double.infinity,
           margin: EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 0),
@@ -1525,15 +1524,19 @@ class GlobalAuctionPage extends State<GlobalAuction> {
       backgroundColor: Color(0xff6e7d91),
       drawer: null,
       appBar: AppBar(
-        title: Center(
-          child: Text('البورصة العالمية'),
+        title: Container(
+          height: 50,
+          margin: EdgeInsets.only(right: 60),
+          child: Center(
+            child: Image.asset('assest/Images/test2.png'),
+          ),
         ),
         actions: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: InkWell(
-                child: Icon(Icons.notification_add_outlined), onTap: () {}),
-          ),
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 16),
+          //   child: InkWell(
+          //       child: Icon(Icons.notification_add_outlined), onTap: () {}),
+          // ),
         ],
         backgroundColor: Color(navbar.hashCode),
       ),
@@ -1565,17 +1568,17 @@ class GlobalAuctionPage extends State<GlobalAuction> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Card(
-              color: Color(0xff7d8a99),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-                side: new BorderSide(color: Colors.white),
-              ),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    child: isCalculate && rates != null
-                        ? Card(
+            child: isCalculate && rates != null
+                ? Card(
+                    color: Color(0xff7d8a99),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                      side: new BorderSide(color: Colors.white),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          child: Card(
                             color: Color(0xff6e7d91),
                             elevation: 5.0,
                             child: Column(
@@ -1610,10 +1613,10 @@ class GlobalAuctionPage extends State<GlobalAuction> {
                                               ),
                                               Spacer(),
                                               Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
+                                                padding: const EdgeInsets.only(
+                                                    top: 20.0),
                                                 child: Container(
-                                                    height: 30,
+                                                    height: 50,
                                                     width:
                                                         MediaQuery.of(context)
                                                                 .size
@@ -1638,6 +1641,7 @@ class GlobalAuctionPage extends State<GlobalAuction> {
                                                                       .right,
                                                               cursorColor:
                                                                   Colors.white,
+                                                              maxLength: 18,
                                                               controller:
                                                                   productValueTextEdit,
                                                               // maxLength: 4,
@@ -1722,13 +1726,12 @@ class GlobalAuctionPage extends State<GlobalAuction> {
                                 isCalculate ? globaltable(rates!) : Container()
                               ],
                             ),
-                          )
-                        : Container(
-                            child: Center(child: CircularProgressIndicator())),
-                  ),
-                ],
-              ),
-            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(child: Center(child: CircularProgressIndicator())),
           ),
         ),
       ),

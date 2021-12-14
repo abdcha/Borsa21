@@ -61,8 +61,11 @@ class AddPostPage extends State<AddPost> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: new AppBar(
-          title: Center(
-            child: Text('إضافة منشور'),
+          title: Container(
+            margin: EdgeInsets.only(right: 50),
+            child: Center(
+              child: Text('إضافة منشور'),
+            ),
           ),
           backgroundColor: Color(navbar.hashCode),
         ),

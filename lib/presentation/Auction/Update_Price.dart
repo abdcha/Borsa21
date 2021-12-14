@@ -180,7 +180,6 @@ class UpdatePricePage extends State<UpdatePrice> {
                                     textAlign: TextAlign.right,
                                     cursorColor: Colors.black,
                                     controller: buyTextEdit,
-                                    // maxLength: 4,
                                     keyboardType: TextInputType.number,
                                     style: TextStyle(color: Colors.black),
                                     validator: (String? value) {

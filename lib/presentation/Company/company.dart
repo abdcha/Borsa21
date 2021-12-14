@@ -123,29 +123,25 @@ class CompanyPage extends State<AnyCompanyProfile> {
                           ),
                         ),
                       ),
-                      // (isFollowed = companypost[index].isFollowed) == 1
-                      //     ? Padding(
-                      //         padding: const EdgeInsets.all(8.0),
-                      //         child: InkWell(
-                      //             onTap: () {
-                      //               bloc.add(UnFollowEvent(
-                      //                   id: companypost[index].companyId));
-                      //             },
-                      //             child: Icon(
-                      //               Icons.add_circle_outline_rounded,
-                      //               color: Colors.blue[400],
-                      //             )),
-                      //       )
-                      //     : Padding(
-                      //         padding: const EdgeInsets.all(8.0),
-                      //         child: InkWell(
-                      //             onTap: () {
-                      //               bloc.add(FollowEvent(
-                      //                   id: companypost[index].companyId));
-                      //             },
-                      //             child:
-                      //                 Icon(Icons.add_circle_outline_rounded)),
-                      //       )
+                      isFollowed == 1
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                  onTap: () {
+                                    bloc.add(UnFollowEvent(id: widget.id));
+                                  },
+                                  child: Text(
+                                    'متابعة',
+                                    style: TextStyle(color: Colors.blue[700]),
+                                  )),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                  onTap: () {
+                                    bloc.add(FollowEvent(id: widget.id));
+                                  },
+                                  child: Text('متابعة')))
                     ],
                   ),
                 )),
@@ -345,9 +341,9 @@ class CompanyPage extends State<AnyCompanyProfile> {
                           left: 10,
                         ),
                         child: companypost[index].image ==
-                                    "https://ferasalhallak.onlineno_image" ||
+                                    "https://centralborsa.comno_image" ||
                                 companypost[index].image ==
-                                    "https://ferasalhallak.online/uploads/placeholder.jpg"
+                                    "https://centralborsa.com/uploads/placeholder.jpg"
                             ? Container()
                             : Image.network(
                                 companypost[index].image,
@@ -429,8 +425,12 @@ class CompanyPage extends State<AnyCompanyProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: Center(
-          child: Text(widget.name),
+        title: Container(
+          height: 50,
+          margin: EdgeInsets.only(right: 60),
+          child: Center(
+            child: Image.asset('assest/Images/test2.png'),
+          ),
         ),
         backgroundColor: Color(navbar.hashCode),
       ),
@@ -446,6 +446,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
                   print('length');
                   companypost = state.data.posts;
                   totalpost = state.data.total;
+                  isFollowed = companypost.first.isFollowed;
                   setState(() {});
                 } else if (companypost.isNotEmpty) {
                   print('from addall');
@@ -475,7 +476,9 @@ class CompanyPage extends State<AnyCompanyProfile> {
               } else if (state is FollowIsLoaded) {
                 print(state);
                 followStatus = state.status;
-                setState(() {});
+                setState(() {
+                  isFollowed = 1;
+                });
               } else if (state is FollowError) {
                 print(state);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -492,7 +495,9 @@ class CompanyPage extends State<AnyCompanyProfile> {
               } else if (state is UnFollowIsLoaded) {
                 print(state);
                 followStatus = state.status;
-                setState(() {});
+                setState(() {
+                  isFollowed = 0;
+                });
               } else if (state is UnFollowError) {
                 print(state);
                 ScaffoldMessenger.of(context).showSnackBar(

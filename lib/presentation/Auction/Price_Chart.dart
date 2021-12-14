@@ -7,7 +7,6 @@ import 'package:central_borssa/data/model/Chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 
-
 class PriceChart extends StatefulWidget {
   final int cityid;
   final int fromdate;
@@ -131,8 +130,12 @@ class PriceChartPage extends State<PriceChart> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: new AppBar(
-          title: Center(
-            child: Text(widget.title),
+          title: Container(
+            height: 50,
+            margin: EdgeInsets.only(right: 60),
+            child: Center(
+              child: Image.asset('assest/Images/test2.png'),
+            ),
           ),
           backgroundColor: Color(navbar.hashCode),
         ),

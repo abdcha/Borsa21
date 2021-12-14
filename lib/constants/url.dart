@@ -1,44 +1,42 @@
-final baseUrl = 'https://ferasalhallak.online/api/auth/login';
-final logintraderUrl = 'https://ferasalhallak.online/api/auth/registerTrader';
+final baseUrl = 'https://centralborsa.com/api/auth/login';
+final logintraderUrl = 'https://centralborsa.com/api/auth/registerTrader';
 
-final permissionUrl = 'https://ferasalhallak.online/api/auth/me';
-final allCurrencyUrl = 'https://ferasalhallak.online/api/currencyPrices/';
+final permissionUrl = 'https://centralborsa.com/api/auth/me';
+final allCurrencyUrl = 'https://centralborsa.com/api/currencyPrices/';
 //curreny
 final traderCurrencyPrices =
-    'https://ferasalhallak.online/api/traderCurrencyPrices';
-final currencyUpdateUrl = 'https://ferasalhallak.online/api/currencyPrices/';
-final addPost = 'https://ferasalhallak.online/api/posts';
-final editanddeletePost = 'https://ferasalhallak.online/api/posts/';
-final allPost = 'https://ferasalhallak.online/api/posts';
-final allCompanyPost = 'https://ferasalhallak.online/api/posts/company/';
+    'https://centralborsa.com/api/traderCurrencyPrices';
+final currencyUpdateUrl = 'https://centralborsa.com/api/currencyPrices/';
+final addPost = 'https://centralborsa.com/api/posts';
+final editanddeletePost = 'https://centralborsa.com/api/posts/';
+final allPost = 'https://centralborsa.com/api/posts';
+final allCompanyPost = 'https://centralborsa.com/api/posts/company/';
 //company info
-final allCompanyinfo = 'https://ferasalhallak.online/api/company/';
+final allCompanyinfo = 'https://centralborsa.com/api/company/';
 
-final chartUrl = 'https://ferasalhallak.online/api/currencyChart?city_id=';
-final charttransferUrl = 'https://ferasalhallak.online/api/transfersChart?id=';
+final chartUrl = 'https://centralborsa.com/api/currencyChart?city_id=';
+final charttransferUrl = 'https://centralborsa.com/api/transfersChart?id=';
 
-final allCities = 'https://ferasalhallak.online/api/lists/cities';
-final allCompany = 'https://ferasalhallak.online/api/lists/companies';
-final allPostByCityName = 'https://ferasalhallak.online/api/posts?';
-final followUrl = 'https://ferasalhallak.online/api/followCompany?company_id=';
-final unfollowUrl =
-    'https://ferasalhallak.online/api/unfollowCompany?company_id=';
+final allCities = 'https://centralborsa.com/api/lists/cities';
+final allCompany = 'https://centralborsa.com/api/lists/companies';
+final allPostByCityName = 'https://centralborsa.com/api/posts?';
+final followUrl = 'https://centralborsa.com/api/followCompany?company_id=';
+final unfollowUrl = 'https://centralborsa.com/api/unfollowCompany?company_id=';
 
 //Chat Message
-final allMessagesUrl = 'https://ferasalhallak.online/api/message?page=';
-final sendMessageUrl = 'https://ferasalhallak.online/api/message';
+final allMessagesUrl = 'https://centralborsa.com/api/message?page=';
+final sendMessageUrl = 'https://centralborsa.com/api/message';
 //Fcm Token
-final sendFcmtoken = 'https://ferasalhallak.online/api/setUserData?';
+final sendFcmtoken = 'https://centralborsa.com/api/setUserData?';
 //Auction
-final auctionAddUrl = 'https://ferasalhallak.online/api/auction';
-final auctionGetUrl = 'https://ferasalhallak.online/api/auction';
+final auctionAddUrl = 'https://centralborsa.com/api/auction';
+final auctionGetUrl = 'https://centralborsa.com/api/auction';
 //Transfers
-final transfersUrl = 'https://ferasalhallak.online/api/transfers';
+final transfersUrl = 'https://centralborsa.com/api/transfers';
 //Global Auction
-final globalAuctionUrl =
-    'https://ferasalhallak.online/api/globalCurrencyPrices';
+final globalAuctionUrl = 'https://centralborsa.com/api/globalCurrencyPrices';
 //Advertisement
-final advertisementUrl = 'https://ferasalhallak.online/api/advertisement/';
+final advertisementUrl = 'https://centralborsa.com/api/advertisement/';
 //Undo
 final undoChangeUrl =
-    'https://ferasalhallak.online/api/currencyPrices/undoLastChange/';
+    'https://centralborsa.com/api/currencyPrices/undoLastChange/';

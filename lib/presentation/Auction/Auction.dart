@@ -1,7 +1,6 @@
 import 'package:central_borssa/business_logic/Auction/bloc/auction_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Auction.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:central_borssa/data/model/Currency.dart';
@@ -265,15 +264,19 @@ class AuctionPage extends State<Auction> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text('المزاد المركزي'),
+        title: Container(
+          height: 50,
+          margin: EdgeInsets.only(right: 60),
+          child: Center(
+            child: Image.asset('assest/Images/test2.png'),
+          ),
         ),
         actions: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: InkWell(
-                child: Icon(Icons.notification_add_outlined), onTap: () {}),
-          ),
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 16),
+          //   child: InkWell(
+          //       child: Icon(Icons.notification_add_outlined), onTap: () {}),
+          // ),
         ],
         backgroundColor: Color(navbar.hashCode),
       ),

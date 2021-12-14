@@ -8,7 +8,6 @@ import 'package:central_borssa/presentation/Auction/GlobalAuction.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:central_borssa/presentation/Trader/Trader.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -72,7 +71,7 @@ class home_page extends State<HomeOfApp>
   }
 
   fireBase() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
     //   print("message open");
@@ -113,23 +112,7 @@ class home_page extends State<HomeOfApp>
     FirebaseMessaging.onMessage.handleError((error) {
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) {
-      if (event.data['type'] == "currency_price_change") {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Center(
-                  child: AlertDialog(
-                      title: const Text(''),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: const <Widget>[
-                            Text('تغير سعر الصرف'),
-                            Text('تم تغير سعر الصرف اليوم من 1422 إلى 1421'),
-                          ],
-                        ),
-                      )));
-            });
-      } else if (event.data['type'] == "new_followed_post") {
+      if (event.data['type'] == "new_followed_post") {
         showDialog(
             context: context,
             builder: (context) {
@@ -189,6 +172,11 @@ class home_page extends State<HomeOfApp>
         setState(() {
           notificationcount++;
         });
+        String temp = "";
+        String? test = event.notification?.body;
+        if (test != null) {
+          temp = test;
+        }
         showDialog(
             context: context,
             builder: (context) {
@@ -200,40 +188,7 @@ class home_page extends State<HomeOfApp>
                       content: SingleChildScrollView(
                         child: ListBody(
                           children: const <Widget>[
-                            Directionality(
-                                textDirection: TextDirection.rtl,
-                                child: Text('test')),
-                          ],
-                        ),
-                      )));
-            });
-      } else if (event.data['type'] == "transfer_change") {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Center(
-                  child: AlertDialog(
-                      title: const Text(''),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: const <Widget>[
-                            Text('تجديد إشتراك'),
-                            Text('لقد تم تجديد إشتراكّ'),
-                          ],
-                        ),
-                      )));
-            });
-      } else if (event.data['type'] == "trader_currency_price_change") {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Center(
-                  child: AlertDialog(
-                      title: const Text('البورصة المركزية'),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: const <Widget>[
-                            Text('some text from here'),
+                            Text('ss'),
                           ],
                         ),
                       )));

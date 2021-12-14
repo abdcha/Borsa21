@@ -422,6 +422,10 @@ class TraderPage extends State<Trader> {
             child: new DrawerHeader(
                 child: new CircleAvatar(
               backgroundColor: navbar,
+              radius: 30.0,
+              child: Image.asset(
+                'assest/Images/test2.png',
+              ),
             )),
             color: Colors.grey[300],
           ),

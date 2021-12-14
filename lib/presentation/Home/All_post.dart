@@ -8,7 +8,7 @@ import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
 import 'package:central_borssa/business_logic/Company/bloc/company_state.dart';
 import 'package:central_borssa/data/model/Advertisement.dart';
 import 'package:central_borssa/presentation/Post/EditORDelete.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -38,11 +38,6 @@ class AllPost extends StatefulWidget {
 late List<list> _companiesName = [];
 
 class AllPostPage extends State<AllPost> {
-  final List<String> imagesList = [
-    'assest/Images/slider3.jpg',
-    'assest/Images/slider3.jpg',
-    'assest/Images/slider3.jpg'
-  ];
   late PostBloc postbloc;
   late BorssaBloc borssaBloc;
   late CompanyBloc companybloc;
@@ -64,6 +59,8 @@ class AllPostPage extends State<AllPost> {
   late String userLocation = "";
   late String userType = "";
   late String userActive = "";
+  late int countofMessage = 0;
+  late List<String> MessageBody = [];
   int companyuser = 0;
   int currentPage = 1;
   List<CityId> cityidconvert = [];
@@ -79,6 +76,12 @@ class AllPostPage extends State<AllPost> {
     userPhone = prefs.get('userphone').toString();
     userPermissions = prefs.getStringList('permissions')!.toList();
     companyuser = int.parse(prefs.get('companyid').toString());
+    if (prefs.getInt('countofMessage') != null) {
+      countofMessage = prefs.getInt('countofMessage')!;
+    }
+    if (prefs.getStringList('MessageBody') != null) {
+      MessageBody = prefs.getStringList('MessageBody')!;
+    }
     userType = prefs.get('roles').toString();
     if (prefs.get('end_at') != null) {
       userActive = prefs.get('end_at').toString();
@@ -90,7 +93,41 @@ class AllPostPage extends State<AllPost> {
         cityloadedId.add(int.parse(_searchcity[i]));
       }
     }
-    setState(() {});
+  }
+
+  firebase() {
+    FirebaseMessaging.onMessage.handleError((error) {
+      print("Erorrrrrr : ${error.toString()}");
+    }).listen((event) async {
+      if (event.data['type'] == "broadcast") {
+        print('s');
+        String? body = event.notification?.body;
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        if (prefs.getInt('countofMessage') != null &&
+            prefs.getStringList('MessageBody') != null) {
+          print('ss');
+          countofMessage = prefs.getInt('countofMessage')!;
+          // MessageBody = prefs.getStringList('MessageBody')!;
+          if (body != null) {
+            countofMessage++;
+            MessageBody.add(body);
+            print('----w-----');
+            print(MessageBody);
+            print('----w-----');
+            prefs.setStringList('MessageBody', MessageBody);
+            prefs.setInt('countofMessage', countofMessage);
+          } else {
+            countofMessage = 0;
+            print(body);
+            countofMessage++;
+            MessageBody.add(body!);
+            print(MessageBody);
+            prefs.setStringList('MessageBody', MessageBody);
+            prefs.setInt('countofMessage', countofMessage);
+          }
+        }
+      }
+    });
   }
 
   addsharedValue(List<CityId> cityid) async {
@@ -112,7 +149,6 @@ class AllPostPage extends State<AllPost> {
       var temp = prefs.setStringList('searchcity', cityloaded);
       print(temp);
     }
-    setState(() {});
   }
 
   reload() async {
@@ -186,7 +222,6 @@ class AllPostPage extends State<AllPost> {
         currentPage++;
       }
     }
-    setState(() {});
     return true;
   }
 
@@ -210,6 +245,7 @@ class AllPostPage extends State<AllPost> {
     advertisementbloc.add(GetAdvertisementEvent());
     postloading();
     sharedValue();
+    firebase();
     companybloc.add(GetAllCompanies());
     borssaBloc.add(AllCitiesList());
     super.initState();
@@ -508,9 +544,9 @@ class AllPostPage extends State<AllPost> {
                         left: 10,
                       ),
                       child: post[index].image ==
-                                  "https://ferasalhallak.onlineno_image" ||
+                                  "https://centralborsa.comno_image" ||
                               post[index].image ==
-                                  "https://ferasalhallak.online/uploads/placeholder.jpg"
+                                  "https://centralborsa.com/uploads/placeholder.jpg"
                           ? Container()
                           : FadeInImage.memoryNetwork(
                               placeholder: kTransparentImage,
@@ -724,9 +760,10 @@ class AllPostPage extends State<AllPost> {
           new Container(
             child: new DrawerHeader(
                 child: new CircleAvatar(
+              backgroundColor: navbar,
               radius: 30.0,
               child: Image.asset(
-                'assest/Images/mainlogo.jpg',
+                'assest/Images/test2.png',
               ),
             )),
             color: Colors.grey[300],
@@ -776,8 +813,11 @@ class AllPostPage extends State<AllPost> {
         drawer: newDrawer(),
         endDrawer: newEndDrawer(),
         appBar: AppBar(
-          title: Center(
-            child: Text('البورصة المركزية'),
+          title: Container(
+            margin: EdgeInsets.only(left: 24),
+            child: Center(
+              child: Text('البورصة المركزية'),
+            ),
           ),
           actions: [
             Padding(
@@ -799,11 +839,20 @@ class AllPostPage extends State<AllPost> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 4),
               child: InkWell(
-                  child: Badge(
-                    badgeContent: Text('3'),
-                    child: Icon(Icons.notification_add_outlined),
-                  ),
-                  onTap: () {
+                  child: countofMessage != 0
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 8.0, top: 2),
+                          child: Badge(
+                            badgeContent: Text(countofMessage.toString()),
+                            child: Icon(Icons.notification_add_outlined),
+                          ),
+                        )
+                      : Icon(Icons.notification_add_outlined),
+                  onTap: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    countofMessage = 0;
+                    prefs.setInt('countofMessage', 0);
                     showDialog(
                         // barrierColor: Colors.transparent,
                         context: context,
@@ -818,57 +867,40 @@ class AllPostPage extends State<AllPost> {
                                   child: Card(
                                     child: Column(
                                       children: [
-                                        Card(
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          'البورصة المركزية',
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          'بعض من النصوص من أجل التوضيح',
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
+                                        for (int i = 0;
+                                            i < MessageBody.length;
+                                            i++)
+                                          Card(
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            'البورصة المركزية',
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            MessageBody[i],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Card(
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      'البورصة المركزية',
-                                                    ),
-                                                    Text(
-                                                        'بعض من النصوص من أجل التوضيح')
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
                                       ],
                                     ),
                                   )),
@@ -893,11 +925,9 @@ class AllPostPage extends State<AllPost> {
                     print('empty');
                     post = state.posts.posts;
                     totalpost = state.posts.total;
-                    setState(() {});
                   } else if (post.isNotEmpty) {
                     post.addAll(state.posts.posts);
                     print('not empty');
-                    setState(() {});
                   }
                 } else if (state is PostsLoadingError) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -933,7 +963,6 @@ class AllPostPage extends State<AllPost> {
                     });
                   } else if (!isSerach) {
                     post.addAll(state.posts.posts);
-                    setState(() {});
                   }
                 } else if (state is AddPostSuccess) {
                   print(state);

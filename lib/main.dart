@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<String?> getValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    // prefs.clear();
     await Firebase.initializeApp();
     print('firebase');
     // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
