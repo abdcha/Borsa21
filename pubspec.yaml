@@ -19,6 +19,7 @@ environment:
   sdk: ">=2.13.0 <3.0.0"
 
 dependencies:
+  animated_splash_screen: ^1.1.0
   badges: ^2.0.1
   carousel_slider: ^4.0.0
   connectivity: ^3.0.6

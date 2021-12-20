@@ -12,7 +12,7 @@ class LoginRepository {
 
     var loginResponse = await _dio.post(baseUrl,
         data: jsonEncode(({"phone": phone, "password": password})));
-    // print(loginResponse);
+    print(loginResponse);
     if (loginResponse.data['status'] == "success") {
       print('from login');
       //Start store token
@@ -119,44 +119,54 @@ class LoginRepository {
   }
 
   Future<Either<String, String>> meInformation() async {
+    print('from first me');
     Dio _dio = Dio();
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var token = _prefs.get('token');
+    print(token);
     _dio.options.headers['authorization'] = 'Bearer $token';
+      print(permissionUrl);
 
+    var permissionResponse = await _dio.get(permissionUrl);
+    print(permissionResponse);
     if (token != null) {
-      print('inside');
+      print('inside me in');
 
       //User Informations
-      var permissionResponse = await _dio.get(permissionUrl);
-      // print(permissionResponse);
-      var userInformations =
-          new UserPermission.fromJson(permissionResponse.data['data']);
-      await _prefs.setString('username', userInformations.user.name);
-      await _prefs.setString('userphone', userInformations.user.phone);
-      await _prefs.setInt('useractive', userInformations.user.active);
-      await _prefs.setInt('userid', userInformations.user.id);
-      await _prefs.setInt('companyid', userInformations.user.companyid);
+      print(permissionUrl);
+      print(permissionResponse);
+      if (permissionResponse.data['status'] == 'error') {
+        return left('error');
+      } else {
+        // print(permissionResponse);
+        var userInformations =
+            new UserPermission.fromJson(permissionResponse.data['data']);
+        await _prefs.setString('username', userInformations.user.name);
+        await _prefs.setString('userphone', userInformations.user.phone);
+        await _prefs.setInt('useractive', userInformations.user.active);
+        await _prefs.setInt('userid', userInformations.user.id);
+        await _prefs.setInt('companyid', userInformations.user.companyid);
 
-      //permissions
+        //permissions
 
-      late List<String> permissions = [];
-      for (var i = 0; i < userInformations.permission.length; i++) {
-        permissions.add(userInformations.permission[i].name);
+        late List<String> permissions = [];
+        for (var i = 0; i < userInformations.permission.length; i++) {
+          permissions.add(userInformations.permission[i].name);
+        }
+        await _prefs.setStringList('permissions', permissions);
+        print(permissions);
+
+        //Active subscribtions
+        if (userInformations.user.endSubscription != null) {
+          await _prefs.setString('end_at',
+              userInformations.user.endSubscription!.endAt.toString());
+        }
+
+        //User Type
+        await _prefs.setString('roles', userInformations.roles.first);
+
+        return Right(permissionResponse.data['status']);
       }
-      await _prefs.setStringList('permissions', permissions);
-      print(permissions);
-
-      //Active subscribtions
-      if (userInformations.user.endSubscription != null) {
-        await _prefs.setString(
-            'end_at', userInformations.user.endSubscription!.endAt.toString());
-      }
-
-      //User Type
-      await _prefs.setString('roles', userInformations.roles.first);
-
-      return Right(permissionResponse.data['status']);
     } else {
       return Left('error');
     }

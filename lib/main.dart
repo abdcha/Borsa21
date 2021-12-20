@@ -1,3 +1,4 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_state.dart';
 import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/business_logic/Post/bloc/post_bloc.dart';
+import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/repositroy/AdvertisementRepository.dart';
 import 'package:central_borssa/data/repositroy/AuctionRepository.dart';
 import 'package:central_borssa/data/repositroy/CityRepository.dart';
@@ -32,37 +34,16 @@ void main() {
   runApp(MyApp());
 }
 
-// Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   // FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-//   //   print("message recieved");
-//   //   // if (event.notification!.body != null) {
-//   //   //   print("body " + event.notification!.body!);
-//   //   //   print(event.notification!.bodyLocArgs);
-//   //   //   print(event.notification!.titleLocArgs);
-//   //   //   print(event.notification);
-//   //   // }
-
-//   //   // print(event.notification);
-//   // });
-//   // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
-//   //   print("message open");
-//   //   // print(event.notification!.body);
-//   //   if (event.notification!.body != null) {
-//   //     print("body " + event.notification!.body!);
-//   //     print(event.notification!.bodyLocArgs);
-//   //     print(event.notification!.titleLocArgs);
-//   //     print(event.data);
-//   //     // print(event.notification.);
-//   //   }
-//   // });
-// }
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(),
-    );
+        home: AnimatedSplashScreen(
+            duration: 3000,
+            splash: Image.asset('assest/Images/test2.png'),
+            nextScreen: MyHomePage(),
+            splashTransition: SplashTransition.slideTransition,
+            backgroundColor: navbar));
   }
 }
 
@@ -80,7 +61,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // prefs.clear();
     await Firebase.initializeApp();
     print('firebase');
-    // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
     setState(() {
       if (prefs.getString('token') != null) {

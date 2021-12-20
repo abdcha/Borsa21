@@ -60,7 +60,7 @@ class AllPostPage extends State<AllPost> {
   late String userType = "";
   late String userActive = "";
   late int countofMessage = 0;
-  late List<String> MessageBody = [];
+  late List<String> messageBody = [];
   int companyuser = 0;
   int currentPage = 1;
   List<CityId> cityidconvert = [];
@@ -77,10 +77,16 @@ class AllPostPage extends State<AllPost> {
     userPermissions = prefs.getStringList('permissions')!.toList();
     companyuser = int.parse(prefs.get('companyid').toString());
     if (prefs.getInt('countofMessage') != null) {
+      countofMessage = 0;
       countofMessage = prefs.getInt('countofMessage')!;
+      print('--share---');
+      print(countofMessage);
     }
     if (prefs.getStringList('MessageBody') != null) {
-      MessageBody = prefs.getStringList('MessageBody')!;
+      messageBody.clear();
+      messageBody = prefs.getStringList('MessageBody')!;
+      print('--share---');
+      print(messageBody);
     }
     userType = prefs.get('roles').toString();
     if (prefs.get('end_at') != null) {
@@ -95,43 +101,88 @@ class AllPostPage extends State<AllPost> {
     }
   }
 
-  firebase() {
+  firebase() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     FirebaseMessaging.onMessage.handleError((error) {
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) async {
+      String? body = event.notification?.body;
       if (event.data['type'] == "broadcast") {
-        print('s');
-        String? body = event.notification?.body;
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        if (prefs.getInt('countofMessage') != null &&
-            prefs.getStringList('MessageBody') != null) {
-          print('ss');
-          countofMessage = prefs.getInt('countofMessage')!;
-          MessageBody = prefs.getStringList('MessageBody')!;
-          if (body != null) {
-            countofMessage++;
-            MessageBody.add(body);
-            print('----w-----');
-            print(MessageBody);
-            print('----w-----');
-            prefs.setStringList('MessageBody', MessageBody);
-            prefs.setInt('countofMessage', countofMessage);
-          } else {
-            print(body);
-            countofMessage++;
-            MessageBody.add(body!);
-            print(MessageBody);
-            prefs.setStringList('MessageBody', MessageBody);
-            prefs.setInt('countofMessage', countofMessage);
-          }
-        } else {
-          print(body);
+        if (messageBody.isEmpty) {
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
           countofMessage++;
-          MessageBody.add(body!);
-          print(MessageBody);
-          prefs.setStringList('MessageBody', MessageBody);
+          messageBody.add(body!);
           prefs.setInt('countofMessage', countofMessage);
+          prefs.setStringList('MessageBody', messageBody);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(body),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
+            ),
+          );
+        } else if (messageBody.isNotEmpty) {
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
+          countofMessage++;
+          messageBody.add(body!);
+          prefs.setInt('countofMessage', countofMessage);
+          prefs.setStringList('MessageBody', messageBody);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(body),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
+            ),
+          );
         }
+
+        // print('f');
+        // if (messageBody.firstWhere((element) => false) !=
+        //     event.notification!.body) {
+        //   print('s');
+        //   if (countofMessage != 0 && messageBody.isNotEmpty) {
+        //     print('ss');
+        //     if (body != null && temp == 0) {
+        //       countofMessage++;
+        //       temp++;
+        //       messageBody.add(body);
+        //       print('----w-----');
+        //       print(messageBody);
+        //       print('----w-----');
+        //       prefs.setStringList('MessageBody', messageBody);
+        //       prefs.setInt('countofMessage', countofMessage);
+        //     }
+        //   } else if (body != null && temp == 0) {
+        //     print(body);
+        //     temp++;
+        //     countofMessage++;
+        //     messageBody.add(body);
+        //     print(messageBody);
+        //     prefs.setStringList('MessageBody', messageBody);
+        //     prefs.setInt('countofMessage', countofMessage);
+        //   }
+        // } else if (messageBody.isEmpty) {
+        //   print(body);
+        //   temp++;
+        //   countofMessage++;
+        //   messageBody.add(body!);
+        //   print(messageBody);
+        //   prefs.setStringList('MessageBody', messageBody);
+        //   prefs.setInt('countofMessage', countofMessage);
+        //   sharedValue();
+        // }
+        // temp = 0;
       }
     });
   }
@@ -249,6 +300,7 @@ class AllPostPage extends State<AllPost> {
     companybloc = BlocProvider.of<CompanyBloc>(context);
     advertisementbloc = BlocProvider.of<AdvertisementBloc>(context);
     advertisementbloc.add(GetAdvertisementEvent());
+
     postloading();
     sharedValue();
     firebase();
@@ -788,7 +840,7 @@ class AllPostPage extends State<AllPost> {
                       leading: new Icon(Icons.phone),
                     ),
                     ListTile(
-                      title: Text(userActive),
+                      title: Text(userActive == "" ? "غيرفعال" : userActive),
                       leading: new Icon(Icons.wifi_tethering_outlined),
                       onTap: () {},
                     ),
@@ -874,7 +926,7 @@ class AllPostPage extends State<AllPost> {
                                     child: Card(
                                       child: Column(
                                         children: [
-                                          for (int i = MessageBody.length - 1;
+                                          for (int i = messageBody.length - 1;
                                               i >= 0;
                                               i--)
                                             Card(
@@ -898,8 +950,15 @@ class AllPostPage extends State<AllPost> {
                                                         ),
                                                         Row(
                                                           children: [
-                                                            Text(
-                                                              MessageBody[i],
+                                                            Container(
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width -
+                                                                  120,
+                                                              child: Text(
+                                                                messageBody[i],
+                                                              ),
                                                             ),
                                                           ],
                                                         ),

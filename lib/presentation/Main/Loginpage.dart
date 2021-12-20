@@ -25,7 +25,6 @@ class _MyHomePageState extends State<Loginpage> {
 
   late LoginBloc authloginBloc;
 
-  late FirebaseMessaging firebaseMessaging;
   @override
   void initState() {
     authloginBloc = BlocProvider.of<LoginBloc>(context);

@@ -3,7 +3,6 @@ import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,7 +26,6 @@ class LoginTradeState extends State<LoginTradepage> {
   final nameTextEdit = TextEditingController();
   late LoginBloc authloginBloc;
 
-  late FirebaseMessaging firebaseMessaging;
   @override
   void initState() {
     authloginBloc = BlocProvider.of<LoginBloc>(context);

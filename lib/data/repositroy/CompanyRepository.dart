@@ -45,7 +45,7 @@ class CompanyRepository {
     var data = new companyinf.Data.fromJson(companyPostResponse.data['data']);
     print(companyPostResponse);
     if (data.toString() != "") {
-      return Right(data.company);
+      return Right(data);
     } else {
       return Left('error');
     }

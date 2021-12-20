@@ -6,11 +6,7 @@ class Welcome extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Color(navbar.hashCode),
         body: Container(
-          child: Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Color(navbar.hashCode),
-            ),
-          ),
+          color: Color(navbar.hashCode),
         ),
       );
 }

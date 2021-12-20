@@ -5,6 +5,7 @@ import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/presentation/Admin/Profile.dart';
 import 'package:central_borssa/presentation/Auction/Auction.dart';
 import 'package:central_borssa/presentation/Auction/GlobalAuction.dart';
+import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:central_borssa/presentation/Trader/Trader.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -38,7 +39,7 @@ class home_page extends State<HomeOfApp>
   int messageUnread = 0;
   int notificationcount = 0;
   late String temp2 = "ss";
-
+  bool allow = true;
   sharedValue() async {
     print('2');
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -170,24 +171,26 @@ class home_page extends State<HomeOfApp>
         //                 ),
         //               )));
         //     });
-      } else if (event.data['type'] == "broadcast") {
-        String? temp = event.notification!.body;
-        temp2 = temp!;
-        print('------');
-        print(event.notification?.title.toString());
-        print(event.notification?.body.toString());
-        print('------');
+      }
+      //  else if (event.data['type'] == "broadcast") {
+      //   String? temp = event.notification!.body;
+      //   temp2 = temp!;
+      //   print('------');
+      //   print(event.notification?.title.toString());
+      //   print(event.notification?.body.toString());
+      //   print('------');
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(temp2),
-            action: SnackBarAction(
-              label: 'تنبيه',
-              onPressed: () {},
-            ),
-          ),
-        );
-      } else if (event.data['type'] == "currency_price_change") {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(
+      //       content: Text(temp2),
+      //       action: SnackBarAction(
+      //         label: 'تنبيه',
+      //         onPressed: () {},
+      //       ),
+      //     ),
+      //   );
+      // }
+      else if (event.data['type'] == "currency_price_change") {
         String? temp = event.notification!.body;
         temp2 = temp!;
         print('------');
@@ -222,6 +225,23 @@ class home_page extends State<HomeOfApp>
           ),
         );
       } else if (event.data['type'] == "trader_currency_price_change") {
+        String? temp = event.notification!.body;
+        temp2 = temp!;
+        print('------');
+        print(event.notification?.title.toString());
+        print(event.notification?.body.toString());
+        print('------');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(temp2),
+            action: SnackBarAction(
+              label: 'تنبيه',
+              onPressed: () {},
+            ),
+          ),
+        );
+      } else if (event.data['type'] == "new_auction") {
         String? temp = event.notification!.body;
         temp2 = temp!;
         print('------');
@@ -294,17 +314,28 @@ class home_page extends State<HomeOfApp>
   @override
   void initState() {
     _loginBloc = BlocProvider.of<LoginBloc>(context);
-    // _loginBloc.add(MeInformationEvent());
     fireBase();
     navbarbottom = sharedValue();
     super.initState();
   }
 
-  void choosePage(int index) {
-    if (selectedPage != index) {
+  mefire() {
+    print('test');
+    _loginBloc.add(MeInformationEvent());
+  }
+
+  choosePage(int index) async {
+    await mefire();
+    if (selectedPage != index && allow) {
+      print('1');
       setState(() {
         selectedPage = index;
       });
+    } else {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        logout();
+        return Loginpage();
+      }));
     }
   }
 
@@ -340,6 +371,27 @@ class home_page extends State<HomeOfApp>
                         print(state);
                       } else if (state is FcmTokenError) {
                         print(state);
+                      }
+                      if (state is MeInformationLoading) {
+                        allow = false;
+
+                        print(state);
+                      } else if (state is MeInformationLoaded) {
+                        print('2');
+                        setState(() {
+                          allow = true;
+                        });
+                        print(state);
+                        setState(() {});
+                      } else if (state is MeInformationError) {
+                        allow = false;
+                        print('2');
+                        print(state);
+                        // Navigator.pushReplacement(context,
+                        //     MaterialPageRoute(builder: (context) {
+                        //   logout();
+                        //   return Loginpage();
+                        // }));
                       }
                     },
                     child: callBody(selectedPage),

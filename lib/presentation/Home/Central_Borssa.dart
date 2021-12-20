@@ -58,7 +58,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
   late String? userActive = null;
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    loginbloc.add(MeInformationEvent());
+    // loginbloc.add(MeInformationEvent());
 
     userName = prefs.get('username').toString();
     userPhone = prefs.get('userphone').toString();
@@ -82,17 +82,10 @@ class CentralBorssaPage extends State<CentralBorssa> {
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) {
       if (event.data['type'] == "currency_price_change") {
-        String? temp = event.notification!.body;
-        temp2 = temp!;
-        print('------');
-        print(event.notification?.title.toString());
-        print(event.notification?.body.toString());
-        print('------');
-
         bloc.add(AllCity());
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(temp2),
+            content: Text(event.notification!.body!),
             action: SnackBarAction(
               label: 'تنبيه',
               onPressed: () {},

@@ -2,7 +2,6 @@ import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
 import 'package:central_borssa/business_logic/Company/bloc/company_state.dart';
 import 'package:central_borssa/business_logic/Company/bloc/company_event.dart';
 import 'package:central_borssa/constants/string.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -39,11 +38,11 @@ class CompanyPage extends State<AnyCompanyProfile> {
   GlobalKey _refresherKey = GlobalKey();
   int currentPage = 1;
   late int countItemPerpage = 30;
-  late companyInfor.Company companyInfo;
+  late companyInfor.Data companyInfo;
   late CompanyBloc bloc;
   late List<Posts> companypost = [];
   late bool followStatus;
-  int? isFollowed;
+  late bool isFollowed;
   late int companyuser = 0;
   late int totalpost = 0;
   late String? location;
@@ -92,14 +91,14 @@ class CompanyPage extends State<AnyCompanyProfile> {
                 radius: 30.0,
                 backgroundColor: Colors.transparent,
                 backgroundImage: NetworkImage(
-                  companyInfo.image,
+                  companyInfo.company.image,
                 ),
               ),
             ),
             Container(
               margin: const EdgeInsets.only(bottom: 10),
               child: Text(
-                companyInfo.name,
+                companyInfo.company.name,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ),
@@ -114,7 +113,8 @@ class CompanyPage extends State<AnyCompanyProfile> {
                         child: InkWell(
                           onTap: () {
                             whatsappSender(
-                                message: "hi", number: companyInfo.phone);
+                                message: "hi",
+                                number: companyInfo.company.phone);
                           },
                           child: Image.asset(
                             'assest/Images/whatsapp.png',
@@ -123,7 +123,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
                           ),
                         ),
                       ),
-                      isFollowed == 1
+                      isFollowed == true
                           ? Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: InkWell(
@@ -152,12 +152,12 @@ class CompanyPage extends State<AnyCompanyProfile> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(companyInfo.phone),
+                    Text(companyInfo.company.phone),
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
                       child: InkWell(
                         onTap: () {
-                          launch("tel://${companyInfo.phone}");
+                          launch("tel://${companyInfo.company.phone}");
                         },
                         child: Icon(
                           Icons.phone,
@@ -177,7 +177,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      companyInfo.address,
+                      companyInfo.company.address,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
@@ -198,7 +198,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      companyInfo.email,
+                      companyInfo.company.email,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
@@ -281,12 +281,15 @@ class CompanyPage extends State<AnyCompanyProfile> {
                                                 DateTime.parse(
                                                     companypost[index]
                                                         .createdAt)),
-                                        style: TextStyle(color: Colors.black),
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 10),
                                       ),
                                     ),
                                     Text(
                                       companypost[index].user.name,
                                       textAlign: TextAlign.end,
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 10),
                                     ),
                                   ],
                                 ),
@@ -324,15 +327,15 @@ class CompanyPage extends State<AnyCompanyProfile> {
                             companypost[index].body == "empty"
                                 ? ""
                                 : companypost[index].body,
-                            trimLines: 2,
+                            trimLines: 6,
                             trimMode: TrimMode.Line,
                             trimCollapsedText: 'قرائة المزيد',
                             trimExpandedText: '',
                             textAlign: TextAlign.right,
                             style: TextStyle(
-                                color: Colors.black.withOpacity(0.6),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
+                                color: Colors.black,
+                                fontSize: 16,
+                                ),
                           )),
                       Container(
                         margin: const EdgeInsets.only(
@@ -446,7 +449,6 @@ class CompanyPage extends State<AnyCompanyProfile> {
                   print('length');
                   companypost = state.data.posts;
                   totalpost = state.data.total;
-                  isFollowed = companypost.first.isFollowed;
                   setState(() {});
                 } else if (companypost.isNotEmpty) {
                   print('from addall');
@@ -468,6 +470,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
               } else if (state is GetCompanyInfoLoaded) {
                 print(state);
                 companyInfo = state.data;
+                isFollowed = companyInfo.isFollow == false ? false : true;
                 setState(() {
                   infoloaded = true;
                 });
@@ -477,7 +480,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
                 print(state);
                 followStatus = state.status;
                 setState(() {
-                  isFollowed = 1;
+                  isFollowed = true;
                 });
               } else if (state is FollowError) {
                 print(state);
@@ -496,7 +499,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
                 print(state);
                 followStatus = state.status;
                 setState(() {
-                  isFollowed = 0;
+                  isFollowed = false;
                 });
               } else if (state is UnFollowError) {
                 print(state);

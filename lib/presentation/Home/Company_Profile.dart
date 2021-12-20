@@ -35,7 +35,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
   GlobalKey _refresherKey = GlobalKey();
   int currentPage = 1;
   late int countItemPerpage = 30;
-  late companyInfor.Company companyInfo;
+  late companyInfor.Data companyInfo;
   bool infoloaded = false;
   late CompanyBloc bloc;
   late List<Posts> companypost = [];
@@ -104,14 +104,14 @@ class CompanyProfilePage extends State<CompanyProfile> {
                 radius: 30.0,
                 backgroundColor: Colors.transparent,
                 backgroundImage: NetworkImage(
-                  companyInfo.image,
+                  companyInfo.company.image,
                 ),
               ),
             ),
             Container(
               margin: const EdgeInsets.only(bottom: 10),
               child: Text(
-                companyInfo.name,
+                companyInfo.company.name,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ),
@@ -126,7 +126,8 @@ class CompanyProfilePage extends State<CompanyProfile> {
                         child: InkWell(
                           onTap: () {
                             whatsappSender(
-                                message: "hi", number: companyInfo.phone);
+                                message: "hi",
+                                number: companyInfo.company.phone);
                           },
                           child: Image.asset(
                             'assest/Images/whatsapp.png',
@@ -168,12 +169,12 @@ class CompanyProfilePage extends State<CompanyProfile> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(companyInfo.phone),
+                    Text(companyInfo.company.phone),
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
                       child: InkWell(
                         onTap: () {
-                          launch("tel://${companyInfo.phone}");
+                          launch("tel://${companyInfo.company.phone}");
                         },
                         child: Icon(
                           Icons.phone,
@@ -193,7 +194,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      companyInfo.address,
+                      companyInfo.company.address,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
@@ -214,7 +215,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      companyInfo.email,
+                      companyInfo.company.email,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
@@ -336,12 +337,15 @@ class CompanyProfilePage extends State<CompanyProfile> {
                                                 DateTime.parse(
                                                     companypost[index]
                                                         .createdAt)),
-                                        style: TextStyle(color: Colors.black),
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 10),
                                       ),
                                     ),
                                     Text(
                                       companypost[index].user.name,
                                       textAlign: TextAlign.end,
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 10),
                                     ),
                                   ],
                                 ),
@@ -385,9 +389,9 @@ class CompanyProfilePage extends State<CompanyProfile> {
                             trimExpandedText: '',
                             textAlign: TextAlign.right,
                             style: TextStyle(
-                                color: Colors.black.withOpacity(0.6),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
                           )),
                       Container(
                         margin: const EdgeInsets.only(

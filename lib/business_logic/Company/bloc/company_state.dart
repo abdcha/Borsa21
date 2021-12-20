@@ -89,7 +89,7 @@ class GetCompanyInfoLoading extends CompanyState {}
 class GetCompanyInfoError extends CompanyState {}
 
 class GetCompanyInfoLoaded extends CompanyState {
-  final companyinfo.Company data;
+  final companyinfo.Data data;
   GetCompanyInfoLoaded({
     required this.data,
   });
