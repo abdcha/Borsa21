@@ -1,7 +1,6 @@
 import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Home/Central_Borssa.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -187,6 +186,9 @@ class UpdatePricePage extends State<UpdatePrice> {
                                         return 'الرجاء إدخال قيمة العرض الجديدة';
                                       }
                                       return null;
+                                    },
+                                    onChanged: (String? value) {
+                                      buyValue = value!;
                                     },
                                     onSaved: (String? value) {
                                       buyValue = value ?? "";

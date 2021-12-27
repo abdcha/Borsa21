@@ -146,43 +146,6 @@ class AllPostPage extends State<AllPost> {
             ),
           );
         }
-
-        // print('f');
-        // if (messageBody.firstWhere((element) => false) !=
-        //     event.notification!.body) {
-        //   print('s');
-        //   if (countofMessage != 0 && messageBody.isNotEmpty) {
-        //     print('ss');
-        //     if (body != null && temp == 0) {
-        //       countofMessage++;
-        //       temp++;
-        //       messageBody.add(body);
-        //       print('----w-----');
-        //       print(messageBody);
-        //       print('----w-----');
-        //       prefs.setStringList('MessageBody', messageBody);
-        //       prefs.setInt('countofMessage', countofMessage);
-        //     }
-        //   } else if (body != null && temp == 0) {
-        //     print(body);
-        //     temp++;
-        //     countofMessage++;
-        //     messageBody.add(body);
-        //     print(messageBody);
-        //     prefs.setStringList('MessageBody', messageBody);
-        //     prefs.setInt('countofMessage', countofMessage);
-        //   }
-        // } else if (messageBody.isEmpty) {
-        //   print(body);
-        //   temp++;
-        //   countofMessage++;
-        //   messageBody.add(body!);
-        //   print(messageBody);
-        //   prefs.setStringList('MessageBody', messageBody);
-        //   prefs.setInt('countofMessage', countofMessage);
-        //   sharedValue();
-        // }
-        // temp = 0;
       }
     });
   }
@@ -283,7 +246,7 @@ class AllPostPage extends State<AllPost> {
   }
 
   void whatsappSender({@required number}) async {
-    final String url = "https://api.whatsapp.com/send?phone=$number";
+    final String url = "https://api.whatsapp.com/send?phone=+964-$number";
     await launch(url);
   }
 
@@ -311,7 +274,7 @@ class AllPostPage extends State<AllPost> {
 
   Widget sliderImage() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10, top: 10),
+      margin: const EdgeInsets.only(bottom: 10, top: 0),
       child: Column(
         children: [
           Card(
@@ -328,7 +291,7 @@ class AllPostPage extends State<AllPost> {
               items: advertisements
                   .map(
                     (item) => Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(5.0),
                       child: Card(
                         margin: EdgeInsets.only(
                           top: 15.0,
@@ -365,14 +328,7 @@ class AllPostPage extends State<AllPost> {
                                     fit: BoxFit.fill,
                                     width: double.infinity,
                                     height: double.infinity,
-                                  )
-                                  // child: Image.network(
-                                  //   item.image,
-                                  //   fit: BoxFit.fill,
-                                  //   width: double.infinity,
-                                  //   height: double.infinity,
-                                  // ),
-                                  ),
+                                  )),
                             ],
                           ),
                         ),
@@ -538,7 +494,8 @@ class AllPostPage extends State<AllPost> {
                                             post[index].createdAt)) +
                                         " " +
                                         DateFormat.jm().format(DateTime.parse(
-                                            post[index].createdAt)),
+                                                post[index].createdAt)
+                                            .toUtc()),
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 10),
                                   ),
@@ -911,70 +868,76 @@ class AllPostPage extends State<AllPost> {
                         await SharedPreferences.getInstance();
                     countofMessage = 0;
                     prefs.setInt('countofMessage', 0);
-                    showDialog(
-                        // barrierColor: Colors.transparent,
-                        context: context,
-                        builder: (context) {
-                          return Directionality(
-                            textDirection: ui.TextDirection.rtl,
-                            child: Center(
-                              child: Container(
-                                  width: MediaQuery.of(context).size.width - 80,
-                                  height:
-                                      MediaQuery.of(context).size.height - 350,
-                                  child: SingleChildScrollView(
-                                    child: Card(
-                                      child: Column(
-                                        children: [
-                                          for (int i = messageBody.length - 1;
-                                              i >= 0;
-                                              i--)
-                                            Card(
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
+                    messageBody.isNotEmpty
+                        ? showDialog(
+                            // barrierColor: Colors.transparent,
+                            context: context,
+                            builder: (context) {
+                              return Directionality(
+                                textDirection: ui.TextDirection.rtl,
+                                child: Center(
+                                  child: Container(
+                                      width: MediaQuery.of(context).size.width -
+                                          80,
+                                      height:
+                                          MediaQuery.of(context).size.height -
+                                              350,
+                                      child: SingleChildScrollView(
+                                        child: Card(
+                                          child: Column(
+                                            children: [
+                                              for (int i =
+                                                      messageBody.length - 1;
+                                                  i >= 0;
+                                                  i--)
+                                                Card(
+                                                  child: Row(
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
-                                                            Text(
-                                                              'البورصة المركزية',
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  'البورصة المركزية',
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Container(
+                                                                  width: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width -
+                                                                      120,
+                                                                  child: Text(
+                                                                    messageBody[
+                                                                        i],
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ],
                                                         ),
-                                                        Row(
-                                                          children: [
-                                                            Container(
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width -
-                                                                  120,
-                                                              child: Text(
-                                                                messageBody[i],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  )),
-                            ),
-                          );
-                        });
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        ),
+                                      )),
+                                ),
+                              );
+                            })
+                        : Container();
                   }),
             ),
           ],

@@ -35,7 +35,7 @@ class home_page extends State<HomeOfApp>
   late String userLocation = "";
   late String userType = "";
   int companyuser = 0;
-  late int userActive = 0;
+  late String userActive = "";
   int messageUnread = 0;
   int notificationcount = 0;
   late String temp2 = "ss";
@@ -51,7 +51,9 @@ class home_page extends State<HomeOfApp>
     userPhone = prefs.get('userphone').toString();
     print(prefs.get('token').toString());
     userLocation = "Empty";
-
+    if (prefs.get('end_at') != null) {
+      userActive = prefs.get('end_at').toString();
+    }
     userPermissions = prefs.getStringList('permissions')!.toList();
     var y = userPermissions.contains('Update_Auction_Price_Permission');
     print('user permission$y');
@@ -74,190 +76,194 @@ class home_page extends State<HomeOfApp>
   }
 
   fireBase() async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
-    //   print("message open");
-    //   if (event.notification!.body != null) {
-    //     if (userPermissions.contains('Chat_Permission')) {
-    //       if (event.data['type'] == "currency_price_change") {
-    //         choosePage(1);
-    //       } else if (event.data['type'] == "renew_subscription") {
-    //         print(event.data['type']);
-    //       } else if (event.data['type'] == "new_chat") {
-    //         print(event.data['type']);
-    //       } else if (event.data['type'] == "new_followed_post") {
-    //         print(event.data['type']);
-    //         var value = event.data['id'];
-    //         print(value['data']);
-    //       } else if (event.data['type'] == "broadcast") {
-    //         print(event.data['type']);
-    //         var value = event.data['id'];
-    //         print(value['data']);
-    //       }
-    //     } else if (userPermissions.contains('Trader_Permission')) {
-    //       choosePage(0);
-    //     } else if (userPermissions
-    //         .contains('Update_Auction_Price_Permission')) {
-    //       if (event.data['type'] == "currency_price_change") {
-    //         choosePage(0);
-    //       }
-    //     }
-    //   }
-    // });
-//     currency_price_change
-// new_chat
-// broadcast
-// new_followed_post
-// renew_subscription
-// trader_currency_price_change
-// transfer_change
     FirebaseMessaging.onMessage.handleError((error) {
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) {
-      if (event.data['type'] == "new_followed_post") {
-        String? temp = event.notification!.body;
-        temp2 = temp!;
-        print('------');
-        print(event.notification?.title.toString());
-        print(event.notification?.body.toString());
-        print('------');
+      if (userPermissions.contains('Trader_Permission')) {
+        if (event.data['type'] == "trader_currency_price_change") {
+          String? temp = event.notification!.body;
+          temp2 = temp!;
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(temp2),
-            action: SnackBarAction(
-              label: 'تنبيه',
-              onPressed: () {},
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(temp2),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
             ),
-          ),
-        );
-      } else if (event.data['type'] == "renew_subscription") {
-        String? temp = event.notification!.body;
-        temp2 = temp!;
-        print('------');
-        print(event.notification?.title.toString());
-        print(event.notification?.body.toString());
-        print('------');
+          );
+        } else if (event.data['type'] == "currency_price_change" &&
+            userActive != "") {
+          String? temp = event.notification!.body;
+          temp2 = temp!;
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(temp2),
-            action: SnackBarAction(
-              label: 'تنبيه',
-              onPressed: () {},
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(temp2),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
             ),
-          ),
-        );
-        setState(() {
-          selectedPage = 1;
-        });
-      } else if (event.data['type'] == "new_chat") {
-        setState(() {
-          messageUnread++;
-        });
-        // showDialog(
-        //     context: context,
-        //     builder: (context) {
-        //       return Center(
-        //           child: AlertDialog(
-        //               title: const Text(''),
-        //               content: SingleChildScrollView(
-        //                 child: ListBody(
-        //                   children: const <Widget>[
-        //                     Text('تجديد إشتراك'),
-        //                     Text('لقد تم تجديد إشتراكّ'),
-        //                   ],
-        //                 ),
-        //               )));
-        //     });
-      }
-      //  else if (event.data['type'] == "broadcast") {
-      //   String? temp = event.notification!.body;
-      //   temp2 = temp!;
-      //   print('------');
-      //   print(event.notification?.title.toString());
-      //   print(event.notification?.body.toString());
-      //   print('------');
+          );
+        } else if (event.data['type'] == "transfer_change" &&
+            userActive != "") {
+          String? temp = event.notification!.body;
+          temp2 = temp!;
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
 
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(
-      //       content: Text(temp2),
-      //       action: SnackBarAction(
-      //         label: 'تنبيه',
-      //         onPressed: () {},
-      //       ),
-      //     ),
-      //   );
-      // }
-      else if (event.data['type'] == "currency_price_change") {
-        String? temp = event.notification!.body;
-        temp2 = temp!;
-        print('------');
-        print(event.notification?.title.toString());
-        print(event.notification?.body.toString());
-        print('------');
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(temp2),
-            action: SnackBarAction(
-              label: 'تنبيه',
-              onPressed: () {},
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(temp2),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
             ),
-          ),
-        );
-      } else if (event.data['type'] == "transfer_change") {
-        String? temp = event.notification!.body;
-        temp2 = temp!;
-        print('------');
-        print(event.notification?.title.toString());
-        print(event.notification?.body.toString());
-        print('------');
+          );
+        } else if (event.data['type'] == "renew_subscription") {
+          String? temp = event.notification!.body;
+          temp2 = temp!;
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(temp2),
-            action: SnackBarAction(
-              label: 'تنبيه',
-              onPressed: () {},
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(temp2),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
             ),
-          ),
-        );
-      } else if (event.data['type'] == "trader_currency_price_change") {
-        String? temp = event.notification!.body;
-        temp2 = temp!;
-        print('------');
-        print(event.notification?.title.toString());
-        print(event.notification?.body.toString());
-        print('------');
+          );
+          setState(() {
+            selectedPage = 1;
+          });
+        }
+      } else if (userPermissions.contains('Chat_Permission') &&
+          userActive != "") {
+        if (event.data['type'] == "new_followed_post") {
+          String? temp = event.notification!.body;
+          temp2 = temp!;
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(temp2),
-            action: SnackBarAction(
-              label: 'تنبيه',
-              onPressed: () {},
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(temp2),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
             ),
-          ),
-        );
-      } else if (event.data['type'] == "new_auction") {
-        String? temp = event.notification!.body;
-        temp2 = temp!;
-        print('------');
-        print(event.notification?.title.toString());
-        print(event.notification?.body.toString());
-        print('------');
+          );
+        } else if (event.data['type'] == "renew_subscription") {
+          String? temp = event.notification!.body;
+          temp2 = temp!;
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(temp2),
-            action: SnackBarAction(
-              label: 'تنبيه',
-              onPressed: () {},
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(temp2),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
             ),
-          ),
-        );
+          );
+          setState(() {
+            selectedPage = 1;
+          });
+        } else if (event.data['type'] == "new_chat") {
+          setState(() {
+            messageUnread++;
+          });
+          // showDialog(
+          //     context: context,
+          //     builder: (context) {
+          //       return Center(
+          //           child: AlertDialog(
+          //               title: const Text(''),
+          //               content: SingleChildScrollView(
+          //                 child: ListBody(
+          //                   children: const <Widget>[
+          //                     Text('تجديد إشتراك'),
+          //                     Text('لقد تم تجديد إشتراكّ'),
+          //                   ],
+          //                 ),
+          //               )));
+          //     });
+        } else if (event.data['type'] == "currency_price_change") {
+          String? temp = event.notification!.body;
+          temp2 = temp!;
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(temp2),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
+            ),
+          );
+        } else if (event.data['type'] == "transfer_change") {
+          String? temp = event.notification!.body;
+          temp2 = temp!;
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(temp2),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
+            ),
+          );
+        } else if (event.data['type'] == "new_auction") {
+          String? temp = event.notification!.body;
+          temp2 = temp!;
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(temp2),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
+            ),
+          );
+        }
       }
     });
   }
@@ -319,23 +325,18 @@ class home_page extends State<HomeOfApp>
     super.initState();
   }
 
-  mefire() {
+  myfire() {
     print('test');
     _loginBloc.add(MeInformationEvent());
   }
 
   choosePage(int index) async {
-    await mefire();
+    await myfire();
     if (selectedPage != index && allow) {
       print('1');
       setState(() {
         selectedPage = index;
       });
-    } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        logout();
-        return Loginpage();
-      }));
     }
   }
 
@@ -373,25 +374,19 @@ class home_page extends State<HomeOfApp>
                         print(state);
                       }
                       if (state is MeInformationLoading) {
-                        allow = false;
-
                         print(state);
                       } else if (state is MeInformationLoaded) {
-                        print('2');
+                        print(state);
+                      } else if (state is MeInformationError) {
                         setState(() {
-                          allow = true;
+                          allow = false;
                         });
                         print(state);
-                        setState(() {});
-                      } else if (state is MeInformationError) {
-                        allow = false;
-                        print('2');
-                        print(state);
-                        // Navigator.pushReplacement(context,
-                        //     MaterialPageRoute(builder: (context) {
-                        //   logout();
-                        //   return Loginpage();
-                        // }));
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) {
+                          logout();
+                          return Loginpage();
+                        }));
                       }
                     },
                     child: callBody(selectedPage),
@@ -437,14 +432,16 @@ class home_page extends State<HomeOfApp>
                       if (userPermissions.contains('Chat_Permission'))
                         BottomNavigationBarItem(
                           label: 'المحادثة',
-                          icon: Badge(
-                            badgeContent: messageUnread == 0
-                                ? Container(
-                                    color: Colors.transparent,
-                                  )
-                                : Text(messageUnread.toString()),
-                            child: Icon(Icons.chat_outlined),
-                          ),
+                          icon: Icon(Icons.chat_outlined),
+                          // Badge(
+                          //   badgeContent: messageUnread == 0
+                          //       ? Container(
+                          //           color: Colors.transparent,
+                          //         )
+                          //       : Text(messageUnread.toString()),
+                          //   child:
+                          //   Icon(Icons.chat_outlined),
+                          // ),
                         ),
                       if (userPermissions
                           .contains('Update_Auction_Price_Permission'))

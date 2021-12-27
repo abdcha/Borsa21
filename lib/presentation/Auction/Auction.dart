@@ -28,6 +28,7 @@ class AuctionPage extends State<Auction> {
   int companyuser = 0;
   late int userActive = 0;
   bool _isLoading = false;
+  NumberFormat myFormat = NumberFormat.decimalPattern('en_us');
 
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -66,85 +67,48 @@ class AuctionPage extends State<Auction> {
 
   Widget dataTable() {
     return Container(
+      height: MediaQuery.of(context).size.height - 160,
       width: double.infinity,
       margin: EdgeInsets.all(12),
-      child: DataTable(
-          dataTextStyle: TextStyle(
-            fontSize: 12,
-            fontStyle: FontStyle.italic,
-          ),
-          headingRowHeight: 28,
-          horizontalMargin: 5.5,
-          dividerThickness: 2,
-          dataRowHeight: 50,
-          columnSpacing: 3,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: const Color(0xff505D6E),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0x29000000),
-                offset: Offset(0, 3),
-                blurRadius: 6,
-              ),
-            ],
-          ),
-          headingRowColor: MaterialStateColor.resolveWith(
-            (states) => Color(0xff7d8a99),
-          ),
-          headingTextStyle: const TextStyle(
-            inherit: false,
-          ),
-          columns: [
-            DataColumn(
-                label: Expanded(
-              child: Container(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Text(
-                      'القيمة',
-                      style: TextStyle(
-                        color: const Color(0xffffffff),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                ],
-              )),
-            )),
-            DataColumn(
-                label: Expanded(
-              child: Container(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Text(
-                      'الملف',
-                      style: TextStyle(
-                        color: const Color(0xffffffff),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                ],
-              )),
-            )),
-            DataColumn(
-                label: Expanded(
-              child: Container(
-                // color: Colors.red,
-                child: Row(
+      child: SingleChildScrollView(
+        child: DataTable(
+            dataTextStyle: TextStyle(
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
+            ),
+            headingRowHeight: 28,
+            horizontalMargin: 5.5,
+            dividerThickness: 2,
+            dataRowHeight: 50,
+            columnSpacing: 3,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xff505D6E),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0x29000000),
+                  offset: Offset(0, 3),
+                  blurRadius: 6,
+                ),
+              ],
+            ),
+            headingRowColor: MaterialStateColor.resolveWith(
+              (states) => Color(0xff7d8a99),
+            ),
+            headingTextStyle: const TextStyle(
+              inherit: false,
+            ),
+            columns: [
+              DataColumn(
+                  label: Expanded(
+                child: Container(
+                    child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Text(
-                        'التاريخ',
+                        'القيمة',
                         style: TextStyle(
                           color: const Color(0xffffffff),
                           fontWeight: FontWeight.bold,
@@ -152,105 +116,138 @@ class AuctionPage extends State<Auction> {
                       ),
                     )
                   ],
-                ),
-              ),
-            ))
-          ],
-          rows: [
-            for (int i = 0; i < auctionsfile.length; i++)
-              DataRow(cells: [
-                DataCell(
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        auctionsfile[i].value,
+                )),
+              )),
+              DataColumn(
+                  label: Expanded(
+                child: Container(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Text(
+                        'الملف',
                         style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      )
-                    ],
-                  ),
-
-                  // }
-                ),
-                DataCell(
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Text(
-                      //   currencyprice[i].value,
-                      //   maxLines: 1,
-                      //   style: TextStyle(
-                      //     fontSize: 14,
-                      //     color: Colors.white,
-                      //     fontWeight: FontWeight.w400,
-                      //   ),
-                      // ),
-                      InkWell(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return Scaffold(
-                                  appBar: AppBar(
-                                    backgroundColor: Color(navbar.hashCode),
-                                    title: Center(
-                                      child: Text('البورصة المركزية'),
-                                    ),
-                                    actions: [],
-                                  ),
-                                  body: Column(
-                                    children: [
-                                      Center(
-                                        child: Container(
-                                          height: 200,
-                                          width: 200,
-                                          child: Image.asset(
-                                              'assest/Images/Logo.png'),
-                                        ),
-                                      ),
-                                      Center(
-                                        child: Image.network(
-                                            auctionsfile[i].filePath),
-                                      ),
-                                    ],
-                                  ),
-                                  backgroundColor: Color(0xff6e7d91),
-                                );
-                              });
-                        },
-                        child: Icon(
-                          Icons.file_copy_sharp,
-                          color: Color(Colors.white.hashCode),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                DataCell(Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        DateFormat.yMd()
-                            .format(DateTime.parse(auctionsfile[i].createdAt)),
-                        maxLines: 1,
-                        textWidthBasis: TextWidthBasis.parent,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
                           color: const Color(0xffffffff),
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
+                    )
+                  ],
+                )),
+              )),
+              DataColumn(
+                  label: Expanded(
+                child: Container(
+                  // color: Colors.red,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          'التاريخ',
+                          style: TextStyle(
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
                     ],
                   ),
-                ))
-              ]),
-          ]),
+                ),
+              ))
+            ],
+            rows: [
+              for (int i = 0; i < auctionsfile.length; i++)
+                DataRow(cells: [
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          myFormat.format(int.parse(auctionsfile[i].value)),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      ],
+                    ),
+
+                    // }
+                  ),
+                  DataCell(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Scaffold(
+                                    appBar: AppBar(
+                                      backgroundColor: Color(navbar.hashCode),
+                                      title: Center(
+                                        child: Text('البورصة المركزية'),
+                                      ),
+                                      actions: [],
+                                    ),
+                                    body: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          Center(
+                                            child: Container(
+                                              height: 200,
+                                              width: 200,
+                                              child: Image.asset(
+                                                  'assest/Images/Logo.png'),
+                                            ),
+                                          ),
+                                          Center(
+                                            child: Image.network(
+                                                auctionsfile[i].filePath),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    backgroundColor: Color(0xff6e7d91),
+                                  );
+                                });
+                          },
+                          child: Icon(
+                            Icons.file_copy_sharp,
+                            color: Color(Colors.white.hashCode),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  DataCell(Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          DateFormat.yMd().format(
+                              DateTime.parse(auctionsfile[i].createdAt)),
+                          maxLines: 1,
+                          textWidthBasis: TextWidthBasis.parent,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+                ]),
+            ]),
+      ),
     );
   }
 
@@ -263,7 +260,7 @@ class AuctionPage extends State<Auction> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: new AppBar(
         title: Container(
           height: 50,
           margin: EdgeInsets.only(right: 60),
@@ -271,13 +268,6 @@ class AuctionPage extends State<Auction> {
             child: Image.asset('assest/Images/test2.png'),
           ),
         ),
-        actions: [
-          // Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 16),
-          //   child: InkWell(
-          //       child: Icon(Icons.notification_add_outlined), onTap: () {}),
-          // ),
-        ],
         backgroundColor: Color(navbar.hashCode),
       ),
       body: BlocListener<AuctionBloc, AuctionState>(

@@ -23,6 +23,7 @@ class CompanyRepository {
           '$allCompanyPost$number?pageSize=$pagesize&sort=desc&page=$page';
       var companyPostResponse = await _dio.get(urledit);
       var data = new Data.fromJson(companyPostResponse.data['data']);
+      print(date);
       if (data.toString() != "") {
         return Right(data);
       } else {

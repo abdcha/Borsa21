@@ -119,22 +119,16 @@ class LoginRepository {
   }
 
   Future<Either<String, String>> meInformation() async {
-    print('from first me');
+    print('from meinformation start');
     Dio _dio = Dio();
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var token = _prefs.get('token');
-    print(token);
     _dio.options.headers['authorization'] = 'Bearer $token';
-      print(permissionUrl);
-
     var permissionResponse = await _dio.get(permissionUrl);
     print(permissionResponse);
     if (token != null) {
       print('inside me in');
-
-      //User Informations
       print(permissionUrl);
-      print(permissionResponse);
       if (permissionResponse.data['status'] == 'error') {
         return left('error');
       } else {

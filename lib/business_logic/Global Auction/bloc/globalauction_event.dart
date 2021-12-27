@@ -10,7 +10,7 @@ abstract class GlobalauctionEvent extends Equatable {
 class GetGlobalauctionEvent extends GlobalauctionEvent {}
 
 class ProductGlobalauctionEvent extends GlobalauctionEvent {
-  final int prodcut;
+  final double prodcut;
   ProductGlobalauctionEvent({
     required this.prodcut,
   });

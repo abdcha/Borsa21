@@ -1,12 +1,15 @@
+import 'package:badges/badges.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:central_borssa/business_logic/Advertisement/bloc/advertisement_bloc.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Advertisement.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flag/flag_enum.dart';
 import 'package:flag/flag_widget.dart';
-import 'package:flutter/cupertino.dart';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_event.dart';
@@ -29,10 +32,12 @@ class TraderPage extends State<Trader> {
 
   late bool isloading = true;
   late bool istransferloading = true;
-
+  late int countofMessage = 0;
+  late List<String> messageBody = [];
   late BorssaBloc bloc;
   late String? test;
   late String startpoint;
+  late String userActive = "";
   late String endpoint;
   bool isClose = false;
   late List<String> userPermissions = [];
@@ -41,13 +46,28 @@ class TraderPage extends State<Trader> {
   late String userLocation = "";
   late String userType = "";
   int companyuser = 0;
-  late int userActive = 0;
+  
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.get('username').toString();
     userPhone = prefs.get('userphone').toString();
     userLocation = "Empty";
     userPermissions = prefs.getStringList('permissions')!.toList();
+    if (prefs.getInt('countofMessage') != null) {
+      countofMessage = 0;
+      countofMessage = prefs.getInt('countofMessage')!;
+      print('--share---');
+      print(countofMessage);
+    }
+    if (prefs.get('end_at') != null) {
+      userActive = prefs.get('end_at').toString();
+    }
+    if (prefs.getStringList('MessageBody') != null) {
+      messageBody.clear();
+      messageBody = prefs.getStringList('MessageBody')!;
+      print('--share---');
+      print(messageBody);
+    }
     var y = userPermissions.contains('Update_Auction_Price_Permission');
     print('user permission$y');
     companyuser = int.parse(prefs.get('companyid').toString());
@@ -55,12 +75,61 @@ class TraderPage extends State<Trader> {
     setState(() {});
   }
 
+  firebase() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    FirebaseMessaging.onMessage.handleError((error) {
+      print("Erorrrrrr : ${error.toString()}");
+    }).listen((event) async {
+      String? body = event.notification?.body;
+      if (event.data['type'] == "broadcast") {
+        if (messageBody.isEmpty) {
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
+          countofMessage++;
+          messageBody.add(body!);
+          prefs.setInt('countofMessage', countofMessage);
+          prefs.setStringList('MessageBody', messageBody);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(body),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
+            ),
+          );
+        } else if (messageBody.isNotEmpty) {
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
+          countofMessage++;
+          messageBody.add(body!);
+          prefs.setInt('countofMessage', countofMessage);
+          prefs.setStringList('MessageBody', messageBody);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(body),
+              action: SnackBarAction(
+                label: 'تنبيه',
+                onPressed: () {},
+              ),
+            ),
+          );
+        }
+      }
+    });
+  }
+
   @override
   void initState() {
     sharedValue();
     advertisementbloc = BlocProvider.of<AdvertisementBloc>(context);
     advertisementbloc.add(GetAdvertisementEvent());
-
+    firebase();
     bloc = BlocProvider.of<BorssaBloc>(context);
     bloc.add(TraderCurrencyEvent());
 
@@ -73,7 +142,7 @@ class TraderPage extends State<Trader> {
 
   Widget sliderImage() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10, top: 2),
+      margin: const EdgeInsets.only(bottom: 10, top: 0),
       child: Column(
         children: [
           Card(
@@ -90,13 +159,13 @@ class TraderPage extends State<Trader> {
               items: advertisements
                   .map(
                     (item) => Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(5.0),
                       child: Card(
                         margin: EdgeInsets.only(
                           top: 15.0,
                           bottom: 15.0,
                         ),
-                        elevation: 15.0,
+                        elevation: 5.0,
                         shadowColor: Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
@@ -443,6 +512,11 @@ class TraderPage extends State<Trader> {
                       leading: new Icon(Icons.phone),
                     ),
                     ListTile(
+                      title: Text(userActive == "" ? "غيرفعال" : userActive),
+                      leading: new Icon(Icons.wifi_tethering_outlined),
+                      onTap: () {},
+                    ),
+                    ListTile(
                       title: Text('تسجيل الخروج'),
                       leading: new Icon(Icons.logout_sharp),
                       onTap: () {
@@ -472,9 +546,91 @@ class TraderPage extends State<Trader> {
         ),
         actions: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 4),
             child: InkWell(
-                child: Icon(Icons.notification_add_outlined), onTap: () {}),
+                child: countofMessage != 0
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 8.0, top: 2),
+                        child: Badge(
+                          badgeContent: Text(countofMessage.toString()),
+                          child: Icon(Icons.notification_add_outlined),
+                        ),
+                      )
+                    : Icon(Icons.notification_add_outlined),
+                onTap: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  countofMessage = 0;
+                  prefs.setInt('countofMessage', 0);
+                  messageBody.isNotEmpty
+                      ? showDialog(
+                          // barrierColor: Colors.transparent,
+                          context: context,
+                          builder: (context) {
+                            return Directionality(
+                              textDirection: ui.TextDirection.rtl,
+                              child: Center(
+                                child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width - 80,
+                                    height: MediaQuery.of(context).size.height -
+                                        350,
+                                    child: SingleChildScrollView(
+                                      child: Card(
+                                        child: Column(
+                                          children: [
+                                            for (int i = messageBody.length - 1;
+                                                i >= 0;
+                                                i--)
+                                              Card(
+                                                child: Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                'البورصة المركزية',
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Container(
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width -
+                                                                    120,
+                                                                child: Text(
+                                                                  messageBody[
+                                                                      i],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    )),
+                              ),
+                            );
+                          })
+                      : Container();
+                }),
           ),
         ],
         backgroundColor: Color(navbar.hashCode),
@@ -484,9 +640,10 @@ class TraderPage extends State<Trader> {
           BlocListener<BorssaBloc, BorssaState>(
             listener: (context, state) {
               if (state is GetTraderCurrencyLoading) {
+                currencyprice.clear();
+
                 print(state);
               } else if (state is GetTraderCurrencyLoaded) {
-                currencyprice.clear();
                 print(state);
                 currencyprice = state.cities;
                 setState(() {

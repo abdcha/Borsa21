@@ -19,6 +19,9 @@ final charttransferUrl = 'https://centralborsa.com/api/transfersChart?id=';
 
 final allCities = 'https://centralborsa.com/api/lists/cities';
 final allCompany = 'https://centralborsa.com/api/lists/companies';
+
+final userCity = 'https://centralborsa.com/api/lists/user_cities';
+
 final allPostByCityName = 'https://centralborsa.com/api/posts?';
 final followUrl = 'https://centralborsa.com/api/followCompany?company_id=';
 final unfollowUrl = 'https://centralborsa.com/api/unfollowCompany?company_id=';

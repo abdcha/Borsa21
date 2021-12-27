@@ -64,7 +64,7 @@ class CityRepository {
 
     _dio.options.headers['authorization'] = 'Bearer $_token';
 
-    var response = await _dio.get(allCities);
+    var response = await _dio.get(userCity);
     var status = response.data['status'];
     var test = data.fromJson(response.data['data']);
 
@@ -77,7 +77,7 @@ class CityRepository {
     //   return Left("error");
     // }
   }
-  
+
   Future<Either<String, List<CurrencyPrice>>> traderCurrency() async {
     mycities.clear();
     try {
@@ -102,5 +102,4 @@ class CityRepository {
       return Left("error");
     }
   }
-
 }

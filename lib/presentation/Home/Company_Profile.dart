@@ -115,53 +115,53 @@ class CompanyProfilePage extends State<CompanyProfile> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ),
-            Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {
-                            whatsappSender(
-                                message: "hi",
-                                number: companyInfo.company.phone);
-                          },
-                          child: Image.asset(
-                            'assest/Images/whatsapp.png',
-                            width: 25,
-                            height: 25,
-                          ),
-                        ),
-                      ),
-                      // (isFollowed = companypost[index].isFollowed) == 1
-                      //     ? Padding(
-                      //         padding: const EdgeInsets.all(8.0),
-                      //         child: InkWell(
-                      //             onTap: () {
-                      //               bloc.add(UnFollowEvent(
-                      //                   id: companypost[index].companyId));
-                      //             },
-                      //             child: Icon(
-                      //               Icons.add_circle_outline_rounded,
-                      //               color: Colors.blue[400],
-                      //             )),
-                      //       )
-                      //     : Padding(
-                      //         padding: const EdgeInsets.all(8.0),
-                      //         child: InkWell(
-                      //             onTap: () {
-                      //               bloc.add(FollowEvent(
-                      //                   id: companypost[index].companyId));
-                      //             },
-                      //             child:
-                      //                 Icon(Icons.add_circle_outline_rounded)),
-                      //       )
-                    ],
-                  ),
-                )),
+            // Container(
+            //     margin: const EdgeInsets.only(bottom: 10),
+            //     child: Center(
+            //       child: Row(
+            //         mainAxisAlignment: MainAxisAlignment.center,
+            //         children: [
+            //           Padding(
+            //             padding: const EdgeInsets.all(8.0),
+            //             child: InkWell(
+            //               onTap: () {
+            //                 whatsappSender(
+            //                     message: "hi",
+            //                     number: companyInfo.company.phone);
+            //               },
+            //               child: Image.asset(
+            //                 'assest/Images/whatsapp.png',
+            //                 width: 25,
+            //                 height: 25,
+            //               ),
+            //             ),
+            //           ),
+            //           // (isFollowed = companypost[index].isFollowed) == 1
+            //           //     ? Padding(
+            //           //         padding: const EdgeInsets.all(8.0),
+            //           //         child: InkWell(
+            //           //             onTap: () {
+            //           //               bloc.add(UnFollowEvent(
+            //           //                   id: companypost[index].companyId));
+            //           //             },
+            //           //             child: Icon(
+            //           //               Icons.add_circle_outline_rounded,
+            //           //               color: Colors.blue[400],
+            //           //             )),
+            //           //       )
+            //           //     : Padding(
+            //           //         padding: const EdgeInsets.all(8.0),
+            //           //         child: InkWell(
+            //           //             onTap: () {
+            //           //               bloc.add(FollowEvent(
+            //           //                   id: companypost[index].companyId));
+            //           //             },
+            //           //             child:
+            //           //                 Icon(Icons.add_circle_outline_rounded)),
+            //           //       )
+            //         ],
+            //       ),
+            //     )),
             Container(
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -456,6 +456,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
     if (prefs.get('end_at') != null) {
       userActive = prefs.get('end_at').toString();
     }
+
     bloc.add(GetCompanyInfoEvent(id: companyuser));
 
     setState(() {});
@@ -571,8 +572,6 @@ class CompanyProfilePage extends State<CompanyProfile> {
                   if (companypost.isEmpty) {
                     companypost = state.data.posts;
                     totalpost = state.data.total;
-
-                    setState(() {});
                   } else if (companypost.isNotEmpty) {
                     print(companypost.length);
                     print('from addall');

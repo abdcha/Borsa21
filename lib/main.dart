@@ -42,7 +42,9 @@ class MyApp extends StatelessWidget {
             duration: 3000,
             splash: Image.asset('assest/Images/test2.png'),
             nextScreen: MyHomePage(),
-            splashTransition: SplashTransition.slideTransition,
+            splashIconSize: 300,
+
+            // splashTransition: SplashTransition.slideTransition,
             backgroundColor: navbar));
   }
 }

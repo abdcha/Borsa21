@@ -25,7 +25,7 @@ class GlobalAuctionPage extends State<GlobalAuction> {
   late String userLocation = "";
   late String userType = "";
   TextEditingController productValueTextEdit = TextEditingController(text: '1');
-  late int productValue = 1;
+  late double productValue = 1.0;
   TextEditingController productvalue = TextEditingController(text: '1');
   int companyuser = 0;
   late int userActive = 0;
@@ -1523,7 +1523,7 @@ class GlobalAuctionPage extends State<GlobalAuction> {
     return Scaffold(
       backgroundColor: Color(0xff6e7d91),
       drawer: null,
-      appBar: AppBar(
+      appBar: new AppBar(
         title: Container(
           height: 50,
           margin: EdgeInsets.only(right: 60),
@@ -1531,13 +1531,6 @@ class GlobalAuctionPage extends State<GlobalAuction> {
             child: Image.asset('assest/Images/test2.png'),
           ),
         ),
-        actions: [
-          // Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 16),
-          //   child: InkWell(
-          //       child: Icon(Icons.notification_add_outlined), onTap: () {}),
-          // ),
-        ],
         backgroundColor: Color(navbar.hashCode),
       ),
       body: BlocListener<GlobalauctionBloc, GlobalauctionState>(
@@ -1654,17 +1647,23 @@ class GlobalAuctionPage extends State<GlobalAuction> {
                                                               onChanged:
                                                                   (String?
                                                                       value) {
-                                                                setState(() {
+                                                                if (value !=
+                                                                    null) {
                                                                   productValue =
-                                                                      int.parse(
-                                                                          value!);
-                                                                });
+                                                                      double.parse(
+                                                                          value);
+                                                                }
+                                                                if (value ==
+                                                                    null) {
+                                                                  productValue =
+                                                                      1.0;
+                                                                }
                                                               },
                                                               onSaved: (String?
                                                                   value) {
                                                                 setState(() {
                                                                   productValue =
-                                                                      int.parse(
+                                                                      double.parse(
                                                                           value!);
                                                                 });
                                                               },
