@@ -227,7 +227,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
     // }
   }
 
-  Widget dataTabletransfer(List<dynamic> currencyPricelist, String tableName) {
+  Widget dataTabletransfer(List<dynamic> TransferPricelist, String tableName) {
     return Card(
       color: Color(0xff7d8a99),
       shape: RoundedRectangleBorder(
@@ -346,13 +346,13 @@ class CentralBorssaPage extends State<CentralBorssa> {
                         ))
                       ],
                       rows: [
-                        for (int i = 0; i < currencyPricelist.length; i++)
+                        for (int i = 0; i < TransferPricelist.length - 1; i++)
                           DataRow(cells: [
                             DataCell(
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  currencyPricelist[i].buyStatus == "up"
+                                  TransferPricelist[i].buyStatus == "up"
                                       ? Icon(
                                           Icons.arrow_circle_up,
                                           color: Colors.green[700],
@@ -365,54 +365,64 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                           'Update_Auction_Price_Permission')
                                       ? InkWell(
                                           onTap: () {
-                                            var route = new MaterialPageRoute(
-                                                builder: (BuildContext
-                                                        contex) =>
-                                                    new BlocProvider(
-                                                      create: (context) =>
-                                                          CurrencyBloc(
-                                                              CurrencyInitial(),
-                                                              CurrencyRepository()),
-                                                      child: UpdatePrice(
-                                                        cityid: tableName ==
-                                                                "currency"
-                                                            ? currencyPricelist[
-                                                                    i]
-                                                                .city
-                                                                .id
-                                                            : currencyPricelist[
-                                                                    i]
-                                                                .id,
-                                                        id: currencyPricelist[i]
-                                                            .id,
-                                                        buy:
-                                                            currencyPricelist[i]
-                                                                .buy,
-                                                        sell:
-                                                            currencyPricelist[i]
-                                                                .sell,
-                                                        buystate:
-                                                            currencyPricelist[i]
-                                                                .buyStatus,
-                                                        sellstate:
-                                                            currencyPricelist[i]
-                                                                .sellStatus,
-                                                        type: tableName,
-                                                        close:
-                                                            currencyPricelist[i]
-                                                                .close,
-                                                      ),
-                                                    ));
-
-                                            BlocProvider(
-                                                create: (context) =>
-                                                    CurrencyBloc(
-                                                        CurrencyInitial(),
-                                                        CurrencyRepository()));
-                                            Navigator.of(context).push(route);
+                                            // var route = new MaterialPageRoute(
+                                            //     builder: (BuildContext
+                                            //             contex) =>
+                                            //         new BlocProvider(
+                                            //           create: (context) =>
+                                            //               CurrencyBloc(
+                                            //                   CurrencyInitial(),
+                                            //                   CurrencyRepository()),
+                                            //           child: UpdatePrice(
+                                            //             cityid:
+                                            //                 currencyPricelist[i]
+                                            //                     .id,
+                                            //             id: currencyPricelist[i]
+                                            //                 .id,
+                                            //             buy:
+                                            //                 currencyPricelist[i]
+                                            //                     .buy,
+                                            //             sell:
+                                            //                 currencyPricelist[i]
+                                            //                     .sell,
+                                            //             buystate:
+                                            //                 currencyPricelist[i]
+                                            //                     .buyStatus,
+                                            //             sellstate:
+                                            //                 currencyPricelist[i]
+                                            //                     .sellStatus,
+                                            //             type: tableName,
+                                            //             close:
+                                            //                 currencyPricelist[i]
+                                            //                     .close,
+                                            //           ),
+                                            //         ));
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return UpdatePrice(
+                                                cityid: TransferPricelist[i].id,
+                                                id: TransferPricelist[i].id,
+                                                buy: TransferPricelist[i].buy,
+                                                sell: TransferPricelist[i].sell,
+                                                buystate: TransferPricelist[i]
+                                                    .buyStatus,
+                                                sellstate: TransferPricelist[i]
+                                                    .sellStatus,
+                                                type: tableName,
+                                                close:
+                                                    TransferPricelist[i].close,
+                                              );
+                                            }));
+                                            // BlocProvider(
+                                            //     create: (context) =>
+                                            //         CurrencyBloc(
+                                            //             CurrencyInitial(),
+                                            //             CurrencyRepository()));
+                                            // Navigator.of(context).push(route);
                                           },
                                           child: Text(
-                                            currencyPricelist[i].buy.toString(),
+                                            TransferPricelist[i].buy.toString(),
                                             textAlign: TextAlign.start,
                                             style: TextStyle(
                                               fontSize: 14,
@@ -423,7 +433,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                         )
                                       : InkWell(
                                           child: Text(
-                                            currencyPricelist[i].buy.toString(),
+                                            TransferPricelist[i].buy.toString(),
                                             style: TextStyle(
                                               fontSize: 14,
                                               color: Colors.white,
@@ -440,7 +450,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  currencyPricelist[i].sellStatus == "up"
+                                  TransferPricelist[i].sellStatus == "up"
                                       ? Icon(
                                           Icons.arrow_circle_up,
                                           color: Colors.green[700],
@@ -450,7 +460,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                           color: Colors.red[700],
                                         ),
                                   Text(
-                                    currencyPricelist[i]
+                                    TransferPricelist[i]
                                         .sell
                                         .toStringAsFixed(2),
                                     maxLines: 1,
@@ -468,9 +478,9 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   Text(
-                                    currencyPricelist[i].firstCity.name +
+                                    TransferPricelist[i].firstCity.name +
                                         " " +
-                                        currencyPricelist[i].secondCity.name,
+                                        TransferPricelist[i].secondCity.name,
                                     maxLines: 1,
                                     textWidthBasis: TextWidthBasis.parent,
                                     textAlign: TextAlign.end,
@@ -494,17 +504,17 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                         MaterialPageRoute(
                                           builder: (context) => PriceChart(
                                             cityid: tableName == "currency"
-                                                ? currencyPricelist[i].city.id
-                                                : currencyPricelist[i].id,
+                                                ? TransferPricelist[i].city.id
+                                                : TransferPricelist[i].id,
                                             fromdate: 1,
                                             todate: 1,
                                             title: tableName == "currency"
-                                                ? currencyPricelist[i].city.name
-                                                : currencyPricelist[i]
+                                                ? TransferPricelist[i].city.name
+                                                : TransferPricelist[i]
                                                         .firstCity
                                                         .name +
                                                     " " +
-                                                    currencyPricelist[i]
+                                                    TransferPricelist[i]
                                                         .secondCity
                                                         .name,
                                             type: tableName,
@@ -522,7 +532,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                             padding:
                                                 const EdgeInsets.only(left: 4),
                                             child: Icon(
-                                              currencyPricelist[i].close == 0
+                                              TransferPricelist[i].close == 0
                                                   ? Icons.lock_clock
                                                   : Icons.lock_open
 
@@ -539,21 +549,21 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                                     PriceChart(
                                                   cityid: tableName ==
                                                           "currency"
-                                                      ? currencyPricelist[i]
+                                                      ? TransferPricelist[i]
                                                           .city
                                                           .id
-                                                      : currencyPricelist[i].id,
+                                                      : TransferPricelist[i].id,
                                                   fromdate: 1,
                                                   todate: 1,
                                                   title: tableName == "currency"
-                                                      ? currencyPricelist[i]
+                                                      ? TransferPricelist[i]
                                                           .city
                                                           .name
-                                                      : currencyPricelist[i]
+                                                      : TransferPricelist[i]
                                                               .firstCity
                                                               .name +
                                                           " " +
-                                                          currencyPricelist[i]
+                                                          TransferPricelist[i]
                                                               .secondCity
                                                               .name,
                                                   type: tableName,
@@ -570,7 +580,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                             padding:
                                                 const EdgeInsets.only(left: 4),
                                             child: Icon(
-                                              currencyPricelist[i].close == 1
+                                              TransferPricelist[i].close == 1
                                                   ? Icons.lock_clock
                                                   : Icons.lock_open
                                               //remove
@@ -586,21 +596,21 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                                     PriceChart(
                                                   cityid: tableName ==
                                                           "currency"
-                                                      ? currencyPricelist[i]
+                                                      ? TransferPricelist[i]
                                                           .city
                                                           .id
-                                                      : currencyPricelist[i].id,
+                                                      : TransferPricelist[i].id,
                                                   fromdate: 1,
                                                   todate: 1,
                                                   title: tableName == "currency"
-                                                      ? currencyPricelist[i]
+                                                      ? TransferPricelist[i]
                                                           .city
                                                           .name
-                                                      : currencyPricelist[i]
+                                                      : TransferPricelist[i]
                                                               .firstCity
                                                               .name +
                                                           " " +
-                                                          currencyPricelist[i]
+                                                          TransferPricelist[i]
                                                               .secondCity
                                                               .name,
                                                   type: tableName,
@@ -762,46 +772,23 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                           'Update_Auction_Price_Permission')
                                       ? InkWell(
                                           onTap: () {
-                                            var route = new MaterialPageRoute(
-                                                builder: (BuildContext
-                                                        contex) =>
-                                                    new BlocProvider(
-                                                      create: (context) =>
-                                                          CurrencyBloc(
-                                                              CurrencyInitial(),
-                                                              CurrencyRepository()),
-                                                      child: UpdatePrice(
-                                                        cityid:
-                                                            currencyPricelist[i]
-                                                                .city
-                                                                .id,
-                                                        id: currencyPricelist[i]
-                                                            .id,
-                                                        buy:
-                                                            currencyPricelist[i]
-                                                                .buy,
-                                                        sell:
-                                                            currencyPricelist[i]
-                                                                .sell,
-                                                        buystate:
-                                                            currencyPricelist[i]
-                                                                .buyStatus,
-                                                        sellstate:
-                                                            currencyPricelist[i]
-                                                                .sellStatus,
-                                                        type: tableName,
-                                                        close:
-                                                            currencyPricelist[i]
-                                                                .close,
-                                                      ),
-                                                    ));
-
-                                            BlocProvider(
-                                                create: (context) =>
-                                                    CurrencyBloc(
-                                                        CurrencyInitial(),
-                                                        CurrencyRepository()));
-                                            Navigator.of(context).push(route);
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return UpdatePrice(
+                                                cityid: currencyPricelist[i].id,
+                                                id: currencyPricelist[i].id,
+                                                buy: currencyPricelist[i].buy,
+                                                sell: currencyPricelist[i].sell,
+                                                buystate: currencyPricelist[i]
+                                                    .buyStatus,
+                                                sellstate: currencyPricelist[i]
+                                                    .sellStatus,
+                                                type: tableName,
+                                                close:
+                                                    currencyPricelist[i].close,
+                                              );
+                                            }));
                                           },
                                           child: Text(
                                             currencyPricelist[i].buy.toString(),

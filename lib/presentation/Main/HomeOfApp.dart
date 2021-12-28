@@ -354,7 +354,8 @@ class home_page extends State<HomeOfApp>
     return FutureBuilder(
         future: navbarbottom,
         builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
+          switch (snapshot.connectionState) 
+          {
             case ConnectionState.waiting:
               return Welcome();
             case ConnectionState.none:
@@ -504,6 +505,7 @@ class home_page extends State<HomeOfApp>
                         ),
                     ],
                   ));
+         
           }
         });
   }

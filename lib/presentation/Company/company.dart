@@ -27,8 +27,9 @@ class AnyCompanyProfile extends StatefulWidget {
 }
 
 class CompanyPage extends State<AnyCompanyProfile> {
-  void whatsappSender({@required number, @required message}) async {
-    final String url = "https://api.whatsapp.com/send?phone=$number";
+  void whatsappSender({required String number, @required message}) async {
+    String temp = number.substring(0);
+    final String url = "https://api.whatsapp.com/send?phone=+964-$temp";
     await launch(url);
   }
 
@@ -333,9 +334,9 @@ class CompanyPage extends State<AnyCompanyProfile> {
                             trimExpandedText: '',
                             textAlign: TextAlign.right,
                             style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                ),
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
                           )),
                       Container(
                         margin: const EdgeInsets.only(
