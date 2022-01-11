@@ -382,11 +382,13 @@ class home_page extends State<HomeOfApp>
                           allow = false;
                         });
                         print(state);
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          logout();
-                          return Loginpage();
-                        }));
+                        logout();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute<void>(
+                              builder: (BuildContext context) => Loginpage()),
+                          ModalRoute.withName('/'),
+                        );
                       }
                     },
                     child: callBody(selectedPage),

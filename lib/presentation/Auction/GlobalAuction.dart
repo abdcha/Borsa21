@@ -112,7 +112,7 @@ class GlobalAuctionPage extends State<GlobalAuction> {
         // ),
         Container(
           width: double.infinity,
-          margin: EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 0),
+          // margin: EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 0),
           child: DataTable(
               dataTextStyle: TextStyle(
                 fontSize: 12,
