@@ -52,19 +52,26 @@ class CentralBorssaPage extends State<CentralBorssa> {
     userLocation = "Empty";
     if (prefs.getStringList('permissions') != null) {
       userPermissions = prefs.getStringList('permissions')!.toList();
-    } else if (prefs.get('end_subscription') != null) {
+    }
+
+    if (prefs.get('end_subscription') != null) {
       userActive = prefs.get('end_subscription').toString();
       isloading = false;
       print('---------');
       print(userActive);
       print('---------');
-    } else if (prefs.getInt('countofauction') != null) {
+    } else {
+      userActive = null;
+    }
+
+    if (prefs.getInt('countofauction') != null) {
       countofAuctions = 0;
       countofAuctions = prefs.getInt('countofauction')!;
       print('--share---');
       print(countofAuctions);
+    } else {
+      countofAuctions = 0;
     }
-
     bloc.add(AllCity());
     bloc.add(GetAllTransfersEvent());
   }
@@ -161,9 +168,11 @@ class CentralBorssaPage extends State<CentralBorssa> {
                 tableName == "currency" ? "أسعار الدولار" : "أسعار الحوالات",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Cairo',
+                ),
               ),
             ),
             Container(
@@ -294,7 +303,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                             style: TextStyle(
                                               fontSize: 14,
                                               color: Colors.white,
-                                              fontWeight: FontWeight.w400,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Cairo',
                                             ),
                                           ),
                                         )
@@ -304,7 +314,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                             style: TextStyle(
                                               fontSize: 14,
                                               color: Colors.white,
-                                              fontWeight: FontWeight.w400,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Cairo',
                                             ),
                                           ),
                                         )
@@ -334,7 +345,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: Colors.white,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Cairo',
                                     ),
                                   ),
                                 ],
@@ -353,8 +365,9 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                     textAlign: TextAlign.end,
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: const Color(0xffffffff),
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
+                                      fontFamily: 'Cairo',
                                     ),
                                   ),
                                   InkWell(
@@ -498,9 +511,11 @@ class CentralBorssaPage extends State<CentralBorssa> {
                 tableName == "currency" ? "أسعار الدولار" : "أسعار الحوالات",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Cairo',
+                ),
               ),
             ),
             Container(
@@ -550,8 +565,10 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                 child: Text(
                                   'العرض',
                                   style: TextStyle(
-                                    color: const Color(0xffffffff),
+                                    fontSize: 14,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
+                                    fontFamily: 'Cairo',
                                   ),
                                 ),
                               )
@@ -569,8 +586,10 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                 child: Text(
                                   'الطلب',
                                   style: TextStyle(
-                                    color: const Color(0xffffffff),
+                                    fontSize: 14,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
+                                    fontFamily: 'Cairo',
                                   ),
                                 ),
                               )
@@ -636,7 +655,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                             style: TextStyle(
                                               fontSize: 14,
                                               color: Colors.white,
-                                              fontWeight: FontWeight.w400,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Cairo',
                                             ),
                                           ),
                                         )
@@ -645,7 +665,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.white,
-                                            fontWeight: FontWeight.w400,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Cairo',
                                           ),
                                         )
                                 ],
@@ -674,7 +695,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: Colors.white,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Cairo',
                                     ),
                                   ),
                                 ],
@@ -690,8 +712,9 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                   textAlign: TextAlign.end,
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: const Color(0xffffffff),
-                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Cairo',
                                   ),
                                 ),
                                 InkWell(
@@ -945,13 +968,16 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: InkWell(
                                       onTap: () {
-                                        whatsappSender(number: '07700198027');
+                                        whatsappSender(number: '07716600999');
                                       },
                                       child: Text(
                                         'هذه الصفحة خاصة بموظفي المصارف ومحلات الصرافة والمتعاملين الرسميين بالبورصات. للحصول على معلومات نرجو التواصل معنا من خلال الرقم التالي 07700198027.',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 20,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Cairo',
                                         ),
                                       ),
                                     ),
@@ -1046,12 +1072,20 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                                                     // ),
                                                                   ),
                                                                   Text(
-                                                                      "المزاد المركزي",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              12,
-                                                                          color:
-                                                                              Colors.white54)),
+                                                                    "المزاد المركزي",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontFamily:
+                                                                          'Cairo',
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               ),
                                                             ),
@@ -1091,11 +1125,18 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                                                   ),
                                                                   Text(
                                                                     "البورصة العالميه",
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            12,
-                                                                        color: Colors
-                                                                            .white54),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontFamily:
+                                                                          'Cairo',
+                                                                    ),
                                                                   ),
                                                                 ],
                                                               ),

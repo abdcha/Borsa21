@@ -88,14 +88,14 @@ class EndSubscription {
       {required this.endAt, required this.id, required this.userId});
 
   EndSubscription.fromJson(Map<String, dynamic> json) {
-    endAt = json['end_subscription'];
+    endAt = json['end_at'];
     id = json['id'];
     userId = json['user_id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['end_subscription'] = this.endAt;
+    data['end_at'] = this.endAt;
     data['id'] = this.id;
     data['user_id'] = this.userId;
     return data;

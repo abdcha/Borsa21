@@ -67,7 +67,7 @@ class AuctionPage extends State<Auction> {
 
   Widget dataTable() {
     return Container(
-      height: MediaQuery.of(context).size.height - 160,
+      height: MediaQuery.of(context).size.height - 195,
       width: double.infinity,
       margin: EdgeInsets.all(12),
       child: SingleChildScrollView(
