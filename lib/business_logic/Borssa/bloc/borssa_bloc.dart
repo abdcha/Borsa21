@@ -20,11 +20,11 @@ class BorssaBloc extends Bloc<BorssaEvent, BorssaState> {
       yield* allCititesResponse.fold((l) async* {
         print(l);
         yield BorssaErrorLoading();
-        print('error');
+        print('currency pricy bloc error');
       }, (r) async* {
         yield BorssaReloadingState();
+        print('currency pricy bloc');
         yield GetAllCityState(cities: r);
-        print('get all');
       });
     }
     //Filter All Posts
@@ -41,19 +41,17 @@ class BorssaBloc extends Bloc<BorssaEvent, BorssaState> {
         print('get all');
       });
     } else if (event is GetAllTransfersEvent) {
-      yield GetAllTransfersLoading();
       final allCititesResponse = await cityrepository.alltransfer();
       yield* allCititesResponse.fold((l) async* {
         print(l);
         print('transfer error');
         yield GetAllTransfersError();
       }, (r) async* {
-        print(r);
+        yield GetAllTransfersLoading();
+        print('transfer ');
         yield GetAllTransfersLoaded(cities: r);
-        print('get all');
       });
-    }
-    else if (event is TraderCurrencyEvent) {
+    } else if (event is TraderCurrencyEvent) {
       yield GetTraderCurrencyLoading();
       final allCititesResponse = await cityrepository.traderCurrency();
       yield* allCititesResponse.fold((l) async* {

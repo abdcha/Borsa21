@@ -1,4 +1,4 @@
-com.example.central_borssa
+central.borsa.central_borssa
 attr alpha
 attr coordinatorLayoutStyle
 attr font

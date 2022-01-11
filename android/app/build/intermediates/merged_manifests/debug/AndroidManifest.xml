@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.central_borssa"
+    package="central.borsa.central_borssa"
     android:versionCode="1"
     android:versionName="1.0.0" >
 
@@ -27,7 +27,7 @@
         android:label="البورصة المركزية"
         android:usesCleartextTraffic="true" >
         <activity
-            android:name="com.example.central_borssa.MainActivity"
+            android:name="central.borsa.central_borssa.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
@@ -78,7 +78,7 @@
 
         <provider
             android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
-            android:authorities="com.example.central_borssa.flutter.image_provider"
+            android:authorities="central.borsa.central_borssa.flutter.image_provider"
             android:exported="false"
             android:grantUriPermissions="true" >
             <meta-data
@@ -87,7 +87,7 @@
         </provider>
         <provider
             android:name="com.crazecoder.openfile.FileProvider"
-            android:authorities="com.example.central_borssa.fileProvider.com.crazecoder.openfile"
+            android:authorities="central.borsa.central_borssa.fileProvider.com.crazecoder.openfile"
             android:exported="false"
             android:grantUriPermissions="true" >
             <meta-data
@@ -142,7 +142,7 @@
 
         <provider
             android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingInitProvider"
-            android:authorities="com.example.central_borssa.flutterfirebasemessaginginitprovider"
+            android:authorities="central.borsa.central_borssa.flutterfirebasemessaginginitprovider"
             android:exported="false"
             android:initOrder="99" />
 
@@ -190,7 +190,7 @@
 
         <provider
             android:name="com.google.firebase.provider.FirebaseInitProvider"
-            android:authorities="com.example.central_borssa.firebaseinitprovider"
+            android:authorities="central.borsa.central_borssa.firebaseinitprovider"
             android:directBootAware="true"
             android:exported="false"
             android:initOrder="100" />

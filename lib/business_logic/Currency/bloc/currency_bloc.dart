@@ -34,6 +34,7 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
         print(l);
         yield UpdateBorssaError();
       }, (r) async* {
+        print('from currency');
         print(r);
         yield UpdateBorssaSuccess();
       });

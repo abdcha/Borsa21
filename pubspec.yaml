@@ -22,7 +22,6 @@ dependencies:
   animated_splash_screen: ^1.1.0
   badges: ^2.0.1
   carousel_slider: ^4.0.0
-  connectivity: ^3.0.6
   cupertino_icons: ^1.0.2
   dart_ping: ^6.1.1
   dartz: ^0.10.0
@@ -39,7 +38,6 @@ dependencies:
   multi_select_flutter: ^4.0.0
   open_file: ^3.2.1
   pull_to_refresh: ^2.0.0
-  pusher_client: ^2.0.0
   readmore: ^2.1.0
   rxdart: ^0.27.1
   shared_preferences: ^2.0.7
@@ -62,6 +60,10 @@ flutter_icons:
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.
 flutter:
+  fonts:
+    - family: Cairo
+      fonts:
+        - asset: fonts/Cairo/Cairo-SemiBold.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:286141248419:android:d3bb5c450359e527886016",
+        "mobilesdk_app_id": "1:286141248419:android:d8b71a04de966d23886016",
         "android_client_info": {
-          "package_name": "com.example.central_borssa"
+          "package_name": "central.borsa.central_borssa"
         }
       },
       "oauth_client": [
@@ -29,6 +29,13 @@
             {
               "client_id": "286141248419-8muga47nr898av4l8ib6bng7q1ttvssv.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "286141248419-8n6ief7v5dp1vtt4nlm50kjh38onprs2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "central.borsa.centralBorssa"
+              }
             }
           ]
         }

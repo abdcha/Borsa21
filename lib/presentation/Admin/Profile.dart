@@ -2,7 +2,6 @@ import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
 import 'package:central_borssa/business_logic/Company/bloc/company_state.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,11 +32,11 @@ class ProfilePage extends State<Profile> {
   late String? location;
   bool isEditn = true;
 
-  @override
-  void dispose() {
-    refreshController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // refreshController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   void initState() {
@@ -57,19 +56,18 @@ class ProfilePage extends State<Profile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.get('username').toString();
     userPhone = prefs.get('userphone').toString();
-    if (prefs.getStringList('permissions')!= null) {
+    if (prefs.getStringList('permissions') != null) {
       userPermissions = prefs.getStringList('permissions')!.toList();
     }
     companyuser = int.parse(prefs.get('companyid').toString());
     userType = prefs.get('roles').toString();
-    if (prefs.get('end_at') != null) {
-      userActive = prefs.get('end_at').toString();
+    if (prefs.get('end_subscription') != null) {
+      userActive = prefs.get('end_subscription').toString();
     }
     setState(() {});
   }
 
   logout() async {
-    print('from');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
   }
@@ -115,11 +113,13 @@ class ProfilePage extends State<Profile> {
                       title: Text('تسجيل الخروج'),
                       leading: new Icon(Icons.logout_sharp),
                       onTap: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          logout();
-                          return Loginpage();
-                        }));
+                        logout();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute<void>(
+                              builder: (BuildContext context) => Loginpage()),
+                          ModalRoute.withName('/'),
+                        );
                       },
                     ),
                   ],

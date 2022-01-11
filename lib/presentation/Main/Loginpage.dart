@@ -4,7 +4,6 @@ import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
 import 'package:central_borssa/presentation/Main/LoginTrader.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,15 +29,6 @@ class _MyHomePageState extends State<Loginpage> {
     authloginBloc = BlocProvider.of<LoginBloc>(context);
     super.initState();
   }
-
-  // void iOS_Permission() {
-  //   _firebaseMessaging.requestNotificationPermissions(
-  //       IosNotificationSettings(sound: true, badge: true, alert: true));
-  //   _firebaseMessaging.onIosSettingsRegistered
-  //       .listen((IosNotificationSettings settings) {
-  //     print("Settings registered: $settings");
-  //   });
-  // }
 
   void passwordView() {
     setState(() {

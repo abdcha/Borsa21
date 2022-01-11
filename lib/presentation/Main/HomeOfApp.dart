@@ -51,8 +51,8 @@ class home_page extends State<HomeOfApp>
     userPhone = prefs.get('userphone').toString();
     print(prefs.get('token').toString());
     userLocation = "Empty";
-    if (prefs.get('end_at') != null) {
-      userActive = prefs.get('end_at').toString();
+    if (prefs.get('end_subscription') != null) {
+      userActive = prefs.get('end_subscription').toString();
     }
     userPermissions = prefs.getStringList('permissions')!.toList();
     var y = userPermissions.contains('Update_Auction_Price_Permission');
@@ -354,8 +354,7 @@ class home_page extends State<HomeOfApp>
     return FutureBuilder(
         future: navbarbottom,
         builder: (context, snapshot) {
-          switch (snapshot.connectionState) 
-          {
+          switch (snapshot.connectionState) {
             case ConnectionState.waiting:
               return Welcome();
             case ConnectionState.none:
@@ -505,7 +504,6 @@ class home_page extends State<HomeOfApp>
                         ),
                     ],
                   ));
-         
           }
         });
   }

@@ -9,13 +9,13 @@ abstract class CurrencyEvent extends Equatable {
 
 //update value and close
 class UpdatePriceEvent extends CurrencyEvent {
-  final int id;
-  final double buy;
-  final double sell;
-  final String buystate;
-  final String sellstate;
-  final int close;
-  final String type;
+  final int? id;
+  final double? buy;
+  final double? sell;
+  final String? buystate;
+  final String? sellstate;
+  final int? close;
+  final String? type;
 
   UpdatePriceEvent({
     required this.id,
@@ -41,13 +41,13 @@ class ChartEvent extends CurrencyEvent {
 
 //undo update
 class UndoEvent extends CurrencyEvent {
-  final int cityid;
-  final double buy;
-  final double sell;
-  final String sellstatus;
-  final String buystatus;
-  final String type;
-  final int close;
+  final int? cityid;
+  final double? buy;
+  final double? sell;
+  final String? sellstatus;
+  final String? buystatus;
+  final String? type;
+  final int? close;
 
   UndoEvent({
     required this.cityid,

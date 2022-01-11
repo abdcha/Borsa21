@@ -84,11 +84,13 @@ class GlobalAuctionPage extends State<GlobalAuction> {
                       title: Text('تسجيل الخروج'),
                       leading: new Icon(Icons.logout_sharp),
                       onTap: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          logout();
-                          return Loginpage();
-                        }));
+                        logout();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute<void>(
+                              builder: (BuildContext context) => Loginpage()),
+                          ModalRoute.withName('/'),
+                        );
                       },
                     ),
                   ],

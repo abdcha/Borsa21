@@ -46,7 +46,7 @@ class TraderPage extends State<Trader> {
   late String userLocation = "";
   late String userType = "";
   int companyuser = 0;
-  
+
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.get('username').toString();
@@ -59,8 +59,8 @@ class TraderPage extends State<Trader> {
       print('--share---');
       print(countofMessage);
     }
-    if (prefs.get('end_at') != null) {
-      userActive = prefs.get('end_at').toString();
+    if (prefs.get('end_subscription') != null) {
+      userActive = prefs.get('end_subscription').toString();
     }
     if (prefs.getStringList('MessageBody') != null) {
       messageBody.clear();
@@ -136,7 +136,6 @@ class TraderPage extends State<Trader> {
     super.initState();
   }
 
-  Future<void> currencypusher(String channel) async {}
   final CarouselController _controller = CarouselController();
   int _current = 0;
 
@@ -520,11 +519,13 @@ class TraderPage extends State<Trader> {
                       title: Text('تسجيل الخروج'),
                       leading: new Icon(Icons.logout_sharp),
                       onTap: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          logout();
-                          return Loginpage();
-                        }));
+                        logout();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute<void>(
+                              builder: (BuildContext context) => Loginpage()),
+                          ModalRoute.withName('/'),
+                        );
                       },
                     ),
                   ],

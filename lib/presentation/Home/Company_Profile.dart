@@ -422,11 +422,11 @@ class CompanyProfilePage extends State<CompanyProfile> {
     );
   }
 
-  @override
-  void dispose() {
-    refreshController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   refreshController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   void initState() {
@@ -453,8 +453,8 @@ class CompanyProfilePage extends State<CompanyProfile> {
     userPermissions = prefs.getStringList('permissions')!.toList();
     companyuser = int.parse(prefs.get('companyid').toString());
     userType = prefs.get('roles').toString();
-    if (prefs.get('end_at') != null) {
-      userActive = prefs.get('end_at').toString();
+    if (prefs.get('end_subscription') != null) {
+      userActive = prefs.get('end_subscription').toString();
     }
 
     bloc.add(GetCompanyInfoEvent(id: companyuser));
@@ -509,11 +509,13 @@ class CompanyProfilePage extends State<CompanyProfile> {
                       title: Text('تسجيل الخروج'),
                       leading: new Icon(Icons.logout_sharp),
                       onTap: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          logout();
-                          return Loginpage();
-                        }));
+                        logout();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute<void>(
+                              builder: (BuildContext context) => Loginpage()),
+                          ModalRoute.withName('/'),
+                        );
                       },
                     ),
                   ],
@@ -577,8 +579,6 @@ class CompanyProfilePage extends State<CompanyProfile> {
                     print('from addall');
                     companypost.addAll(state.data.posts);
                     setState(() {});
-                  } else {
-                    print(state);
                   }
                 } else if (state is GetAllInformationError) {
                   print(state);

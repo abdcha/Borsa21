@@ -51,7 +51,7 @@ class Auctions {
     id = json['id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    endAt = json['end_at'];
+    endAt = json['end_subscription'];
     filePath = json['file_path'];
     value = json['value'];
   }
@@ -61,7 +61,7 @@ class Auctions {
     data['id'] = this.id;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-    data['end_at'] = this.endAt;
+    data['end_subscription'] = this.endAt;
     data['file_path'] = this.filePath;
     data['value'] = this.value;
     return data;

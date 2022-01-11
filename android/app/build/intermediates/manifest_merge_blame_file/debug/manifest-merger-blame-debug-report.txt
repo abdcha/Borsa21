@@ -1,6 +1,6 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-3    package="com.example.central_borssa"
+3    package="central.borsa.central_borssa"
 4    android:versionCode="1"
 5    android:versionName="1.0.0" >
 6
@@ -51,7 +51,7 @@
 28-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:11:9-44
 29        <activity
 29-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:13:9-48:20
-30            android:name="com.example.central_borssa.MainActivity"
+30            android:name="central.borsa.central_borssa.MainActivity"
 30-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:14:13-41
 31            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
 31-->C:\Users\Abdullah\Desktop\central_borssa\central_borssa\android\app\src\main\AndroidManifest.xml:17:13-163
@@ -132,7 +132,7 @@
 79-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-16:20
 80            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
 80-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-82
-81            android:authorities="com.example.central_borssa.flutter.image_provider"
+81            android:authorities="central.borsa.central_borssa.flutter.image_provider"
 81-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-74
 82            android:exported="false"
 82-->[:image_picker] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\image_picker\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-37
@@ -149,7 +149,7 @@
 88-->[:open_file] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\open_file\intermediates\library_manifest\debug\AndroidManifest.xml:12:9-21:20
 89            android:name="com.crazecoder.openfile.FileProvider"
 89-->[:open_file] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\open_file\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-64
-90            android:authorities="com.example.central_borssa.fileProvider.com.crazecoder.openfile"
+90            android:authorities="central.borsa.central_borssa.fileProvider.com.crazecoder.openfile"
 90-->[:open_file] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\open_file\intermediates\library_manifest\debug\AndroidManifest.xml:14:13-88
 91            android:exported="false"
 91-->[:open_file] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\open_file\intermediates\library_manifest\debug\AndroidManifest.xml:15:13-37
@@ -251,7 +251,7 @@
 143-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:39:9-43:38
 144            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingInitProvider"
 144-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:40:13-102
-145            android:authorities="com.example.central_borssa.flutterfirebasemessaginginitprovider"
+145            android:authorities="central.borsa.central_borssa.flutterfirebasemessaginginitprovider"
 145-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:41:13-88
 146            android:exported="false"
 146-->[:firebase_messaging] C:\Users\Abdullah\Desktop\central_borssa\central_borssa\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:42:13-37
@@ -335,7 +335,7 @@
 191-->[com.google.firebase:firebase-common:20.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\001005f8a6d451731759f26c348a4f28\jetified-firebase-common-20.0.0\AndroidManifest.xml:26:9-31:39
 192            android:name="com.google.firebase.provider.FirebaseInitProvider"
 192-->[com.google.firebase:firebase-common:20.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\001005f8a6d451731759f26c348a4f28\jetified-firebase-common-20.0.0\AndroidManifest.xml:27:13-77
-193            android:authorities="com.example.central_borssa.firebaseinitprovider"
+193            android:authorities="central.borsa.central_borssa.firebaseinitprovider"
 193-->[com.google.firebase:firebase-common:20.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\001005f8a6d451731759f26c348a4f28\jetified-firebase-common-20.0.0\AndroidManifest.xml:28:13-72
 194            android:directBootAware="true"
 194-->[com.google.firebase:firebase-common:20.0.0] C:\Users\Abdullah\.gradle\caches\transforms-2\files-2.1\001005f8a6d451731759f26c348a4f28\jetified-firebase-common-20.0.0\AndroidManifest.xml:29:13-43

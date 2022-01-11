@@ -15,7 +15,6 @@ class CityRepository {
   Future<Either<String, List<CurrencyPrice>>> allCity() async {
     mycities.clear();
 
-    try {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       var _token = _prefs.getString('token');
 
@@ -33,9 +32,7 @@ class CityRepository {
       } else {
         return Left("here");
       }
-    } catch (e) {
-      return Left("error");
-    }
+   
   }
 
   Future<Either<String, List<tran.Transfer>>> alltransfer() async {

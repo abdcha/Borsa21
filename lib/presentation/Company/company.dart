@@ -410,11 +410,11 @@ class CompanyPage extends State<AnyCompanyProfile> {
     );
   }
 
-  @override
-  void dispose() {
-    refreshController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   refreshController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   void initState() {

@@ -505,17 +505,11 @@ class CompanyProfilePage extends State<MainChat> {
   }
 
   @override
-  void dispose() {
-    refreshController.dispose();
-    super.dispose();
-  }
-
-  @override
   void initState() {
     bloc = BlocProvider.of<ChatBloc>(context);
     messages.clear();
     messageLoaing();
-    messagePusher();
+    // messagePusher();
     sharedValue();
     setState(() {});
     super.initState();
@@ -534,8 +528,8 @@ class CompanyProfilePage extends State<MainChat> {
     userPermissions = prefs.getStringList('permissions')!.toList();
     companyuser = int.parse(prefs.get('companyid').toString());
     userType = prefs.get('roles').toString();
-    if (prefs.get('end_at') != null) {
-      userActive = prefs.get('end_at').toString();
+    if (prefs.get('end_subscription') != null) {
+      userActive = prefs.get('end_subscription').toString();
     }
     setState(() {});
   }
@@ -587,11 +581,13 @@ class CompanyProfilePage extends State<MainChat> {
                       title: Text('تسجيل الخروج'),
                       leading: new Icon(Icons.logout_sharp),
                       onTap: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          logout();
-                          return Loginpage();
-                        }));
+                        logout();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute<void>(
+                              builder: (BuildContext context) => Loginpage()),
+                          ModalRoute.withName('/'),
+                        );
                       },
                     ),
                   ],
@@ -645,7 +641,7 @@ class CompanyProfilePage extends State<MainChat> {
               if (state is SendMessageIsLoaded) {
                 print(state);
                 setState(() {});
-                messagePusher();
+                // messagePusher();
               } else if (state is SendMessageError) {
                 print(state);
                 ScaffoldMessenger.of(context).showSnackBar(

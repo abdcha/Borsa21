@@ -1,10 +1,6 @@
 import 'package:badges/badges.dart';
-import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
-import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
-import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/constants/string.dart';
-import 'package:central_borssa/data/repositroy/CurrencyRepository.dart';
 import 'package:central_borssa/presentation/Auction/Auction.dart';
 import 'package:central_borssa/presentation/Auction/GlobalAuction.dart';
 import 'package:central_borssa/presentation/Auction/Price_Chart.dart';
@@ -13,8 +9,6 @@ import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:my_flutter_pusher/pusher.dart';
-import 'package:pusher_client/pusher_client.dart';
 
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_event.dart';
@@ -32,56 +26,47 @@ class CentralBorssa extends StatefulWidget {
 }
 
 class CentralBorssaPage extends State<CentralBorssa> {
-  final GlobalKey<FormState> formkey = GlobalKey<FormState>();
-  late List<City> cities2 = [];
-  late List<CurrencyPrice> currencyprice = [];
+  late List<CurrencyPrice?> currencyprice = [];
   late List<transfer.Transfer> transferprice = [];
-  late bool isloading = false;
+  late bool isloading = true;
   late bool istransferloading = true;
   late BorssaBloc bloc;
   late LoginBloc loginbloc;
   late String temp2 = "ss";
   late int countofAuctions = 0;
-  late String? test;
   late String startpoint;
   late String endpoint;
-  bool isClose = false;
   late List<String> userPermissions = [];
   late String userName = "";
   late String userPhone = "";
   late String userLocation = "";
   late String userType = "";
   int companyuser = 0;
-  late PusherClient pusher;
-  // ignore: avoid_init_to_null
-  late String? userActive = null;
-  sharedValue() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // loginbloc.add(MeInformationEvent());
+  late String? userActive = "";
 
+  sharedValue() async {
+    print('come back');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.get('username').toString();
     userPhone = prefs.get('userphone').toString();
     userLocation = "Empty";
     if (prefs.getStringList('permissions') != null) {
       userPermissions = prefs.getStringList('permissions')!.toList();
-    }
-    if (prefs.get('end_at') != null) {
-      userActive = prefs.get('end_at').toString();
-      setState(() {
-        isloading = false;
-      });
-    }
-    if (prefs.getInt('countofauction') != null) {
+    } else if (prefs.get('end_subscription') != null) {
+      userActive = prefs.get('end_subscription').toString();
+      isloading = false;
+      print('---------');
+      print(userActive);
+      print('---------');
+    } else if (prefs.getInt('countofauction') != null) {
       countofAuctions = 0;
       countofAuctions = prefs.getInt('countofauction')!;
       print('--share---');
       print(countofAuctions);
     }
-    var y = userPermissions.contains('Trader_Permission');
-    print('user permission$y');
-    companyuser = int.parse(prefs.get('companyid').toString());
-    userType = prefs.get('roles').toString();
-    setState(() {});
+
+    bloc.add(AllCity());
+    bloc.add(GetAllTransfersEvent());
   }
 
   auctionRead() async {
@@ -133,6 +118,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
       if (event.data['type'] == "currency_price_change" && userActive != "") {
         bloc.add(AllCity());
       } else if (event.data['type'] == "transfer_change" && userActive != "") {
+        print('from fire');
         bloc.add(GetAllTransfersEvent());
       }
     });
@@ -140,94 +126,25 @@ class CentralBorssaPage extends State<CentralBorssa> {
 
   @override
   void initState() {
+    print('from init central borsa');
     bloc = BlocProvider.of<BorssaBloc>(context);
     loginbloc = BlocProvider.of<LoginBloc>(context);
-
     var now = DateTime.now();
     var newFormat = DateFormat("yyyy-MM-dd");
     String updatedDt = newFormat.format(now);
     startpoint = '$updatedDt 1:00:00.00';
     endpoint = DateTime.now().toString();
-    bloc.add(AllCity());
-    bloc.add(GetAllTransfersEvent());
-    currencyprice.clear();
     sharedValue();
-    firebase();
-    if (!isloading) {
-      currencypusher("TransferChannel");
-      currencypusher("PriceChannel");
-    }
-
     super.initState();
   }
 
-  void whatsappSender({@required number}) async {
+  void whatsappSender({@required number}) {
     final String url = "https://api.whatsapp.com/send?phone=$number";
-    await launch(url);
+    launch(url);
   }
 
-  Future<void> currencypusher(String channel) async {
-    // print('good step');
-    // PusherOptions options = PusherOptions(
-    //   host: 'www.ferasalhallak.online',
-    //   wsPort: 6001,
-    //   encrypted: false,
-    // );
-    // pusher = PusherClient('borsa_app', options, autoConnect: true);
-    // pusher.connect();
-    // pusher.onConnectionStateChange((state) {
-    //   print(state!.currentState);
-    // });
-    // pusher.onConnectionError((error) {
-    //   print("error: ${error!.message}");
-    // });
-
-    // if (channel == "PriceChannel") {
-    //   _ourChannel = pusher.subscribe('PriceChannel');
-
-    //   _ourChannel.bind('Change', (onEvent) {
-    //     print(onEvent!.data);
-    //     bloc.add(AllCity());
-    //   });
-    // }
-    // SharedPreferences _pref = await SharedPreferences.getInstance();
-    // test = _pref.get('roles').toString();
-    // // print(test);
-    // await Pusher.init(
-    //     'borsa_app',
-    //     PusherOptions(
-    //         cluster: 'mt1',
-    //         host: 'www.ferasalhallak.online',
-    //         encrypted: false,
-    //         port: 6001));
-    // Pusher.connect(onConnectionStateChange: (val) {
-    //   print(val!.currentState);
-    // }, onError: (error) {
-    //   print(error!.message);
-    // });
-    // if (channel == "TransferChannel") {
-    //   //Subscribe
-    //   _ourChannel = await Pusher.subscribe('TransferChannel');
-
-    //   //Bind
-    //   _ourChannel.bind('Change', (onEvent) {
-    //     print(onEvent!.data);
-    //     bloc.add(GetAllTransfersEvent());
-    //   });
-    // }
-    // if (channel == "PriceChannel") {
-    //   //Subscribe
-    //   _ourChannel = await Pusher.subscribe('PriceChannel');
-
-    //   //Bind
-    //   _ourChannel.bind('Change', (onEvent) {
-    //     print(onEvent!.data);
-    //     bloc.add(AllCity());
-    //   });
-    // }
-  }
-
-  Widget dataTabletransfer(List<dynamic> TransferPricelist, String tableName) {
+  Widget dataTabletransfer(
+      List<transfer.Transfer> TransferPricelist, String tableName) {
     return Card(
       color: Color(0xff7d8a99),
       shape: RoundedRectangleBorder(
@@ -259,7 +176,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                   child: DataTable(
                       dataTextStyle: TextStyle(
                         fontSize: 12,
-                        fontStyle: FontStyle.italic,
+                        fontStyle: FontStyle.normal,
                       ),
                       headingRowHeight: 28,
                       horizontalMargin: 5.5,
@@ -296,8 +213,10 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                 child: Text(
                                   'العرض',
                                   style: TextStyle(
-                                    color: const Color(0xffffffff),
+                                    fontSize: 14,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
+                                    fontFamily: 'Cairo',
                                   ),
                                 ),
                               )
@@ -315,8 +234,10 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                 child: Text(
                                   'الطلب',
                                   style: TextStyle(
-                                    color: const Color(0xffffffff),
+                                    fontSize: 14,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
+                                    fontFamily: 'Cairo',
                                   ),
                                 ),
                               )
@@ -335,8 +256,10 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                   child: Text(
                                     'المدينة',
                                     style: TextStyle(
-                                      color: const Color(0xffffffff),
+                                      fontSize: 14,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
+                                      fontFamily: 'Cairo',
                                     ),
                                   ),
                                 )
@@ -364,63 +287,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                   userPermissions.contains(
                                           'Update_Auction_Price_Permission')
                                       ? InkWell(
-                                          onTap: () {
-                                            // var route = new MaterialPageRoute(
-                                            //     builder: (BuildContext
-                                            //             contex) =>
-                                            //         new BlocProvider(
-                                            //           create: (context) =>
-                                            //               CurrencyBloc(
-                                            //                   CurrencyInitial(),
-                                            //                   CurrencyRepository()),
-                                            //           child: UpdatePrice(
-                                            //             cityid:
-                                            //                 currencyPricelist[i]
-                                            //                     .id,
-                                            //             id: currencyPricelist[i]
-                                            //                 .id,
-                                            //             buy:
-                                            //                 currencyPricelist[i]
-                                            //                     .buy,
-                                            //             sell:
-                                            //                 currencyPricelist[i]
-                                            //                     .sell,
-                                            //             buystate:
-                                            //                 currencyPricelist[i]
-                                            //                     .buyStatus,
-                                            //             sellstate:
-                                            //                 currencyPricelist[i]
-                                            //                     .sellStatus,
-                                            //             type: tableName,
-                                            //             close:
-                                            //                 currencyPricelist[i]
-                                            //                     .close,
-                                            //           ),
-                                            //         ));
-                                            Navigator.push(context,
-                                                MaterialPageRoute(
-                                                    builder: (context) {
-                                              return UpdatePrice(
-                                                cityid: TransferPricelist[i].id,
-                                                id: TransferPricelist[i].id,
-                                                buy: TransferPricelist[i].buy,
-                                                sell: TransferPricelist[i].sell,
-                                                buystate: TransferPricelist[i]
-                                                    .buyStatus,
-                                                sellstate: TransferPricelist[i]
-                                                    .sellStatus,
-                                                type: tableName,
-                                                close:
-                                                    TransferPricelist[i].close,
-                                              );
-                                            }));
-                                            // BlocProvider(
-                                            //     create: (context) =>
-                                            //         CurrencyBloc(
-                                            //             CurrencyInitial(),
-                                            //             CurrencyRepository()));
-                                            // Navigator.of(context).push(route);
-                                          },
+                                          onTap: () {},
                                           child: Text(
                                             TransferPricelist[i].buy.toString(),
                                             textAlign: TextAlign.start,
@@ -482,12 +349,12 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                         " " +
                                         TransferPricelist[i].secondCity.name,
                                     maxLines: 1,
-                                    textWidthBasis: TextWidthBasis.parent,
+                                    // textWidthBasis: TextWidthBasis.parent,
                                     textAlign: TextAlign.end,
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: const Color(0xffffffff),
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   InkWell(
@@ -503,20 +370,16 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => PriceChart(
-                                            cityid: tableName == "currency"
-                                                ? TransferPricelist[i].city.id
-                                                : TransferPricelist[i].id,
+                                            cityid: TransferPricelist[i].id,
                                             fromdate: 1,
                                             todate: 1,
-                                            title: tableName == "currency"
-                                                ? TransferPricelist[i].city.name
-                                                : TransferPricelist[i]
-                                                        .firstCity
-                                                        .name +
-                                                    " " +
-                                                    TransferPricelist[i]
-                                                        .secondCity
-                                                        .name,
+                                            title: TransferPricelist[i]
+                                                    .firstCity
+                                                    .name +
+                                                " " +
+                                                TransferPricelist[i]
+                                                    .secondCity
+                                                    .name,
                                             type: tableName,
                                           ),
                                         ),
@@ -547,25 +410,17 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     PriceChart(
-                                                  cityid: tableName ==
-                                                          "currency"
-                                                      ? TransferPricelist[i]
-                                                          .city
-                                                          .id
-                                                      : TransferPricelist[i].id,
+                                                  cityid:
+                                                      TransferPricelist[i].id,
                                                   fromdate: 1,
                                                   todate: 1,
-                                                  title: tableName == "currency"
-                                                      ? TransferPricelist[i]
-                                                          .city
-                                                          .name
-                                                      : TransferPricelist[i]
-                                                              .firstCity
-                                                              .name +
-                                                          " " +
-                                                          TransferPricelist[i]
-                                                              .secondCity
-                                                              .name,
+                                                  title: TransferPricelist[i]
+                                                          .firstCity
+                                                          .name +
+                                                      " " +
+                                                      TransferPricelist[i]
+                                                          .secondCity
+                                                          .name,
                                                   type: tableName,
                                                 ),
                                               ),
@@ -594,25 +449,17 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     PriceChart(
-                                                  cityid: tableName ==
-                                                          "currency"
-                                                      ? TransferPricelist[i]
-                                                          .city
-                                                          .id
-                                                      : TransferPricelist[i].id,
+                                                  cityid:
+                                                      TransferPricelist[i].id,
                                                   fromdate: 1,
                                                   todate: 1,
-                                                  title: tableName == "currency"
-                                                      ? TransferPricelist[i]
-                                                          .city
-                                                          .name
-                                                      : TransferPricelist[i]
-                                                              .firstCity
-                                                              .name +
-                                                          " " +
-                                                          TransferPricelist[i]
-                                                              .secondCity
-                                                              .name,
+                                                  title: TransferPricelist[i]
+                                                          .firstCity
+                                                          .name +
+                                                      " " +
+                                                      TransferPricelist[i]
+                                                          .secondCity
+                                                          .name,
                                                   type: tableName,
                                                 ),
                                               ),
@@ -634,7 +481,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
     );
   }
 
-  Widget dataTable(List<dynamic> currencyPricelist, String tableName) {
+  Widget dataTable(List<CurrencyPrice?> currencyPricelist, String tableName) {
     return Card(
       color: Color(0xff7d8a99),
       shape: RoundedRectangleBorder(
@@ -666,7 +513,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                   child: DataTable(
                       dataTextStyle: TextStyle(
                         fontSize: 12,
-                        fontStyle: FontStyle.italic,
+                        fontStyle: FontStyle.normal,
                       ),
                       headingRowHeight: 28,
                       horizontalMargin: 5.5,
@@ -742,7 +589,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                   child: Text(
                                     'المدينة',
                                     style: TextStyle(
-                                      color: const Color(0xffffffff),
+                                      fontSize: 14,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -753,13 +601,13 @@ class CentralBorssaPage extends State<CentralBorssa> {
                         ))
                       ],
                       rows: [
-                        for (int i = 0; i < currencyPricelist.length; i++)
+                        for (var i = 0; i < currencyPricelist.length; i++)
                           DataRow(cells: [
                             DataCell(
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  currencyPricelist[i].buyStatus == "up"
+                                  currencyPricelist[i]!.buyStatus == "up"
                                       ? Icon(
                                           Icons.arrow_circle_up,
                                           color: Colors.green[700],
@@ -772,26 +620,18 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                           'Update_Auction_Price_Permission')
                                       ? InkWell(
                                           onTap: () {
-                                            Navigator.push(context,
+                                            Navigator.pushReplacement(context,
                                                 MaterialPageRoute(
                                                     builder: (context) {
                                               return UpdatePrice(
-                                                cityid: currencyPricelist[i].id,
-                                                id: currencyPricelist[i].id,
-                                                buy: currencyPricelist[i].buy,
-                                                sell: currencyPricelist[i].sell,
-                                                buystate: currencyPricelist[i]
-                                                    .buyStatus,
-                                                sellstate: currencyPricelist[i]
-                                                    .sellStatus,
-                                                type: tableName,
-                                                close:
-                                                    currencyPricelist[i].close,
-                                              );
+                                                  currencyPrice:
+                                                      currencyPricelist[i]!);
                                             }));
                                           },
                                           child: Text(
-                                            currencyPricelist[i].buy.toString(),
+                                            currencyPricelist[i]!
+                                                .buy
+                                                .toString(),
                                             textAlign: TextAlign.start,
                                             style: TextStyle(
                                               fontSize: 14,
@@ -800,14 +640,12 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                             ),
                                           ),
                                         )
-                                      : InkWell(
-                                          child: Text(
-                                            currencyPricelist[i].buy.toString(),
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w400,
-                                            ),
+                                      : Text(
+                                          currencyPricelist[i]!.buy.toString(),
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400,
                                           ),
                                         )
                                 ],
@@ -819,7 +657,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  currencyPricelist[i].sellStatus == "up"
+                                  currencyPricelist[i]!.sellStatus == "up"
                                       ? Icon(
                                           Icons.arrow_circle_up,
                                           color: Colors.green[700],
@@ -829,7 +667,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                           color: Colors.red[700],
                                         ),
                                   Text(
-                                    currencyPricelist[i]
+                                    currencyPricelist[i]!
                                         .sell
                                         .toStringAsFixed(2),
                                     maxLines: 1,
@@ -846,7 +684,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 Text(
-                                  currencyPricelist[i].city.name,
+                                  currencyPricelist[i]!.city.name,
                                   maxLines: 1,
                                   textWidthBasis: TextWidthBasis.parent,
                                   textAlign: TextAlign.end,
@@ -870,19 +708,12 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                       MaterialPageRoute(
                                         builder: (context) => PriceChart(
                                           cityid: tableName == "currency"
-                                              ? currencyPricelist[i].city.id
-                                              : currencyPricelist[i].id,
+                                              ? currencyPricelist[i]!.city.id
+                                              : currencyPricelist[i]!.id,
                                           fromdate: 1,
                                           todate: 1,
-                                          title: tableName == "currency"
-                                              ? currencyPricelist[i].city.name
-                                              : currencyPricelist[i]
-                                                      .firstCity
-                                                      .name +
-                                                  " " +
-                                                  currencyPricelist[i]
-                                                      .secondCity
-                                                      .name,
+                                          title:
+                                              currencyPricelist[i]!.city.name,
                                           type: tableName,
                                         ),
                                       ),
@@ -897,7 +728,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                           padding:
                                               const EdgeInsets.only(left: 4),
                                           child: Icon(
-                                            currencyPricelist[i].close == 0
+                                            currencyPricelist[i]!.close == 0
                                                 ? Icons.lock_clock
                                                 : Icons.lock_open
 
@@ -912,23 +743,15 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                             MaterialPageRoute(
                                               builder: (context) => PriceChart(
                                                 cityid: tableName == "currency"
-                                                    ? currencyPricelist[i]
+                                                    ? currencyPricelist[i]!
                                                         .city
                                                         .id
-                                                    : currencyPricelist[i].id,
+                                                    : currencyPricelist[i]!.id,
                                                 fromdate: 1,
                                                 todate: 1,
-                                                title: tableName == "currency"
-                                                    ? currencyPricelist[i]
-                                                        .city
-                                                        .name
-                                                    : currencyPricelist[i]
-                                                            .firstCity
-                                                            .name +
-                                                        " " +
-                                                        currencyPricelist[i]
-                                                            .secondCity
-                                                            .name,
+                                                title: currencyPricelist[i]!
+                                                    .city
+                                                    .name,
                                                 type: tableName,
                                               ),
                                             ),
@@ -943,7 +766,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                           padding:
                                               const EdgeInsets.only(left: 4),
                                           child: Icon(
-                                            currencyPricelist[i].close == 1
+                                            currencyPricelist[i]!.close == 1
                                                 ? Icons.lock_clock
                                                 : Icons.lock_open
                                             //remove
@@ -957,23 +780,15 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                             MaterialPageRoute(
                                               builder: (context) => PriceChart(
                                                 cityid: tableName == "currency"
-                                                    ? currencyPricelist[i]
+                                                    ? currencyPricelist[i]!
                                                         .city
                                                         .id
-                                                    : currencyPricelist[i].id,
+                                                    : currencyPricelist[i]!.id,
                                                 fromdate: 1,
                                                 todate: 1,
-                                                title: tableName == "currency"
-                                                    ? currencyPricelist[i]
-                                                        .city
-                                                        .name
-                                                    : currencyPricelist[i]
-                                                            .firstCity
-                                                            .name +
-                                                        " " +
-                                                        currencyPricelist[i]
-                                                            .secondCity
-                                                            .name,
+                                                title: currencyPricelist[i]!
+                                                    .city
+                                                    .name,
                                                 type: tableName,
                                               ),
                                             ),
@@ -1028,11 +843,13 @@ class CentralBorssaPage extends State<CentralBorssa> {
                       title: Text('تسجيل الخروج'),
                       leading: new Icon(Icons.logout_sharp),
                       onTap: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          logout();
-                          return Loginpage();
-                        }));
+                        logout();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute<void>(
+                              builder: (BuildContext context) => Loginpage()),
+                          ModalRoute.withName('/'),
+                        );
                       },
                     ),
                   ],
@@ -1058,46 +875,38 @@ class CentralBorssaPage extends State<CentralBorssa> {
         ),
         backgroundColor: Color(navbar.hashCode),
       ),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<BorssaBloc, BorssaState>(
-            listener: (context, state) {
-              if (state is BorssaReloadingState) {
-                print(state);
-              } else if (state is GetAllCityState) {
-                print(state);
-                currencyprice = state.cities;
-                setState(() {
-                  isloading = false;
-                });
-              } else if (state is BorssaErrorLoading) {
-                print(state);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('خطأ في التحميل'),
-                    action: SnackBarAction(
-                      label: 'تنبيه',
-                      onPressed: () {},
-                    ),
-                  ),
-                );
-              } else if (state is GetAllTransfersLoading) {
-                print(state);
-              } else if (state is GetAllTransfersLoaded) {
-                print(state);
-                transferprice = state.cities;
-                setState(() {
-                  istransferloading = false;
-                });
-              } else if (state is GetAllTransfersError) {
-                print(state);
-                setState(() {
-                  istransferloading = true;
-                });
-              }
-            },
-          ),
-        ],
+      body: BlocListener<BorssaBloc, BorssaState>(
+        listener: (context, state) {
+          if (state is GetAllCityState) {
+            print(state);
+            currencyprice = state.cities;
+            isloading = false;
+            setState(() {});
+          } else if (state is BorssaErrorLoading) {
+            print(state);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('خطأ في التحميل'),
+                action: SnackBarAction(
+                  label: 'تنبيه',
+                  onPressed: () {},
+                ),
+              ),
+            );
+          } else if (state is GetAllTransfersLoading) {
+            print(state);
+          } else if (state is GetAllTransfersLoaded) {
+            print(state);
+            transferprice = state.cities;
+            istransferloading = false;
+            setState(() {});
+          } else if (state is GetAllTransfersError) {
+            print(state);
+            setState(() {
+              istransferloading = true;
+            });
+          }
+        },
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -1154,7 +963,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                         )
                       : Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: istransferloading
+                          child: istransferloading && currencyprice.isEmpty
                               ? Container()
                               : Container(
                                   child: Column(

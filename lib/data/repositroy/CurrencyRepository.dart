@@ -9,8 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrencyRepository {
   Dio _dio = Dio();
-  Future<Either<String, String>> updatePrice(int id, double buy, double sell,
-      String buystate, String sellstate, String type, int close) async {
+  Future<Either<String, String>> updatePrice(int? id, double? buy, double? sell,
+      String? buystate, String? sellstate, String? type, int? close) async {
     try {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       var _token = _prefs.get('token');
@@ -45,12 +45,12 @@ class CurrencyRepository {
               "buy_status": buystate,
               "close": close
             }));
-        var mystatus = updateResponse.data['status'];
+        
         print(updateResponse);
-        if (mystatus == "success") {
-          return Right(mystatus);
+        if (updateResponse.data['status'] == "success") {
+          return Right(updateResponse.data['status']);
         } else {
-          return Left(mystatus);
+          return Left(updateResponse.data['status']);
         }
       }
       return Left('erroe');
@@ -237,13 +237,13 @@ class CurrencyRepository {
   }
 
   Future<Either<String, String>> undoLastChange(
-      int cityid,
-      double buy,
-      double sell,
-      String type,
-      String buystatus,
-      String sellstatus,
-      int close) async {
+      int? cityid,
+      double? buy,
+      double? sell,
+      String? type,
+      String? buystatus,
+      String? sellstatus,
+      int? close) async {
     print(type);
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var _token = _prefs.get('token');

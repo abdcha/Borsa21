@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.example.central_borssa;
+package central.borsa.central_borssa;
 
 public final class R {
   public static final class attr {

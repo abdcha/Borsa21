@@ -44,8 +44,8 @@ class LoginRepository {
 
       //Active subscribtions
       if (userInformations.user.endSubscription != null) {
-        await _prefs.setString(
-            'end_at', userInformations.user.endSubscription!.endAt.toString());
+        await _prefs.setString('end_subscription',
+            userInformations.user.endSubscription!.endAt.toString());
       }
 
       //User Type
@@ -102,8 +102,8 @@ class LoginRepository {
 
       //Active subscribtions
       if (userInformations.user.endSubscription != null) {
-        await _prefs.setString(
-            'end_at', userInformations.user.endSubscription!.endAt.toString());
+        await _prefs.setString('end_subscription',
+            userInformations.user.endSubscription!.endAt.toString());
       }
 
       //User Type
@@ -152,7 +152,7 @@ class LoginRepository {
 
         //Active subscribtions
         if (userInformations.user.endSubscription != null) {
-          await _prefs.setString('end_at',
+          await _prefs.setString('end_subscription',
               userInformations.user.endSubscription!.endAt.toString());
         }
 
