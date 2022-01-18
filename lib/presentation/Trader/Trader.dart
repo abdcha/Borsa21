@@ -254,7 +254,7 @@ class TraderPage extends State<Trader> {
                           fontSize: 12,
                           fontStyle: FontStyle.normal,
                         ),
-                        headingRowHeight: 28,
+                        headingRowHeight: 40,
                         horizontalMargin: 5.5,
                         dividerThickness: 2,
                         dataRowHeight: 110,
@@ -285,7 +285,7 @@ class TraderPage extends State<Trader> {
                               children: [
                                 Text(
                                   currencyPricelist[i].city.name == 'إربيل'
-                                      ? "الشمال"
+                                      ? " الشمال "
                                       : currencyPricelist[i].city.name ==
                                               'بغداد'
                                           ? "بغداد"
@@ -296,6 +296,7 @@ class TraderPage extends State<Trader> {
                                   style: TextStyle(
                                       color: const Color(0xffffffff),
                                       fontWeight: FontWeight.bold,
+                                      fontFamily: 'Cairo',
                                       fontSize: 18),
                                 )
                               ],
@@ -358,6 +359,7 @@ class TraderPage extends State<Trader> {
                                                   fontSize: 20,
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.w400,
+                                                  fontFamily: 'Cairo',
                                                 ),
                                               ),
                                             ],
@@ -375,6 +377,7 @@ class TraderPage extends State<Trader> {
                                               fontSize: 20,
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
+                                              fontFamily: 'Cairo',
                                             ),
                                           ),
                                         ),
@@ -438,6 +441,7 @@ class TraderPage extends State<Trader> {
                                                     fontSize: 20,
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.w400,
+                                                    fontFamily: 'Cairo',
                                                   ),
                                                 ),
                                               ],
@@ -455,6 +459,7 @@ class TraderPage extends State<Trader> {
                                                 fontSize: 20,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
+                                                fontFamily: 'Cairo',
                                               ),
                                             ),
                                           ),

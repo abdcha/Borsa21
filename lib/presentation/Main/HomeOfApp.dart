@@ -8,6 +8,7 @@ import 'package:central_borssa/presentation/Auction/GlobalAuction.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:central_borssa/presentation/Trader/Trader.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,8 +18,6 @@ import 'package:central_borssa/presentation/Home/Central_Borssa.dart';
 import '..//Home/MainChat.dart';
 import '../Home/All_post.dart';
 import '../Home/Company_Profile.dart';
-import 'package:dart_ping/dart_ping.dart';
-import 'package:connectivity/connectivity.dart';
 
 class HomeOfApp extends StatefulWidget {
   home_page createState() => home_page();
@@ -35,6 +34,8 @@ class home_page extends State<HomeOfApp>
   late String userLocation = "";
   late String userType = "";
   int companyuser = 0;
+  late int countofAuctions = 0;
+
   late String userActive = "";
   int messageUnread = 0;
   int notificationcount = 0;
@@ -61,25 +62,55 @@ class home_page extends State<HomeOfApp>
     companyuser = int.parse(prefs.get('companyid').toString());
     print(companyuser);
     userType = prefs.get('roles').toString();
-    setState(() {});
-  }
-
-  internetCheck() async {
-    final ping = Ping('google.com', count: 5);
-    print('Running command: ${ping.command}');
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile) {
-      print('I am connected to a mobile network');
-    } else if (connectivityResult == ConnectivityResult.wifi) {
-      print(' I am connected to a wifi network');
+    if (prefs.getInt('countofauction') != null) {
+      countofAuctions = 0;
+      countofAuctions = prefs.getInt('countofauction')!;
+      print('--share---');
+      print(countofAuctions);
+    } else {
+      countofAuctions = 0;
     }
   }
 
+  auctionRead() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      countofAuctions = 0;
+    });
+    if (prefs.getInt('countofauction') != null) {
+      prefs.setInt('countofauction', 0);
+    }
+  }
+
+  nothing() {}
+
   fireBase() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     FirebaseMessaging.onMessage.handleError((error) {
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) {
-      if (userPermissions.contains('Trader_Permission')) {
+      if (event.data['type'] == "new_auction") {
+        if (countofAuctions == 0) {
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
+          setState(() {
+            countofAuctions++;
+          });
+          prefs.setInt('countofauction', countofAuctions);
+        } else if (countofAuctions != 0) {
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
+          setState(() {
+            countofAuctions++;
+          });
+          prefs.setInt('countofauction', countofAuctions);
+        }
+      } else if (userPermissions.contains('Trader_Permission')) {
         if (event.data['type'] == "trader_currency_price_change") {
           String? temp = event.notification!.body;
           temp2 = temp!;
@@ -296,6 +327,7 @@ class home_page extends State<HomeOfApp>
         case 2:
           return GlobalAuction();
         case 3:
+          countofAuctions != 0 ? auctionRead() : nothing();
           return Auction();
 
           // ignore: dead_code
@@ -400,6 +432,9 @@ class home_page extends State<HomeOfApp>
                     unselectedItemColor: Colors.white.withOpacity(.60),
                     selectedFontSize: 14,
                     unselectedFontSize: 14,
+                    unselectedLabelStyle: TextStyle(
+                      fontFamily: 'Cairo',
+                    ),
                     currentIndex: selectedPage,
                     onTap: choosePage,
                     items: [
@@ -429,7 +464,13 @@ class home_page extends State<HomeOfApp>
                       if (userPermissions.contains('Trader_Permission'))
                         BottomNavigationBarItem(
                           label: 'المزاد المركزي',
-                          icon: Icon(Icons.account_balance_sharp),
+                          icon: countofAuctions == 0
+                              ? Icon(Icons.account_balance_sharp)
+                              : Badge(
+                                  badgeContent:
+                                      Text(countofAuctions.toString()),
+                                  child: Icon(Icons.account_balance_sharp),
+                                ),
                         ),
                       if (userPermissions.contains('Chat_Permission'))
                         BottomNavigationBarItem(
@@ -457,6 +498,9 @@ class home_page extends State<HomeOfApp>
                           icon: Icon(Icons.person_rounded),
                         ),
                     ],
+                    selectedLabelStyle: TextStyle(
+                      fontFamily: 'Cairo',
+                    ),
                   ));
 
               // ignore: dead_code
@@ -505,6 +549,9 @@ class home_page extends State<HomeOfApp>
                           icon: Icon(Icons.person_rounded),
                         ),
                     ],
+                    selectedLabelStyle: TextStyle(
+                      fontFamily: 'Cairo',
+                    ),
                   ));
           }
         });

@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:central_borssa/data/model/Advertisement.dart';
-import 'package:central_borssa/data/model/Advertisement.dart';
 import 'package:central_borssa/data/repositroy/AdvertisementRepository.dart';
 import 'package:equatable/equatable.dart';
 

@@ -41,13 +41,13 @@ class ChartEvent extends CurrencyEvent {
 
 //undo update
 class UndoEvent extends CurrencyEvent {
-  final int? cityid;
-  final double? buy;
-  final double? sell;
-  final String? sellstatus;
-  final String? buystatus;
-  final String? type;
-  final int? close;
+  final int cityid;
+  final double buy;
+  final double sell;
+  final String sellstatus;
+  final String buystatus;
+  final String type;
+  final int close;
 
   UndoEvent({
     required this.cityid,

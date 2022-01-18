@@ -37,7 +37,6 @@ class AuctionPage extends State<Auction> {
     userLocation = "Empty";
     userPermissions = prefs.getStringList('permissions')!.toList();
     var y = userPermissions.contains('Update_Auction_Price_Permission');
-    print('user permission$y');
     companyuser = int.parse(prefs.get('companyid').toString());
     userType = prefs.get('roles').toString();
     setState(() {});
@@ -67,7 +66,7 @@ class AuctionPage extends State<Auction> {
 
   Widget dataTable() {
     return Container(
-      height: MediaQuery.of(context).size.height - 180,
+      height: MediaQuery.of(context).size.height - 190,
       width: double.infinity,
       child: SingleChildScrollView(
         child: Padding(
@@ -263,16 +262,26 @@ class AuctionPage extends State<Auction> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff6e7d91),
-      appBar: new AppBar(
-        title: Container(
-          height: 50,
-          margin: EdgeInsets.only(right: 60),
-          child: Center(
-            child: Image.asset('assest/Images/test2.png'),
-          ),
-        ),
-        backgroundColor: Color(navbar.hashCode),
-      ),
+      appBar: userPermissions.contains('Chat_Permission')
+          ? new AppBar(
+              title: Container(
+                height: 50,
+                margin: EdgeInsets.only(right: 60),
+                child: Center(
+                  child: Image.asset('assest/Images/test2.png'),
+                ),
+              ),
+              backgroundColor: Color(navbar.hashCode),
+            )
+          : new AppBar(
+              title: Container(
+                height: 50,
+                child: Center(
+                  child: Image.asset('assest/Images/test2.png'),
+                ),
+              ),
+              backgroundColor: Color(navbar.hashCode),
+            ),
       body: BlocListener<AuctionBloc, AuctionState>(
         listener: (context, state) {
           if (state is GetAuctionLoading) {
@@ -298,27 +307,28 @@ class AuctionPage extends State<Auction> {
             );
           }
         },
-        child: Card(
-          color: Color(0xff7d8a99),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-            side: new BorderSide(color: Colors.white),
-          ),
-          child: Column(
-            children: <Widget>[
-              isloading
-                  ? Container(
-                      child: Center(child: CircularProgressIndicator()),
-                    )
-                  : Column(
-                      children: [
-                        Container(
-                          child: dataTable(),
-                        ),
-                      ],
-                    ),
-            ],
-          ),
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: isloading
+              ? Container(child: Center(child: CircularProgressIndicator()))
+              : Card(
+                  color: Color(0xff7d8a99),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    side: new BorderSide(color: Colors.white),
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Column(
+                        children: [
+                          Container(
+                            child: dataTable(),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
         ),
       ),
     );

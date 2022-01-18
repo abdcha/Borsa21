@@ -529,7 +529,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
   reload() async {
     print('main reload');
     postloading(isRefresh: true);
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 200));
   }
 
   @override
@@ -572,13 +572,15 @@ class CompanyProfilePage extends State<CompanyProfile> {
                   print(state);
                 } else if (state is GetAllInformationLoaded) {
                   if (companypost.isEmpty) {
+                    print('length');
                     companypost = state.data.posts;
                     totalpost = state.data.total;
+                    setState(() {});
                   } else if (companypost.isNotEmpty) {
-                    print(companypost.length);
                     print('from addall');
                     companypost.addAll(state.data.posts);
-                    setState(() {});
+                  } else {
+                    print(state);
                   }
                 } else if (state is GetAllInformationError) {
                   print(state);
@@ -604,16 +606,16 @@ class CompanyProfilePage extends State<CompanyProfile> {
               physics: BouncingScrollPhysics(),
               footer: ClassicFooter(
                 loadStyle: LoadStyle.ShowWhenLoading,
-                completeDuration: Duration(milliseconds: 500),
+                completeDuration: Duration(milliseconds: 200),
               ),
               onRefresh: () async {
                 postloading(isRefresh: true);
-                await Future.delayed(Duration(milliseconds: 600));
+                await Future.delayed(Duration(milliseconds: 200));
                 if (mounted) setState(() {});
                 refreshController.refreshCompleted();
               },
               onLoading: () async {
-                await Future.delayed(Duration(milliseconds: 180));
+                await Future.delayed(Duration(milliseconds: 200));
                 postloading();
                 if (mounted) setState(() {});
                 refreshController.loadFailed();

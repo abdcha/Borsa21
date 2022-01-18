@@ -45,7 +45,7 @@ class CurrencyRepository {
               "buy_status": buystate,
               "close": close
             }));
-        
+
         print(updateResponse);
         if (updateResponse.data['status'] == "success") {
           return Right(updateResponse.data['status']);
@@ -237,19 +237,20 @@ class CurrencyRepository {
   }
 
   Future<Either<String, String>> undoLastChange(
-      int? cityid,
-      double? buy,
-      double? sell,
-      String? type,
-      String? buystatus,
-      String? sellstatus,
-      int? close) async {
+      int cityid,
+      double buy,
+      double sell,
+      String type,
+      String buystatus,
+      String sellstatus,
+      int close) async {
     print(type);
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var _token = _prefs.get('token');
     _dio.options.headers['authorization'] = 'Bearer $_token';
     if (type == "transfer") {
       String completeUrl = '$undoChangeUrl$cityid';
+      print('from transfer');
       print(completeUrl);
       var updateResponse = await _dio.put(completeUrl,
           data: jsonEncode({

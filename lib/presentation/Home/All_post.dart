@@ -1097,12 +1097,12 @@ class AllPostPage extends State<AllPost> {
               ),
               onRefresh: () async {
                 postloading(isRefresh: true);
-                await Future.delayed(Duration(milliseconds: 500));
+                await Future.delayed(Duration(milliseconds: 50));
                 if (mounted) setState(() {});
                 refreshController.refreshCompleted();
               },
               onLoading: () async {
-                await Future.delayed(Duration(milliseconds: 500));
+                await Future.delayed(Duration(milliseconds: 50));
                 postloading(isRefresh: false);
                 if (mounted) setState(() {});
                 if (mounted) setState(() {});

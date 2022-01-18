@@ -111,15 +111,6 @@ class CentralBorssaPage extends State<CentralBorssa> {
             countofAuctions++;
           });
           prefs.setInt('countofauction', countofAuctions);
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(
-          //     content: Text(body!),
-          //     action: SnackBarAction(
-          //       label: 'تنبيه',
-          //       onPressed: () {},
-          //     ),
-          //   ),
-          // );
         }
       }
       if (event.data['type'] == "currency_price_change" && userActive != "") {
@@ -296,7 +287,17 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                   userPermissions.contains(
                                           'Update_Auction_Price_Permission')
                                       ? InkWell(
-                                          onTap: () {},
+                                          onTap: () {
+                                            Navigator.pushReplacement(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return UpdatePrice(
+                                                currencyPrice:
+                                                    TransferPricelist[i],
+                                                type: tableName,
+                                              );
+                                            }));
+                                          },
                                           child: Text(
                                             TransferPricelist[i].buy.toString(),
                                             textAlign: TextAlign.start,
@@ -643,8 +644,10 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                                 MaterialPageRoute(
                                                     builder: (context) {
                                               return UpdatePrice(
-                                                  currencyPrice:
-                                                      currencyPricelist[i]!);
+                                                currencyPrice:
+                                                    currencyPricelist[i]!,
+                                                type: tableName,
+                                              );
                                             }));
                                           },
                                           child: Text(
@@ -971,7 +974,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                         whatsappSender(number: '07716600999');
                                       },
                                       child: Text(
-                                        'هذه الصفحة خاصة بموظفي المصارف ومحلات الصرافة والمتعاملين الرسميين بالبورصات. للحصول على معلومات نرجو التواصل معنا من خلال الرقم التالي 07700198027.',
+                                        'هذه الصفحة خاصة بموظفي المصارف ومحلات الصرافة والمتعاملين الرسميين بالبورصات. للحصول على معلومات نرجو التواصل معنا من خلال الرقم التالي 07716600999.',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 20,
@@ -989,9 +992,10 @@ class CentralBorssaPage extends State<CentralBorssa> {
                         )
                       : Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: istransferloading && currencyprice.isEmpty
-                              ? Container()
-                              : Container(
+                          child: !istransferloading &&
+                                  currencyprice.isNotEmpty &&
+                                  transferprice.isNotEmpty
+                              ? Container(
                                   child: Column(
                                     children: [
                                       dataTable(currencyprice, "currency"),
@@ -1150,8 +1154,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                                 ),
                                     ],
                                   ),
-                                ),
-                        ),
+                                )
+                              : Container()),
             ],
           ),
         ),

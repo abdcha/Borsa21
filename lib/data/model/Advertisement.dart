@@ -9,9 +9,7 @@ class AdvertisementAll {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.data != null) {
       data['data'] = this.data.toJson();
-    }
     return data;
   }
 }
@@ -32,10 +30,8 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.advertisements != null) {
       data['advertisements'] =
           this.advertisements.map((v) => v.toJson()).toList();
-    }
     return data;
   }
 }

@@ -80,6 +80,9 @@ class ProfilePage extends State<Profile> {
             child: new DrawerHeader(
                 child: new CircleAvatar(
               backgroundColor: navbar,
+              child: Image.asset(
+                'assest/Images/test2.png',
+              ),
               // child: Image.asset('asesst/Images/Logo.png')
             )),
             color: Colors.grey[300],
@@ -92,22 +95,10 @@ class ProfilePage extends State<Profile> {
                     ListTile(
                       title: Text(userName),
                       leading: new Icon(Icons.account_circle),
-                      onTap: () {
-                        // Update the state of the app.//feas
-                        // ...
-                      },
                     ),
                     ListTile(
                       title: Text(userPhone),
                       leading: new Icon(Icons.phone),
-                    ),
-                    ListTile(
-                      title: Text(userActive),
-                      leading: new Icon(Icons.wifi_tethering_outlined),
-                      onTap: () {
-                        // Update the state of the app.
-                        // ...
-                      },
                     ),
                     ListTile(
                       title: Text('تسجيل الخروج'),

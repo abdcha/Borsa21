@@ -1,15 +1,16 @@
 import 'package:central_borssa/business_logic/Currency/bloc/currency_bloc.dart';
 import 'package:central_borssa/constants/string.dart';
-import 'package:central_borssa/data/model/Currency.dart';
 import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UpdatePrice extends StatefulWidget {
-  final CurrencyPrice? currencyPrice;
+  final dynamic currencyPrice;
+  final String type;
   UpdatePrice({
     Key? key,
     required this.currencyPrice,
+    required this.type,
   }) : super(key: key);
   UpdatePricePage createState() => UpdatePricePage();
 }
@@ -272,52 +273,106 @@ class UpdatePricePage extends State<UpdatePrice> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (lastupdate) {
-                              currencybloc.add(UndoEvent(
-                                  cityid: widget.currencyPrice!.cityId,
-                                  buy: widget.currencyPrice!.buy,
-                                  sell: widget.currencyPrice!.sell,
-                                  sellstatus: widget.currencyPrice!.buyStatus,
-                                  buystatus: widget.currencyPrice!.sellStatus,
-                                  type: "",
-                                  close: widget.currencyPrice!.close));
-                            }
-                            if (widget.currencyPrice!.buy != 0) {
-                              if (widget.currencyPrice!.buy >
-                                  double.parse(buyTextEdit.text)) {
-                                buyState = "down";
-                                print('1');
-                              } else if (widget.currencyPrice!.buy ==
-                                  double.parse(buyTextEdit.text)) {
-                                buyState = widget.currencyPrice!.buyStatus;
-                                print('2');
-                              } else if (widget.currencyPrice!.buy <
-                                  double.parse(buyTextEdit.text)) {
-                                buyState = "up";
-                                print('3');
-                              }
-                              if (widget.currencyPrice!.sell >
-                                  double.parse(sellTextEdit.text)) {
-                                sellState = "down";
-                                print('4');
-                              } else if (widget.currencyPrice!.sell ==
-                                  double.parse(sellTextEdit.text)) {
-                                sellState = widget.currencyPrice!.buyStatus;
-                                print('5');
-                              } else if (widget.currencyPrice!.sell <
-                                  double.parse(sellTextEdit.text)) {
-                                sellState = "up";
-                                print('6');
+                              if (widget.type == "currency") {
+                                currencybloc.add(UndoEvent(
+                                    cityid: widget.currencyPrice!.cityId,
+                                    buy: widget.currencyPrice!.buy,
+                                    sell: widget.currencyPrice!.sell,
+                                    sellstatus: widget.currencyPrice!.buyStatus,
+                                    buystatus: widget.currencyPrice!.sellStatus,
+                                    type: widget.type,
+                                    close: widget.currencyPrice!.close));
+                              } else if (widget.type == "transfer") {
+                                print('----------');
+                                print(widget.currencyPrice!.id);
+                                print('----------');
+                                currencybloc.add(UndoEvent(
+                                    cityid: widget.currencyPrice!.id,
+                                    buy: widget.currencyPrice!.buy,
+                                    sell: widget.currencyPrice!.sell,
+                                    sellstatus: widget.currencyPrice!.buyStatus,
+                                    buystatus: widget.currencyPrice!.sellStatus,
+                                    type: widget.type,
+                                    close: widget.currencyPrice!.close));
                               }
 
-                              currencybloc.add(UpdatePriceEvent(
-                                  id: widget.currencyPrice!.id,
-                                  buy: double.parse(buyTextEdit.text),
-                                  sell: double.parse(sellTextEdit.text),
-                                  buystate: buyState,
-                                  sellstate: sellState,
-                                  type: "currency",
-                                  close: closeCurrencyvalue));
-                              print(closeCurrencyvalue);
+                              if (widget.currencyPrice!.buy != 0) {
+                                if (widget.currencyPrice!.buy >
+                                    double.parse(buyTextEdit.text)) {
+                                  buyState = "down";
+                                  print('1');
+                                } else if (widget.currencyPrice!.buy ==
+                                    double.parse(buyTextEdit.text)) {
+                                  buyState = widget.currencyPrice!.buyStatus;
+                                  print('2');
+                                } else if (widget.currencyPrice!.buy <
+                                    double.parse(buyTextEdit.text)) {
+                                  buyState = "up";
+                                  print('3');
+                                }
+                                if (widget.currencyPrice!.sell >
+                                    double.parse(sellTextEdit.text)) {
+                                  sellState = "down";
+                                  print('4');
+                                } else if (widget.currencyPrice!.sell ==
+                                    double.parse(sellTextEdit.text)) {
+                                  sellState = widget.currencyPrice!.buyStatus;
+                                  print('5');
+                                } else if (widget.currencyPrice!.sell <
+                                    double.parse(sellTextEdit.text)) {
+                                  sellState = "up";
+                                  print('6');
+                                }
+
+                                currencybloc.add(UpdatePriceEvent(
+                                    id: widget.currencyPrice!.id,
+                                    buy: double.parse(buyTextEdit.text),
+                                    sell: double.parse(sellTextEdit.text),
+                                    buystate: buyState,
+                                    sellstate: sellState,
+                                    type: widget.type,
+                                    close: closeCurrencyvalue));
+                                print(closeCurrencyvalue);
+                              }
+                            } else {
+                              if (widget.currencyPrice!.buy != 0) {
+                                if (widget.currencyPrice!.buy >
+                                    double.parse(buyTextEdit.text)) {
+                                  buyState = "down";
+                                  print('1');
+                                } else if (widget.currencyPrice!.buy ==
+                                    double.parse(buyTextEdit.text)) {
+                                  buyState = widget.currencyPrice!.buyStatus;
+                                  print('2');
+                                } else if (widget.currencyPrice!.buy <
+                                    double.parse(buyTextEdit.text)) {
+                                  buyState = "up";
+                                  print('3');
+                                }
+                                if (widget.currencyPrice!.sell >
+                                    double.parse(sellTextEdit.text)) {
+                                  sellState = "down";
+                                  print('4');
+                                } else if (widget.currencyPrice!.sell ==
+                                    double.parse(sellTextEdit.text)) {
+                                  sellState = widget.currencyPrice!.buyStatus;
+                                  print('5');
+                                } else if (widget.currencyPrice!.sell <
+                                    double.parse(sellTextEdit.text)) {
+                                  sellState = "up";
+                                  print('6');
+                                }
+
+                                currencybloc.add(UpdatePriceEvent(
+                                    id: widget.currencyPrice!.id,
+                                    buy: double.parse(buyTextEdit.text),
+                                    sell: double.parse(sellTextEdit.text),
+                                    buystate: buyState,
+                                    sellstate: sellState,
+                                    type: widget.type,
+                                    close: closeCurrencyvalue));
+                                print(closeCurrencyvalue);
+                              }
                             }
                           },
                           style: ElevatedButton.styleFrom(

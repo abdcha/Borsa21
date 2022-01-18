@@ -1525,16 +1525,27 @@ class GlobalAuctionPage extends State<GlobalAuction> {
     return Scaffold(
       backgroundColor: Color(0xff6e7d91),
       drawer: null,
-      appBar: new AppBar(
-        title: Container(
-          height: 50,
-          margin: EdgeInsets.only(right: 60),
-          child: Center(
-            child: Image.asset('assest/Images/test2.png'),
-          ),
-        ),
-        backgroundColor: Color(navbar.hashCode),
-      ),
+      appBar: userPermissions.contains('Chat_Permission')
+          ? new AppBar(
+              title: Container(
+                height: 50,
+                margin: EdgeInsets.only(right: 60),
+
+                child: Center(
+                  child: Image.asset('assest/Images/test2.png'),
+                ),
+              ),
+              backgroundColor: Color(navbar.hashCode),
+            )
+          : new AppBar(
+              title: Container(
+                height: 50,
+                child: Center(
+                  child: Image.asset('assest/Images/test2.png'),
+                ),
+              ),
+              backgroundColor: Color(navbar.hashCode),
+            ),
       body: BlocListener<GlobalauctionBloc, GlobalauctionState>(
         listener: (context, state) {
           if (state is GetGlobalauctionLoading) {
@@ -1564,7 +1575,8 @@ class GlobalAuctionPage extends State<GlobalAuction> {
           child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: isCalculate && rates != null
-                ? Card(
+                ? 
+                Card(
                     color: Color(0xff7d8a99),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),

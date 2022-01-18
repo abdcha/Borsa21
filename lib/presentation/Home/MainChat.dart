@@ -601,6 +601,8 @@ class CompanyProfilePage extends State<MainChat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff6e7d91),
+
       // drawer: newDrawer(),
       appBar: AppBar(
         title: Container(
@@ -611,7 +613,6 @@ class CompanyProfilePage extends State<MainChat> {
         ),
         backgroundColor: Color(navbar.hashCode),
       ),
-      backgroundColor: Colors.grey[300],
       body: MultiBlocListener(
         listeners: [
           BlocListener<ChatBloc, ChatState>(
@@ -661,44 +662,40 @@ class CompanyProfilePage extends State<MainChat> {
           height: double.infinity,
           child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: true
-                    ? Container(
-                        height: MediaQuery.of(context).size.height - 168,
-                        child: Directionality(
-                          textDirection: ui.TextDirection.rtl,
-                          child: Card(
-                            color: Colors.grey,
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 400,
-                                  width: 400,
-                                  child: CircleAvatar(
-                                    radius: 30.0,
-                                    backgroundColor: Colors.transparent,
-                                    child:
-                                        Image.asset('assest/Images/Logo.png'),
-                                  ),
+              true
+                  ? Container(
+                      height: MediaQuery.of(context).size.height - 168,
+                      child: Directionality(
+                        textDirection: ui.TextDirection.rtl,
+                        child: Card(
+                          color: Colors.grey,
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 400,
+                                width: double.infinity,
+                                child: CircleAvatar(
+                                  radius: 30.0,
+                                  backgroundColor: Colors.transparent,
+                                  child: Image.asset('assest/Images/Logo.png'),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Directionality(
-                                      textDirection: ui.TextDirection.rtl,
-                                      child: Icon(
-                                        Icons.lock_clock,
-                                        size: 100,
-                                        color: Colors.white,
-                                      )),
-                                ),
-                              ],
-                            ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Directionality(
+                                    textDirection: ui.TextDirection.rtl,
+                                    child: Icon(
+                                      Icons.lock_clock,
+                                      size: 100,
+                                      color: Colors.white,
+                                    )),
+                              ),
+                            ],
                           ),
                         ),
-                      )
-                    : ourListview(),
-              ),
+                      ),
+                    )
+                  : ourListview(),
             ],
           ),
         ),
