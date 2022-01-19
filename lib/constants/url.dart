@@ -43,3 +43,6 @@ final advertisementUrl = 'https://centralborsa.com/api/advertisement/';
 //Undo
 final undoChangeUrl =
     'https://centralborsa.com/api/currencyPrices/undoLastChange/';
+//logout
+final logoutUrl =
+    'https://centralborsa.com/api/auth/logout';

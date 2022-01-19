@@ -187,4 +187,20 @@ class LoginRepository {
       return Left('error');
     }
   }
+
+  Future<Either<String, String>> logout() async {
+    Dio _dio = Dio();
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var token = _prefs.get('token');
+    _dio.options.headers['authorization'] = 'Bearer $token';
+    if (token != null) {
+      var response = await _dio.get(logoutUrl);
+      if (response.data['status'] == 'success') {
+        return Right('success');
+      } else
+        return Left('error');
+    } else {
+      return Left('error');
+    }
+  }
 }

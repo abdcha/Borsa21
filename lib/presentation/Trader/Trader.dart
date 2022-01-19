@@ -2,6 +2,9 @@ import 'package:badges/badges.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:central_borssa/business_logic/Advertisement/bloc/advertisement_bloc.dart';
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
+import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
+import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
+import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Advertisement.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
@@ -28,6 +31,7 @@ class TraderPage extends State<Trader> {
   late List<CurrencyPrice> currencyprice = [];
   late List<transfer.Transfer> transferprice = [];
   late AdvertisementBloc advertisementbloc;
+  late LoginBloc logoutapi;
   late List<Advertisements> advertisements = [];
 
   late bool isloading = true;
@@ -132,6 +136,8 @@ class TraderPage extends State<Trader> {
     firebase();
     bloc = BlocProvider.of<BorssaBloc>(context);
     bloc.add(TraderCurrencyEvent());
+
+    logoutapi = BlocProvider.of<LoginBloc>(context);
 
     super.initState();
   }
@@ -481,6 +487,10 @@ class TraderPage extends State<Trader> {
     );
   }
 
+  logoutauthentication() {
+    logoutapi.add(LogoutEvent());
+
+  }
   logout() async {
     print('from');
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -693,6 +703,30 @@ class TraderPage extends State<Trader> {
               }
             },
           ),
+          BlocListener<LoginBloc, LoginState>(
+            listener: (context, state) {
+              if (state is LogoutLoaded) {
+                setState(() {});
+                print(state);
+              }
+              if (state is LogoutError) {
+                setState(() {});
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('الرجاء التأكد من المعلومات المدخلة'),
+                    action: SnackBarAction(
+                      label: 'تنبيه',
+                      onPressed: () {
+                        // Code to execute.
+                      },
+                    ),
+                  ),
+                );
+              } else if (state is LogoutLoading) {
+                setState(() {});
+              }
+            },
+          )
         ],
         child: SingleChildScrollView(
           child: Column(

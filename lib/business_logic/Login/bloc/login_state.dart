@@ -35,3 +35,10 @@ class FcmTokenLoading extends LoginState {}
 class FcmTokenError extends LoginState {}
 
 class FcmTokenLoaded extends LoginState {}
+
+//Logout
+class LogoutLoading extends LoginState {}
+
+class LogoutError extends LoginState {}
+
+class LogoutLoaded extends LoginState {}

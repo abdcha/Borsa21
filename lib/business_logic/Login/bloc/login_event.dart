@@ -34,6 +34,8 @@ class LoginTraderSubmite extends LoginEvent {
 
 class MeInformationEvent extends LoginEvent {}
 
+class LogoutEvent extends LoginEvent {}
+
 class FireBaseTokenEvent extends LoginEvent {
   final String? fcmToken;
   FireBaseTokenEvent({
