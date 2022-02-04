@@ -36,7 +36,6 @@ class AuctionPage extends State<Auction> {
     userPhone = prefs.get('userphone').toString();
     userLocation = "Empty";
     userPermissions = prefs.getStringList('permissions')!.toList();
-    var y = userPermissions.contains('Update_Auction_Price_Permission');
     companyuser = int.parse(prefs.get('companyid').toString());
     userType = prefs.get('roles').toString();
     setState(() {});
@@ -52,7 +51,7 @@ class AuctionPage extends State<Auction> {
     endpoint = DateTime.now().toString();
     bloc.add(GetAuctionEvent());
     auctionsfile.clear();
-    sharedValue();
+    // sharedValue();
     super.initState();
   }
 
@@ -274,6 +273,7 @@ class AuctionPage extends State<Auction> {
               backgroundColor: Color(navbar.hashCode),
             )
           : new AppBar(
+              automaticallyImplyLeading: false,
               title: Container(
                 height: 50,
                 child: Center(

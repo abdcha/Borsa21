@@ -6,7 +6,12 @@ import 'package:central_borssa/business_logic/Advertisement/bloc/advertisement_b
 import 'package:central_borssa/business_logic/Borssa/bloc/borssa_bloc.dart';
 import 'package:central_borssa/business_logic/Company/bloc/company_bloc.dart';
 import 'package:central_borssa/business_logic/Company/bloc/company_state.dart';
+import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
+import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
+import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/data/model/Advertisement.dart';
+import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
+import 'package:central_borssa/presentation/Main/SkipePage.dart';
 import 'package:central_borssa/presentation/Post/EditORDelete.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +46,7 @@ class AllPostPage extends State<AllPost> {
   late PostBloc postbloc;
   late BorssaBloc borssaBloc;
   late CompanyBloc companybloc;
+  late LoginBloc loginbloc;
   late AdvertisementBloc advertisementbloc;
   late List<Posts> post = [];
   late List<list> cities = [];
@@ -261,6 +267,7 @@ class AllPostPage extends State<AllPost> {
     postbloc = BlocProvider.of<PostBloc>(context);
     borssaBloc = BlocProvider.of<BorssaBloc>(context);
     companybloc = BlocProvider.of<CompanyBloc>(context);
+    loginbloc = BlocProvider.of<LoginBloc>(context);
     advertisementbloc = BlocProvider.of<AdvertisementBloc>(context);
     advertisementbloc.add(GetAdvertisementEvent());
 
@@ -764,8 +771,18 @@ class AllPostPage extends State<AllPost> {
 
   logout() async {
     // print('from');
+    loginbloc.add(LogoutEvent());
+  }
+
+  logoutmethod() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute<void>(builder: (BuildContext context) => SkipePage()),
+      ModalRoute.withName('/'),
+    );
   }
 
   Widget newDrawer() {
@@ -806,12 +823,6 @@ class AllPostPage extends State<AllPost> {
                       leading: new Icon(Icons.logout_sharp),
                       onTap: () {
                         logout();
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute<void>(
-                              builder: (BuildContext context) => Loginpage()),
-                          ModalRoute.withName('/'),
-                        );
                       },
                     ),
                   ],
@@ -1080,6 +1091,28 @@ class AllPostPage extends State<AllPost> {
                       ),
                     ),
                   );
+                }
+              },
+            ),
+            BlocListener<LoginBloc, LoginState>(
+              listener: (context, state) {
+                if (state is LogoutLoaded) {
+                  logoutmethod();
+                }
+                if (state is LogoutError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('حدث خطأ في الطلب'),
+                      action: SnackBarAction(
+                        label: 'تنبيه',
+                        onPressed: () {},
+                      ),
+                    ),
+                  );
+                } else if (state is LogoutLoading) {
+                  setState(() {
+                    // isLogedin = true;
+                  });
                 }
               },
             ),

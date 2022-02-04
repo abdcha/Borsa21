@@ -69,14 +69,7 @@ class GlobalauctionBloc extends Bloc<GlobalauctionEvent, GlobalauctionState> {
               .toStringAsExponential(3)
               .toString();
       //5
-      temprate.gBP.rateForAmount =
-          (event.prodcut * (double.parse(temprate.gBP.rateForAmount)))
-              .toStringAsExponential(3)
-              .toString();
-      temprate.iRR.rateForAmount =
-          (event.prodcut * (double.parse(temprate.iRR.rateForAmount)))
-              .toStringAsExponential(3)
-              .toString();
+
       //6
       temprate.jOD.rateForAmount =
           (event.prodcut * (double.parse(temprate.jOD.rateForAmount)))
@@ -102,7 +95,7 @@ class GlobalauctionBloc extends Bloc<GlobalauctionEvent, GlobalauctionState> {
               .toString();
       temprate.qAR.rateForAmount =
           (event.prodcut * (double.parse(temprate.qAR.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       //9
       temprate.sAR.rateForAmount =
@@ -114,14 +107,7 @@ class GlobalauctionBloc extends Bloc<GlobalauctionEvent, GlobalauctionState> {
               .toStringAsExponential(3)
               .toString();
       //10
-      temprate.sYP.rateForAmount =
-          (event.prodcut * (double.parse(temprate.sYP.rateForAmount)))
-              .toStringAsExponential(3)
-              .toString();
-      temprate.tRY.rateForAmount =
-          (event.prodcut * (double.parse(temprate.tRY.rateForAmount)))
-              .toStringAsExponential(3)
-              .toString();
+
       final allCititesResponse =
           await globalAuctionRepository.getGlobalAuction();
       rates = rates;

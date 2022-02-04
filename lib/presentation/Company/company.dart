@@ -429,6 +429,7 @@ class CompanyPage extends State<AnyCompanyProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
+        automaticallyImplyLeading: false,
         title: Container(
           height: 50,
           margin: EdgeInsets.only(right: 60),

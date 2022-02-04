@@ -605,6 +605,7 @@ class CompanyProfilePage extends State<MainChat> {
 
       // drawer: newDrawer(),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Container(
           height: 50,
           child: Center(

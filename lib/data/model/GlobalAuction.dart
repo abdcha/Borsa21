@@ -9,7 +9,7 @@ class GlobalAuction {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-      data['data'] = this.data.toJson();
+    data['data'] = this.data.toJson();
     return data;
   }
 }
@@ -64,8 +64,6 @@ class Rates {
   late PLN eGP;
   late PLN bHD;
   late PLN kWD;
-  late PLN sYP;
-  late PLN iRR;
 
   Rates.fromJson(Map<String, dynamic> json) {
     cNY = (json['CNY'] != null ? new PLN.fromJson(json['CNY']) : null)!;
@@ -83,9 +81,7 @@ class Rates {
     jOD = (json['JOD'] != null ? new PLN.fromJson(json['JOD']) : null)!;
     kWD = (json['KWD'] != null ? new PLN.fromJson(json['KWD']) : null)!;
     tRY = (json['TRY'] != null ? new PLN.fromJson(json['TRY']) : null)!;
-    iRR = (json['IRR'] != null ? new PLN.fromJson(json['IRR']) : null)!;
     aED = (json['AED'] != null ? new PLN.fromJson(json['AED']) : null)!;
-    sYP = (json['SYP'] != null ? new PLN.fromJson(json['SYP']) : null)!;
     qAR = (json['QAR'] != null ? new PLN.fromJson(json['QAR']) : null)!;
     sAR = (json['SAR'] != null ? new PLN.fromJson(json['SAR']) : null)!;
   }
@@ -150,16 +146,8 @@ class Rates {
       data['TRY'] = this.tRY.toJson();
     }
 
-    if (this.iRR != null) {
-      data['IRR'] = this.iRR.toJson();
-    }
-
     if (this.aED != null) {
       data['AED'] = this.aED.toJson();
-    }
-
-    if (this.sYP != null) {
-      data['SYP'] = this.sYP.toJson();
     }
 
     if (this.qAR != null) {

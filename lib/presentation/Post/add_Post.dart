@@ -179,6 +179,7 @@ class AddPostPage extends State<AddPost> {
                           maxLines: null,
                           expands: true,
                           textAlign: TextAlign.right,
+                          autofocus: true,
                           validator: (String? value) {
                             if (value!.isEmpty && mainFile == null) {
                               return 'الرجاء إدخال المنشور الجديد';

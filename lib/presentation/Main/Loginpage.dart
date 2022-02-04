@@ -220,21 +220,22 @@ class _MyHomePageState extends State<Loginpage> {
                                           },
                                           child: Text("تسجيل الدخول"),
                                         ),
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      LoginTradepage(),
-                                                ),
-                                              );
-                                            },
-                                            child: Text(
-                                              'إنشاء حساب',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ))
+                                        // TextButton(
+                                        //     onPressed: () {
+                                        //       Navigator.push(
+                                        //         context,
+                                        //         MaterialPageRoute(
+                                        //           builder: (context) =>
+                                        //               LoginTradepage(),
+                                        //         ),
+                                        //       );
+                                        //     },
+                                        //     child: Text(
+                                        //       'إنشاء حساب',
+                                        //       style: TextStyle(
+                                        //           color: Colors.white),
+                                        //     )
+                                        //     )
                                       ],
                                     ),
                                   ),

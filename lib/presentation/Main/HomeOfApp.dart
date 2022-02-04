@@ -1,14 +1,10 @@
 import 'package:badges/badges.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
-import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
-import 'package:central_borssa/presentation/Admin/Profile.dart';
 import 'package:central_borssa/presentation/Auction/Auction.dart';
+import 'package:central_borssa/presentation/Auction/Global.dart';
 import 'package:central_borssa/presentation/Auction/GlobalAuction.dart';
-import 'package:central_borssa/presentation/Main/Loginpage.dart';
-import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:central_borssa/presentation/Trader/Trader.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,40 +31,54 @@ class home_page extends State<HomeOfApp>
   late String userType = "";
   int companyuser = 0;
   late int countofAuctions = 0;
-
+  late bool isTrader = true;
   late String userActive = "";
   int messageUnread = 0;
   int notificationcount = 0;
   late String temp2 = "ss";
   bool allow = true;
+  late String? istrader = "";
   sharedValue() async {
-    print('2');
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = await FirebaseMessaging.instance.getToken();
-
-    _loginBloc.add(FireBaseTokenEvent(fcmToken: token));
-
-    userName = prefs.get('username').toString();
-    userPhone = prefs.get('userphone').toString();
-    print(prefs.get('token').toString());
-    userLocation = "Empty";
-    if (prefs.get('end_subscription') != null) {
-      userActive = prefs.get('end_subscription').toString();
-    }
-    userPermissions = prefs.getStringList('permissions')!.toList();
-    var y = userPermissions.contains('Update_Auction_Price_Permission');
-    print('user permission$y');
-    print(userLocation);
-    companyuser = int.parse(prefs.get('companyid').toString());
-    print(companyuser);
-    userType = prefs.get('roles').toString();
-    if (prefs.getInt('countofauction') != null) {
-      countofAuctions = 0;
-      countofAuctions = prefs.getInt('countofauction')!;
-      print('--share---');
-      print(countofAuctions);
-    } else {
-      countofAuctions = 0;
+    istrader = prefs.get('token').toString();
+    print(isTrader);
+    if (istrader == null) {
+      print('side trader');
+      setState(() {
+        isTrader = true;
+      });
+    } else if (istrader != null && istrader != "") {
+      print('side users');
+      print(istrader);
+      setState(() {
+        isTrader = false;
+      });
+      String? token = await FirebaseMessaging.instance.getToken();
+      _loginBloc.add(FireBaseTokenEvent(fcmToken: token));
+      _loginBloc = BlocProvider.of<LoginBloc>(context);
+      fireBase();
+      userName = prefs.get('username').toString();
+      userPhone = prefs.get('userphone').toString();
+      print(prefs.get('token').toString());
+      userLocation = "Empty";
+      if (prefs.get('end_subscription') != null) {
+        userActive = prefs.get('end_subscription').toString();
+      }
+      userPermissions = prefs.getStringList('permissions')!.toList();
+      var y = userPermissions.contains('Update_Auction_Price_Permission');
+      print('user permission$y');
+      print(userLocation);
+      companyuser = int.parse(prefs.get('companyid').toString());
+      print(companyuser);
+      userType = prefs.get('roles').toString();
+      if (prefs.getInt('countofauction') != null) {
+        countofAuctions = 0;
+        countofAuctions = prefs.getInt('countofauction')!;
+        print('--share---');
+        print(countofAuctions);
+      } else {
+        countofAuctions = 0;
+      }
     }
   }
 
@@ -90,27 +100,7 @@ class home_page extends State<HomeOfApp>
     FirebaseMessaging.onMessage.handleError((error) {
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) {
-      if (event.data['type'] == "new_auction") {
-        if (countofAuctions == 0) {
-          print('------');
-          print(event.notification?.title.toString());
-          print(event.notification?.body.toString());
-          print('------');
-          setState(() {
-            countofAuctions++;
-          });
-          prefs.setInt('countofauction', countofAuctions);
-        } else if (countofAuctions != 0) {
-          print('------');
-          print(event.notification?.title.toString());
-          print(event.notification?.body.toString());
-          print('------');
-          setState(() {
-            countofAuctions++;
-          });
-          prefs.setInt('countofauction', countofAuctions);
-        }
-      } else if (userPermissions.contains('Trader_Permission')) {
+      if (userPermissions.contains('Trader_Permission')) {
         if (event.data['type'] == "trader_currency_price_change") {
           String? temp = event.notification!.body;
           temp2 = temp!;
@@ -184,6 +174,44 @@ class home_page extends State<HomeOfApp>
           setState(() {
             selectedPage = 1;
           });
+        }
+        if (event.data['type'] == "new_auction") {
+          prefs.setInt('countofauction', countofAuctions);
+          String? temp = event.notification!.body;
+          temp2 = temp!;
+          print('------');
+          print(event.notification?.title.toString());
+          print(event.notification?.body.toString());
+          print('------');
+          if (countofAuctions == 0) {
+            setState(() {
+              countofAuctions++;
+            });
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(temp2),
+                action: SnackBarAction(
+                  label: 'تنبيه',
+                  onPressed: () {},
+                ),
+              ),
+            );
+          } else if (countofAuctions != 0) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(temp2),
+                action: SnackBarAction(
+                  label: 'تنبيه',
+                  onPressed: () {},
+                ),
+              ),
+            );
+            setState(() {
+              countofAuctions++;
+            });
+            prefs.setInt('countofauction', countofAuctions);
+          }
         }
       } else if (userPermissions.contains('Chat_Permission') &&
           userActive != "") {
@@ -278,13 +306,42 @@ class home_page extends State<HomeOfApp>
             ),
           );
         } else if (event.data['type'] == "new_auction") {
+          prefs.setInt('countofauction', countofAuctions);
           String? temp = event.notification!.body;
           temp2 = temp!;
           print('------');
           print(event.notification?.title.toString());
           print(event.notification?.body.toString());
           print('------');
+          if (countofAuctions == 0) {
+            countofAuctions++;
 
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(temp2),
+                action: SnackBarAction(
+                  label: 'تنبيه',
+                  onPressed: () {},
+                ),
+              ),
+            );
+          } else if (countofAuctions != 0) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(temp2),
+                action: SnackBarAction(
+                  label: 'تنبيه',
+                  onPressed: () {},
+                ),
+              ),
+            );
+            countofAuctions++;
+            prefs.setInt('countofauction', countofAuctions);
+          }
+        }
+        if (event.data['type'] == "broadcast") {
+          String? temp = event.notification!.body;
+          temp2 = temp!;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(temp2),
@@ -303,9 +360,9 @@ class home_page extends State<HomeOfApp>
   bool get wantKeepAlive => true;
   //test
 
-  callBody(int value) {
-    if (userPermissions.contains('Chat_Permission')) {
-      switch (value) {
+  callBody(int index) {
+    if (istrader != "null" && istrader != "") {
+      switch (index) {
         case 0:
           return AllPost();
         case 1:
@@ -318,28 +375,18 @@ class home_page extends State<HomeOfApp>
           break;
         default:
       }
-    } else if (userPermissions.contains('Trader_Permission')) {
-      switch (value) {
+    } else if (userPermissions.isEmpty) {
+      switch (index) {
         case 0:
           return Trader();
         case 1:
           return CentralBorssa();
         case 2:
-          return GlobalAuction();
+          return Global();
         case 3:
           countofAuctions != 0 ? auctionRead() : nothing();
           return Auction();
 
-          // ignore: dead_code
-          break;
-        default:
-      }
-    } else if (userPermissions.contains('Update_Auction_Price_Permission')) {
-      switch (value) {
-        case 0:
-          return CentralBorssa();
-        case 1:
-          return Profile();
           // ignore: dead_code
           break;
         default:
@@ -351,9 +398,7 @@ class home_page extends State<HomeOfApp>
 
   @override
   void initState() {
-    _loginBloc = BlocProvider.of<LoginBloc>(context);
-    fireBase();
-    navbarbottom = sharedValue();
+    sharedValue();
     super.initState();
   }
 
@@ -363,8 +408,8 @@ class home_page extends State<HomeOfApp>
   }
 
   choosePage(int index) async {
-    await myfire();
-    if (selectedPage != index && allow) {
+    // await myfire();
+    if (selectedPage != index) {
       print('1');
       setState(() {
         selectedPage = index;
@@ -383,177 +428,99 @@ class home_page extends State<HomeOfApp>
 
     final GlobalKey<ScaffoldState> _scaffoldKey =
         new GlobalKey<ScaffoldState>();
-    return FutureBuilder(
-        future: navbarbottom,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return Welcome();
-            case ConnectionState.none:
-              return Welcome();
-            case ConnectionState.active:
-              return Welcome();
-            case ConnectionState.done:
-              return Scaffold(
-                  key: _scaffoldKey,
-                  body: BlocListener<LoginBloc, LoginState>(
-                    listener: (context, state) {
-                      if (state is FcmTokenLoading) {
-                        print(state);
-                      } else if (state is FcmTokenLoaded) {
-                        print(state);
-                      } else if (state is FcmTokenError) {
-                        print(state);
-                      }
-                      if (state is MeInformationLoading) {
-                        print(state);
-                      } else if (state is MeInformationLoaded) {
-                        print(state);
-                      } else if (state is MeInformationError) {
-                        setState(() {
-                          allow = false;
-                        });
-                        print(state);
-                        logout();
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute<void>(
-                              builder: (BuildContext context) => Loginpage()),
-                          ModalRoute.withName('/'),
-                        );
-                      }
-                    },
-                    child: callBody(selectedPage),
+    return isTrader
+        ? Scaffold(
+            key: _scaffoldKey,
+            body: callBody(selectedPage),
+            bottomNavigationBar: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Color(navbar.hashCode),
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.white.withOpacity(.60),
+              selectedFontSize: 14,
+              unselectedFontSize: 14,
+              unselectedLabelStyle: TextStyle(
+                fontFamily: 'Cairo',
+              ),
+              currentIndex: selectedPage,
+              onTap: choosePage,
+              items: [
+                BottomNavigationBarItem(
+                  label: 'الرئيسية',
+                  icon: Icon(Icons.home),
+                ),
+                BottomNavigationBarItem(
+                  label: 'البورصة',
+                  icon: Icon(Icons.attach_money),
+                ),
+                BottomNavigationBarItem(
+                  label: 'البورصة العالمية',
+                  icon: Icon(Icons.public_outlined),
+                ),
+                BottomNavigationBarItem(
+                  label: 'المزاد المركزي',
+                  icon: countofAuctions == 0
+                      ? Icon(Icons.account_balance_sharp)
+                      : Badge(
+                          badgeContent: Text(countofAuctions.toString()),
+                          child: Icon(Icons.account_balance_sharp),
+                        ),
+                ),
+              ],
+              selectedLabelStyle: TextStyle(
+                fontFamily: 'Cairo',
+              ),
+            ))
+        : Scaffold(
+            key: _scaffoldKey,
+            body: callBody(selectedPage),
+            bottomNavigationBar: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Color(navbar.hashCode),
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.white.withOpacity(.60),
+              selectedFontSize: 14,
+              unselectedFontSize: 14,
+              unselectedLabelStyle: TextStyle(
+                fontFamily: 'Cairo',
+              ),
+              currentIndex: selectedPage,
+              onTap: choosePage,
+              items: [
+                BottomNavigationBarItem(
+                  label: 'الرئيسية',
+                  icon: Icon(Icons.home),
+                ),
+                BottomNavigationBarItem(
+                  label: 'البورصة',
+                  icon: Icon(Icons.attach_money),
+                ),
+                BottomNavigationBarItem(
+                  label: 'المحادثة',
+                  icon: Icon(Icons.chat_outlined),
+                  // Badge(
+                  //   badgeContent: messageUnread == 0
+                  //       ? Container(
+                  //           color: Colors.transparent,
+                  //         )
+                  //       : Text(messageUnread.toString()),
+                  //   child:
+                  //   Icon(Icons.chat_outlined),
+                  // ),
+                ),
+                BottomNavigationBarItem(
+                  label: 'الشخصية',
+                  icon: Icon(Icons.person_rounded),
+                ),
+                if (userPermissions.contains('Chat_Permission'))
+                  BottomNavigationBarItem(
+                    label: 'الشخصية',
+                    icon: Icon(Icons.person_rounded),
                   ),
-                  bottomNavigationBar: BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    backgroundColor: Color(navbar.hashCode),
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor: Colors.white.withOpacity(.60),
-                    selectedFontSize: 14,
-                    unselectedFontSize: 14,
-                    unselectedLabelStyle: TextStyle(
-                      fontFamily: 'Cairo',
-                    ),
-                    currentIndex: selectedPage,
-                    onTap: choosePage,
-                    items: [
-                      if (userPermissions.contains('Chat_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'الرئيسية',
-                          icon: Icon(Icons.home),
-                        ),
-                      if (userPermissions.contains('Trader_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'الرئيسية',
-                          icon: Icon(Icons.person_rounded),
-                        ),
-                      if (userPermissions.contains('Chat_Permission') ||
-                          userPermissions.contains('Trader_Permission') ||
-                          userPermissions
-                              .contains('Update_Auction_Price_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'البورصة',
-                          icon: Icon(Icons.attach_money),
-                        ),
-                      if (userPermissions.contains('Trader_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'البورصة العالمية',
-                          icon: Icon(Icons.public_outlined),
-                        ),
-                      if (userPermissions.contains('Trader_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'المزاد المركزي',
-                          icon: countofAuctions == 0
-                              ? Icon(Icons.account_balance_sharp)
-                              : Badge(
-                                  badgeContent:
-                                      Text(countofAuctions.toString()),
-                                  child: Icon(Icons.account_balance_sharp),
-                                ),
-                        ),
-                      if (userPermissions.contains('Chat_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'المحادثة',
-                          icon: Icon(Icons.chat_outlined),
-                          // Badge(
-                          //   badgeContent: messageUnread == 0
-                          //       ? Container(
-                          //           color: Colors.transparent,
-                          //         )
-                          //       : Text(messageUnread.toString()),
-                          //   child:
-                          //   Icon(Icons.chat_outlined),
-                          // ),
-                        ),
-                      if (userPermissions
-                          .contains('Update_Auction_Price_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'الشخصية',
-                          icon: Icon(Icons.person_rounded),
-                        ),
-                      if (userPermissions.contains('Chat_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'الشخصية',
-                          icon: Icon(Icons.person_rounded),
-                        ),
-                    ],
-                    selectedLabelStyle: TextStyle(
-                      fontFamily: 'Cairo',
-                    ),
-                  ));
-
-              // ignore: dead_code
-              break;
-            default:
-              return Scaffold(
-                  key: _scaffoldKey,
-                  body: callBody(selectedPage),
-                  bottomNavigationBar: BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    backgroundColor: Color(navbar.hashCode),
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor: Colors.white.withOpacity(.60),
-                    selectedFontSize: 14,
-                    unselectedFontSize: 14,
-                    currentIndex: selectedPage,
-                    onTap: choosePage,
-                    items: [
-                      if (userPermissions.contains('Chat_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'الأساسية',
-                          icon: Icon(Icons.home),
-                        ),
-                      if (userPermissions.contains('Chat_Permission') ||
-                          userPermissions.contains('Trader_Permission') ||
-                          userPermissions
-                              .contains('Update_Auction_Price_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'مزاد العملات',
-                          icon: Icon(Icons.attach_money),
-                        ),
-                      if (userPermissions.contains('Chat_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'المحادثة',
-                          icon: Icon(Icons.chat_outlined),
-                        ),
-                      if (userPermissions.contains('Chat_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'الشخصية',
-                          icon: Icon(Icons.person_rounded),
-                        ),
-                      if (userPermissions
-                          .contains('Update_Auction_Price_Permission'))
-                        BottomNavigationBarItem(
-                          label: 'الشخصية',
-                          icon: Icon(Icons.person_rounded),
-                        ),
-                    ],
-                    selectedLabelStyle: TextStyle(
-                      fontFamily: 'Cairo',
-                    ),
-                  ));
-          }
-        });
+              ],
+              selectedLabelStyle: TextStyle(
+                fontFamily: 'Cairo',
+              ),
+            ));
   }
 }

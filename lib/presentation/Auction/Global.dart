@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class GlobalAuction extends StatefulWidget {
-  GlobalAuctionPage createState() => GlobalAuctionPage();
+class Global extends StatefulWidget {
+  GlobalPage createState() => GlobalPage();
 }
 
-class GlobalAuctionPage extends State<GlobalAuction> {
+class GlobalPage extends State<Global> {
   late GlobalauctionBloc bloc2;
   Rates? rates;
   bool isCalculate = false;
@@ -39,7 +39,7 @@ class GlobalAuctionPage extends State<GlobalAuction> {
     print('user permission$y');
     companyuser = int.parse(prefs.get('companyid').toString());
     userType = prefs.get('roles').toString();
-    setState(() {});
+    await Future.delayed(Duration(milliseconds: 50));
   }
 
   @override
@@ -47,6 +47,7 @@ class GlobalAuctionPage extends State<GlobalAuction> {
     bloc2 = BlocProvider.of<GlobalauctionBloc>(context);
     bloc2.add(GetGlobalauctionEvent());
     sharedValue();
+
     super.initState();
   }
 

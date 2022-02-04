@@ -43,37 +43,53 @@ class CentralBorssaPage extends State<CentralBorssa> {
   late String userType = "";
   int companyuser = 0;
   late String? userActive = "";
+  late String? istrader = "";
 
   sharedValue() async {
-    print('come back');
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userName = prefs.get('username').toString();
-    userPhone = prefs.get('userphone').toString();
-    userLocation = "Empty";
-    if (prefs.getStringList('permissions') != null) {
-      userPermissions = prefs.getStringList('permissions')!.toList();
-    }
+    print('central borsaa ' + prefs.get('token').toString());
+    istrader = prefs.get('token').toString();
+    if (istrader == "null" || istrader == "") {
+      print('ss');
+      setState(() {
+        isloading = false;
+      });
+    } else if (istrader != null) {
+      bloc = BlocProvider.of<BorssaBloc>(context);
+      loginbloc = BlocProvider.of<LoginBloc>(context);
+      var now = DateTime.now();
+      var newFormat = DateFormat("yyyy-MM-dd");
+      String updatedDt = newFormat.format(now);
+      startpoint = '$updatedDt 1:00:00.00';
+      endpoint = DateTime.now().toString();
+      userName = prefs.get('username').toString();
+      userPhone = prefs.get('userphone').toString();
+      userLocation = "Empty";
+      if (prefs.getStringList('permissions') != null) {
+        userPermissions = prefs.getStringList('permissions')!.toList();
+      }
 
-    if (prefs.get('end_subscription') != null) {
-      userActive = prefs.get('end_subscription').toString();
-      isloading = false;
-      print('---------');
-      print(userActive);
-      print('---------');
-    } else {
-      userActive = null;
-    }
+      if (prefs.get('end_subscription') != null) {
+        userActive = prefs.get('end_subscription').toString();
+        isloading = false;
+        print('---------');
+        print(userActive);
+        print('---------');
+      } else {
+        userActive = null;
+      }
 
-    if (prefs.getInt('countofauction') != null) {
-      countofAuctions = 0;
-      countofAuctions = prefs.getInt('countofauction')!;
-      print('--share---');
-      print(countofAuctions);
-    } else {
-      countofAuctions = 0;
+      if (prefs.getInt('countofauction') != null) {
+        countofAuctions = 0;
+        countofAuctions = prefs.getInt('countofauction')!;
+        print('--share---');
+        print(countofAuctions);
+      } else {
+        countofAuctions = 0;
+      }
+      bloc.add(AllCity());
+      bloc.add(GetAllTransfersEvent());
     }
-    bloc.add(AllCity());
-    bloc.add(GetAllTransfersEvent());
   }
 
   auctionRead() async {
@@ -125,13 +141,6 @@ class CentralBorssaPage extends State<CentralBorssa> {
   @override
   void initState() {
     print('from init central borsa');
-    bloc = BlocProvider.of<BorssaBloc>(context);
-    loginbloc = BlocProvider.of<LoginBloc>(context);
-    var now = DateTime.now();
-    var newFormat = DateFormat("yyyy-MM-dd");
-    String updatedDt = newFormat.format(now);
-    startpoint = '$updatedDt 1:00:00.00';
-    endpoint = DateTime.now().toString();
     sharedValue();
     super.initState();
   }
@@ -891,7 +900,9 @@ class CentralBorssaPage extends State<CentralBorssa> {
     return Scaffold(
       backgroundColor: Color(0xff6e7d91),
       // drawer: newDrawer(),
+
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Container(
           height: 50,
           // margin: EdgeInsets.only(right: 60),
@@ -943,12 +954,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
                         child: Center(child: CircularProgressIndicator()),
                       ),
                     )
-                  : (userPermissions.contains('Trader_Permission') &&
-                              ((userActive == DateTime.now().toString()) ||
-                                  (userActive == null))) ||
-                          (userPermissions.contains('Chat_Permission') &&
-                              ((userActive == DateTime.now().toString()) ||
-                                  (userActive == null)))
+                  : istrader == "null"
                       ? Container(
                           height: MediaQuery.of(context).size.height - 168,
                           child: Directionality(

@@ -537,6 +537,7 @@ class CompanyProfilePage extends State<CompanyProfile> {
     return Scaffold(
         // drawer: newDrawer(),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Container(
             height: 50,
             child: Center(

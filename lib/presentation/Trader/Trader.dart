@@ -8,6 +8,8 @@ import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Advertisement.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
+import 'package:central_borssa/presentation/Main/SkipePage.dart';
+import 'package:central_borssa/presentation/Share/sliderImage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flag/flag_enum.dart';
 import 'package:flag/flag_widget.dart';
@@ -130,10 +132,10 @@ class TraderPage extends State<Trader> {
 
   @override
   void initState() {
-    sharedValue();
+    // sharedValue();
     advertisementbloc = BlocProvider.of<AdvertisementBloc>(context);
     advertisementbloc.add(GetAdvertisementEvent());
-    firebase();
+    // firebase();
     bloc = BlocProvider.of<BorssaBloc>(context);
     bloc.add(TraderCurrencyEvent());
 
@@ -144,7 +146,6 @@ class TraderPage extends State<Trader> {
 
   final CarouselController _controller = CarouselController();
   int _current = 0;
-
   Widget sliderImage() {
     return Container(
       margin: const EdgeInsets.only(bottom: 10, top: 0),
@@ -157,9 +158,7 @@ class TraderPage extends State<Trader> {
               options: CarouselOptions(
                   autoPlay: true,
                   onPageChanged: (index, reason) {
-                    setState(() {
-                      _current = index;
-                    });
+                    _current = index;
                   }),
               items: advertisements
                   .map(
@@ -238,21 +237,12 @@ class TraderPage extends State<Trader> {
           Container(
             width: double.infinity,
             child: Card(
-              // color: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 side: new BorderSide(color: Colors.white),
               ),
               margin: EdgeInsets.only(left: 12, right: 12, bottom: 8, top: 0),
-              // elevation: 4,
-              // shadowColor: Colors.black,
-              // color: Color(0xff7d8a99),
-              // shape: RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.circular(15.0),
-              //   side: new BorderSide(color: Colors.white),
-              // ),
               child: Container(
-                // width: double.infinity,
                 child: Column(
                   children: [
                     DataTable(
@@ -263,7 +253,7 @@ class TraderPage extends State<Trader> {
                         headingRowHeight: 40,
                         horizontalMargin: 5.5,
                         dividerThickness: 2,
-                        dataRowHeight: 110,
+                        dataRowHeight: 120,
                         columnSpacing: 3,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
@@ -489,8 +479,8 @@ class TraderPage extends State<Trader> {
 
   logoutauthentication() {
     logoutapi.add(LogoutEvent());
-
   }
+
   logout() async {
     print('from');
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -518,27 +508,14 @@ class TraderPage extends State<Trader> {
                 child: new Column(
                   children: <Widget>[
                     ListTile(
-                      title: Text(userName),
-                      leading: new Icon(Icons.account_circle),
-                    ),
-                    ListTile(
-                      title: Text(userPhone),
-                      leading: new Icon(Icons.phone),
-                    ),
-                    ListTile(
-                      title: Text(userActive == "" ? "غيرفعال" : userActive),
-                      leading: new Icon(Icons.wifi_tethering_outlined),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      title: Text('تسجيل الخروج'),
+                      title: Text('تسجيل الدخول'),
                       leading: new Icon(Icons.logout_sharp),
                       onTap: () {
                         logout();
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute<void>(
-                              builder: (BuildContext context) => Loginpage()),
+                              builder: (BuildContext context) => SkipePage()),
                           ModalRoute.withName('/'),
                         );
                       },

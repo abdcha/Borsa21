@@ -17,6 +17,7 @@ import 'package:central_borssa/data/repositroy/PostRepository.dart';
 import 'package:central_borssa/data/repositroy/loginRepository.dart';
 import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
+import 'package:central_borssa/presentation/Main/SkipePage.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: AnimatedSplashScreen(
             duration: 3000,
             splash: Image.asset('assest/Images/test2.png'),
@@ -67,6 +69,9 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       if (prefs.getString('token') != null) {
         token = prefs.getString('token').toString();
+      } else if (prefs.getString('token') == null) {
+        print('null from main');
+        token = 'trader';
       } else {
         token = 'error';
       }
@@ -126,28 +131,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
                     print('HomeOfApp');
-
                     return HomeOfApp();
                   case ConnectionState.waiting:
                     print('waiting');
                     return Welcome();
                   case ConnectionState.active:
                     print('active');
-
-                    return Loginpage();
+                    return SkipePage();
                   case ConnectionState.done:
-                    print('done');
-                    if (token == "" || token == 'error') {
+                    // print('done');
+                    if (token == 'error') {
                       print('hi $token');
-                      return Loginpage();
+                      return SkipePage();
                     } else {
+                      print('main skipe');
                       return HomeOfApp();
                     }
                     // ignore: dead_code
                     break;
                   default:
                     print('default');
-
                     return Container(
                         child: Center(
                       child: CircularProgressIndicator(),

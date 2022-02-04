@@ -66,10 +66,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         print(r);
         yield LoginTraderLoaded();
       });
-    }else if (event is LogoutEvent) {
+    } else if (event is LogoutEvent) {
       print('Login bloc');
-      var data = await repository.logout(
-          );
+      var data = await repository.logout();
       yield* data.fold((l) async* {
         print(l);
         yield LogoutError();

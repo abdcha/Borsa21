@@ -198,7 +198,7 @@ class LoginRepository {
       if (response.data['status'] == 'success') {
         return Right('success');
       } else
-        return Left('error');
+        return Left('error from response');
     } else {
       return Left('error');
     }
