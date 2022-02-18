@@ -24,6 +24,10 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>borsa.central.borsaCentral</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to the camera.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -33,9 +37,9 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app does not require access to the microphone.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>App requires access to your photos to allow you upload your any choose photo from your gallary to your account in app</string>
+	<string>The app requires access to your photos to allow you to upload any photo you choose from your gallery to post with users of the app</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires access to the photo library.</string>
+	<string>The app requires access to your photos to allow you to upload any photo you choose from your gallery to post with users of the app</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
