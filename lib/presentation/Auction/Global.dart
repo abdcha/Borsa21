@@ -29,6 +29,7 @@ class GlobalPage extends State<Global> {
   TextEditingController productvalue = TextEditingController(text: '1');
   int companyuser = 0;
   late int userActive = 0;
+
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.get('username').toString();

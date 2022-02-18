@@ -52,13 +52,13 @@ class BorssaBloc extends Bloc<BorssaEvent, BorssaState> {
         yield GetAllTransfersLoaded(cities: r);
       });
     } else if (event is TraderCurrencyEvent) {
-      yield GetTraderCurrencyLoading();
       final allCititesResponse = await cityrepository.traderCurrency();
       yield* allCititesResponse.fold((l) async* {
         print(l);
         print('currency error');
         yield GetTraderCurrencyError();
       }, (r) async* {
+        yield GetTraderCurrencyLoading();
         print(r);
         yield GetTraderCurrencyLoaded(cities: r);
         print('get all');

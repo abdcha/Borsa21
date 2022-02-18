@@ -487,6 +487,7 @@ class TraderPage extends State<Trader> {
     prefs.clear();
   }
 
+// userActive
   Widget newDrawer() {
     return new Drawer(
       child: new ListView(
@@ -507,6 +508,26 @@ class TraderPage extends State<Trader> {
               child: Center(
                 child: new Column(
                   children: <Widget>[
+                    userActive != ""
+                        ? ListTile(
+                            title: Text(userActive),
+                            leading: new Icon(Icons.wifi_tethering_outlined),
+                            onTap: () {},
+                          )
+                        : Container(),
+                    ListTile(
+                      title: Text('تسجيل الخروج'),
+                      leading: new Icon(Icons.logout_sharp),
+                      onTap: () {
+                        logout();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute<void>(
+                              builder: (BuildContext context) => SkipePage()),
+                          ModalRoute.withName('/'),
+                        );
+                      },
+                    ),
                     ListTile(
                       title: Text('تسجيل الدخول'),
                       leading: new Icon(Icons.logout_sharp),
@@ -633,8 +654,6 @@ class TraderPage extends State<Trader> {
           BlocListener<BorssaBloc, BorssaState>(
             listener: (context, state) {
               if (state is GetTraderCurrencyLoading) {
-                currencyprice.clear();
-
                 print(state);
               } else if (state is GetTraderCurrencyLoaded) {
                 print(state);

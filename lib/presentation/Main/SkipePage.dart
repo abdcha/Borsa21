@@ -1,9 +1,7 @@
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
-import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
-import 'package:central_borssa/presentation/Main/LoginTrader.dart';
 import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -107,25 +105,6 @@ class _MyHomePageState extends State<SkipePage> {
                                 ],
                               ),
                             ),
-                            Container(
-                              child: Column(
-                                children: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => HomeOfApp(),
-                                          ),
-                                        );
-                                      },
-                                      child: Text(
-                                        'تخطي',
-                                        style: TextStyle(color: Colors.white),
-                                      ))
-                                ],
-                              ),
-                            )
                           ],
                         ))
                   ],

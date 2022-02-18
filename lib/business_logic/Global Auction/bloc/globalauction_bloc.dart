@@ -35,63 +35,68 @@ class GlobalauctionBloc extends Bloc<GlobalauctionEvent, GlobalauctionState> {
       //1
       temprate.aED.rateForAmount =
           (event.prodcut * (double.parse(temprate.aED.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       temprate.aZN.rateForAmount =
           (event.prodcut * (double.parse(temprate.aZN.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       //2
       temprate.bHD.rateForAmount =
           (event.prodcut * (double.parse(temprate.bHD.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       temprate.cAD.rateForAmount =
           (event.prodcut * (double.parse(temprate.cAD.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       //3
       temprate.cNY.rateForAmount =
           (event.prodcut * (double.parse(temprate.cNY.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       temprate.dKK.rateForAmount =
           (event.prodcut * (double.parse(temprate.dKK.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       //4
       temprate.eGP.rateForAmount =
           (event.prodcut * (double.parse(temprate.eGP.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       temprate.eUR.rateForAmount =
           (event.prodcut * (double.parse(temprate.eUR.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       //5
 
       //6
       temprate.jOD.rateForAmount =
           (event.prodcut * (double.parse(temprate.jOD.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       temprate.jPY.rateForAmount =
           (event.prodcut * (double.parse(temprate.jPY.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       //7
       temprate.kWD.rateForAmount =
           (event.prodcut * (double.parse(temprate.kWD.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       temprate.lBP.rateForAmount =
           (event.prodcut * (double.parse(temprate.lBP.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       //8
       temprate.nOK.rateForAmount =
           (event.prodcut * (double.parse(temprate.nOK.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
+              .toString();
+
+      temprate.gBP.rateForAmount =
+          (event.prodcut * (double.parse(temprate.gBP.rateForAmount)))
+              .toStringAsPrecision(9)
               .toString();
       temprate.qAR.rateForAmount =
           (event.prodcut * (double.parse(temprate.qAR.rateForAmount)))
@@ -100,11 +105,11 @@ class GlobalauctionBloc extends Bloc<GlobalauctionEvent, GlobalauctionState> {
       //9
       temprate.sAR.rateForAmount =
           (event.prodcut * (double.parse(temprate.sAR.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       temprate.sEK.rateForAmount =
           (event.prodcut * (double.parse(temprate.sEK.rateForAmount)))
-              .toStringAsExponential(3)
+              .toStringAsPrecision(9)
               .toString();
       //10
 

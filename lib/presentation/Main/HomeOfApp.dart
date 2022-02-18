@@ -3,7 +3,7 @@ import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
 import 'package:central_borssa/presentation/Auction/Auction.dart';
 import 'package:central_borssa/presentation/Auction/Global.dart';
-import 'package:central_borssa/presentation/Auction/GlobalAuction.dart';
+import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:central_borssa/presentation/Trader/Trader.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -41,22 +41,15 @@ class home_page extends State<HomeOfApp>
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     istrader = prefs.get('token').toString();
-    print(isTrader);
-    if (istrader == null) {
+    print('dsa {$istrader}');
+    if (istrader == "null" || istrader == "") {
       print('side trader');
       setState(() {
         isTrader = true;
       });
-    } else if (istrader != null && istrader != "") {
-      print('side users');
-      print(istrader);
-      setState(() {
-        isTrader = false;
-      });
-      String? token = await FirebaseMessaging.instance.getToken();
-      _loginBloc.add(FireBaseTokenEvent(fcmToken: token));
-      _loginBloc = BlocProvider.of<LoginBloc>(context);
-      fireBase();
+    } else if (istrader != "null" && istrader != "") {
+      isTrader = false;
+
       userName = prefs.get('username').toString();
       userPhone = prefs.get('userphone').toString();
       print(prefs.get('token').toString());
@@ -95,8 +88,11 @@ class home_page extends State<HomeOfApp>
   nothing() {}
 
   fireBase() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? token = await FirebaseMessaging.instance.getToken();
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // _loginBloc.add(FireBaseTokenEvent(fcmToken: token));
+    // _loginBloc = BlocProvider.of<LoginBloc>(context);
     FirebaseMessaging.onMessage.handleError((error) {
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) {
@@ -361,7 +357,10 @@ class home_page extends State<HomeOfApp>
   //test
 
   callBody(int index) {
-    if (istrader != "null" && istrader != "") {
+    print(userPermissions);
+    print(userType);
+
+    if (isTrader == false && userType == "User") {
       switch (index) {
         case 0:
           return AllPost();
@@ -375,7 +374,7 @@ class home_page extends State<HomeOfApp>
           break;
         default:
       }
-    } else if (userPermissions.isEmpty) {
+    } else if (isTrader || userType == "Trader") {
       switch (index) {
         case 0:
           return Trader();
@@ -398,7 +397,9 @@ class home_page extends State<HomeOfApp>
 
   @override
   void initState() {
-    sharedValue();
+    navbarbottom = sharedValue();
+    fireBase();
+
     super.initState();
   }
 
@@ -428,99 +429,162 @@ class home_page extends State<HomeOfApp>
 
     final GlobalKey<ScaffoldState> _scaffoldKey =
         new GlobalKey<ScaffoldState>();
-    return isTrader
-        ? Scaffold(
-            key: _scaffoldKey,
-            body: callBody(selectedPage),
-            bottomNavigationBar: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Color(navbar.hashCode),
-              selectedItemColor: Colors.white,
-              unselectedItemColor: Colors.white.withOpacity(.60),
-              selectedFontSize: 14,
-              unselectedFontSize: 14,
-              unselectedLabelStyle: TextStyle(
-                fontFamily: 'Cairo',
-              ),
-              currentIndex: selectedPage,
-              onTap: choosePage,
-              items: [
-                BottomNavigationBarItem(
-                  label: 'الرئيسية',
-                  icon: Icon(Icons.home),
-                ),
-                BottomNavigationBarItem(
-                  label: 'البورصة',
-                  icon: Icon(Icons.attach_money),
-                ),
-                BottomNavigationBarItem(
-                  label: 'البورصة العالمية',
-                  icon: Icon(Icons.public_outlined),
-                ),
-                BottomNavigationBarItem(
-                  label: 'المزاد المركزي',
-                  icon: countofAuctions == 0
-                      ? Icon(Icons.account_balance_sharp)
-                      : Badge(
-                          badgeContent: Text(countofAuctions.toString()),
-                          child: Icon(Icons.account_balance_sharp),
+    return FutureBuilder(
+        future: navbarbottom,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return Welcome();
+            case ConnectionState.none:
+              return Welcome();
+            case ConnectionState.active:
+              return Welcome();
+            case ConnectionState.done:
+              return (userType == "User")
+                  ? Scaffold(
+                      key: _scaffoldKey,
+                      body: callBody(selectedPage),
+                      bottomNavigationBar: BottomNavigationBar(
+                        type: BottomNavigationBarType.fixed,
+                        backgroundColor: Color(navbar.hashCode),
+                        selectedItemColor: Colors.white,
+                        unselectedItemColor: Colors.white.withOpacity(.60),
+                        selectedFontSize: 14,
+                        unselectedFontSize: 14,
+                        unselectedLabelStyle: TextStyle(
+                          fontFamily: 'Cairo',
                         ),
-                ),
-              ],
-              selectedLabelStyle: TextStyle(
-                fontFamily: 'Cairo',
-              ),
-            ))
-        : Scaffold(
-            key: _scaffoldKey,
-            body: callBody(selectedPage),
-            bottomNavigationBar: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Color(navbar.hashCode),
-              selectedItemColor: Colors.white,
-              unselectedItemColor: Colors.white.withOpacity(.60),
-              selectedFontSize: 14,
-              unselectedFontSize: 14,
-              unselectedLabelStyle: TextStyle(
-                fontFamily: 'Cairo',
-              ),
-              currentIndex: selectedPage,
-              onTap: choosePage,
-              items: [
-                BottomNavigationBarItem(
-                  label: 'الرئيسية',
-                  icon: Icon(Icons.home),
-                ),
-                BottomNavigationBarItem(
-                  label: 'البورصة',
-                  icon: Icon(Icons.attach_money),
-                ),
-                BottomNavigationBarItem(
-                  label: 'المحادثة',
-                  icon: Icon(Icons.chat_outlined),
-                  // Badge(
-                  //   badgeContent: messageUnread == 0
-                  //       ? Container(
-                  //           color: Colors.transparent,
-                  //         )
-                  //       : Text(messageUnread.toString()),
-                  //   child:
-                  //   Icon(Icons.chat_outlined),
-                  // ),
-                ),
-                BottomNavigationBarItem(
-                  label: 'الشخصية',
-                  icon: Icon(Icons.person_rounded),
-                ),
-                if (userPermissions.contains('Chat_Permission'))
-                  BottomNavigationBarItem(
-                    label: 'الشخصية',
-                    icon: Icon(Icons.person_rounded),
-                  ),
-              ],
-              selectedLabelStyle: TextStyle(
-                fontFamily: 'Cairo',
-              ),
-            ));
+                        currentIndex: selectedPage,
+                        onTap: choosePage,
+                        items: [
+                          BottomNavigationBarItem(
+                            label: 'الرئيسية',
+                            icon: Icon(Icons.home),
+                          ),
+                          BottomNavigationBarItem(
+                            label: 'البورصة',
+                            icon: Icon(Icons.attach_money),
+                          ),
+                          BottomNavigationBarItem(
+                            label: 'المحادثة',
+                            icon: Icon(Icons.chat_outlined),
+                            // Badge(
+                            //   badgeContent: messageUnread == 0
+                            //       ? Container(
+                            //           color: Colors.transparent,
+                            //         )
+                            //       : Text(messageUnread.toString()),
+                            //   child:
+                            //   Icon(Icons.chat_outlined),
+                            // ),
+                          ),
+                          BottomNavigationBarItem(
+                            label: 'الشخصية',
+                            icon: Icon(Icons.person_rounded),
+                          ),
+                        ],
+                        selectedLabelStyle: TextStyle(
+                          fontFamily: 'Cairo',
+                        ),
+                      ))
+                  : Scaffold(
+                      key: _scaffoldKey,
+                      body: callBody(selectedPage),
+                      bottomNavigationBar: BottomNavigationBar(
+                        type: BottomNavigationBarType.fixed,
+                        backgroundColor: Color(navbar.hashCode),
+                        selectedItemColor: Colors.white,
+                        unselectedItemColor: Colors.white.withOpacity(.60),
+                        selectedFontSize: 14,
+                        unselectedFontSize: 14,
+                        unselectedLabelStyle: TextStyle(
+                          fontFamily: 'Cairo',
+                        ),
+                        currentIndex: selectedPage,
+                        onTap: choosePage,
+                        items: [
+                          BottomNavigationBarItem(
+                            label: 'الرئيسية',
+                            icon: Icon(Icons.home),
+                          ),
+                          BottomNavigationBarItem(
+                            label: 'البورصة',
+                            icon: Icon(Icons.attach_money),
+                          ),
+                          BottomNavigationBarItem(
+                            label: 'البورصة العالمية',
+                            icon: Icon(Icons.public_outlined),
+                            // Badge(
+                            //   badgeContent: messageUnread == 0
+                            //       ? Container(
+                            //           color: Colors.transparent,
+                            //         )
+                            //       : Text(messageUnread.toString()),
+                            //   child:
+                            //   Icon(Icons.chat_outlined),
+                            // ),
+                          ),
+                          BottomNavigationBarItem(
+                            label: 'المزاد المركزي',
+                            icon: Icon(Icons.person_rounded),
+                          ),
+                        ],
+                        selectedLabelStyle: TextStyle(
+                          fontFamily: 'Cairo',
+                        ),
+                      ));
+
+              // ignore: dead_code
+              break;
+            default:
+              return Scaffold(
+                  key: _scaffoldKey,
+                  body: callBody(selectedPage),
+                  bottomNavigationBar: BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
+                    backgroundColor: Color(navbar.hashCode),
+                    selectedItemColor: Colors.white,
+                    unselectedItemColor: Colors.white.withOpacity(.60),
+                    selectedFontSize: 14,
+                    unselectedFontSize: 14,
+                    currentIndex: selectedPage,
+                    onTap: choosePage,
+                    items: [
+                      if (userPermissions.contains('Chat_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'الأساسية',
+                          icon: Icon(Icons.home),
+                        ),
+                      if (userPermissions.contains('Chat_Permission') ||
+                          userPermissions.contains('Trader_Permission') ||
+                          userPermissions
+                              .contains('Update_Auction_Price_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'مزاد العملات',
+                          icon: Icon(Icons.attach_money),
+                        ),
+                      if (userPermissions.contains('Chat_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'المحادثة',
+                          icon: Icon(Icons.chat_outlined),
+                        ),
+                      if (userPermissions.contains('Chat_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'الشخصية',
+                          icon: Icon(Icons.person_rounded),
+                        ),
+                      if (userPermissions
+                          .contains('Update_Auction_Price_Permission'))
+                        BottomNavigationBarItem(
+                          label: 'الشخصية',
+                          icon: Icon(Icons.person_rounded),
+                        ),
+                    ],
+                    selectedLabelStyle: TextStyle(
+                      fontFamily: 'Cairo',
+                    ),
+                  ));
+          }
+        });
   }
 }

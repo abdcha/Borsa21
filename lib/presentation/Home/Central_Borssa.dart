@@ -1,5 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
+import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Auction/Auction.dart';
 import 'package:central_borssa/presentation/Auction/GlobalAuction.dart';
@@ -44,7 +45,10 @@ class CentralBorssaPage extends State<CentralBorssa> {
   int companyuser = 0;
   late String? userActive = "";
   late String? istrader = "";
+  late LoginBloc authloginBloc;
 
+  final phoneNumberTextEdit = TextEditingController();
+  final passwordTextEdit = TextEditingController();
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print('central borsaa ' + prefs.get('token').toString());
@@ -55,8 +59,6 @@ class CentralBorssaPage extends State<CentralBorssa> {
         isloading = false;
       });
     } else if (istrader != null) {
-      bloc = BlocProvider.of<BorssaBloc>(context);
-      loginbloc = BlocProvider.of<LoginBloc>(context);
       var now = DateTime.now();
       var newFormat = DateFormat("yyyy-MM-dd");
       String updatedDt = newFormat.format(now);
@@ -140,6 +142,10 @@ class CentralBorssaPage extends State<CentralBorssa> {
 
   @override
   void initState() {
+    bloc = BlocProvider.of<BorssaBloc>(context);
+    loginbloc = BlocProvider.of<LoginBloc>(context);
+    authloginBloc = BlocProvider.of<LoginBloc>(context);
+
     print('from init central borsa');
     sharedValue();
     super.initState();
@@ -954,45 +960,94 @@ class CentralBorssaPage extends State<CentralBorssa> {
                         child: Center(child: CircularProgressIndicator()),
                       ),
                     )
-                  : istrader == "null"
+                  : istrader == "null" && userActive != null
                       ? Container(
-                          height: MediaQuery.of(context).size.height - 168,
                           child: Directionality(
                             textDirection: ui.TextDirection.rtl,
-                            child: Card(
-                              color: Colors.grey,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 400,
-                                    width: 400,
-                                    child: CircleAvatar(
-                                      radius: 30.0,
-                                      backgroundColor: Colors.transparent,
-                                      child:
-                                          Image.asset('assest/Images/Logo.png'),
-                                    ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: 200,
+                                  width: 200,
+                                  child: CircleAvatar(
+                                    radius: 30.0,
+                                    backgroundColor: Colors.transparent,
+                                    child:
+                                        Image.asset('assest/Images/Logo.png'),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: InkWell(
-                                      onTap: () {
-                                        whatsappSender(number: '07716600999');
-                                      },
-                                      child: Text(
-                                        'هذه الصفحة خاصة بموظفي المصارف ومحلات الصرافة والمتعاملين الرسميين بالبورصات. للحصول على معلومات نرجو التواصل معنا من خلال الرقم التالي 07716600999.',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Cairo',
-                                        ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      whatsappSender(number: '07716600999');
+                                    },
+                                    child: Text(
+                                      'هذه الصفحة خاصة بموظفي المصارف ومحلات الصرافة والمتعاملين الرسميين بالبورصات. للحصول على معلومات نرجو التواصل معنا من خلال الرقم التالي 07716600999.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Cairo',
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextField(
+                                    controller: phoneNumberTextEdit,
+                                    decoration: InputDecoration(
+                                      hintStyle: TextStyle(fontSize: 17),
+                                      hintText: 'الاسم',
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Cairo',
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextField(
+                                    controller: passwordTextEdit,
+                                    decoration: InputDecoration(
+                                      hintStyle: TextStyle(fontSize: 17),
+                                      hintText: 'كلمة المرور',
+                                    ),
+                                    keyboardType: TextInputType.name,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Cairo',
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  navbar)),
+                                      child: Text(
+                                        'دخول',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      onPressed: () {
+                                        authloginBloc.add(LoginSubmite(
+                                            phone: phoneNumberTextEdit.text,
+                                            password: passwordTextEdit.text));
+                                      },
+                                    )),
+                              ],
                             ),
                           ),
                         )

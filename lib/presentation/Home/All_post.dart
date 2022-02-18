@@ -32,7 +32,6 @@ import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/data/model/Post/Cities.dart';
 import 'package:central_borssa/data/model/Post/GetPost.dart';
 import 'package:central_borssa/presentation/Company/company.dart';
-import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Post/add_Post.dart';
 import 'package:transparent_image/transparent_image.dart';
 
