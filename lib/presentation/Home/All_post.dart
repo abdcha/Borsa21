@@ -760,6 +760,18 @@ class AllPostPage extends State<AllPost> {
                         },
                       ),
                     ),
+                  ),
+                  ListTile(
+                    title: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'قم بإختيار المدينة لمتابعة المنشورات الخاصة لشركات الصيرفة فيها',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   )
                 ],
               )
@@ -866,15 +878,14 @@ class AllPostPage extends State<AllPost> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 4),
               child: InkWell(
-                  child: countofMessage != 0
-                      ? Padding(
-                          padding: const EdgeInsets.only(right: 8.0, top: 2),
-                          child: Badge(
-                            badgeContent: Text(countofMessage.toString()),
-                            child: Icon(Icons.notification_add_outlined),
-                          ),
-                        )
-                      : Icon(Icons.notification_add_outlined),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0, top: 2),
+                    child: Badge(
+                      badgeContent: Text(countofMessage.toString()),
+                      child: Icon(Icons.notification_add_outlined),
+                      showBadge: countofMessage != 0 ? true : false,
+                    ),
+                  ),
                   onTap: () async {
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();

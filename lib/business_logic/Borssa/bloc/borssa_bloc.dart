@@ -16,13 +16,14 @@ class BorssaBloc extends Bloc<BorssaEvent, BorssaState> {
   ) async* {
     //All City in Borssa
     if (event is AllCity) {
+      yield BorssaReloadingState();
+
       final allCititesResponse = await cityrepository.allCity();
       yield* allCititesResponse.fold((l) async* {
         print(l);
         yield BorssaErrorLoading();
         print('currency pricy bloc error');
       }, (r) async* {
-        yield BorssaReloadingState();
         print('currency pricy bloc');
         yield GetAllCityState(cities: r);
       });

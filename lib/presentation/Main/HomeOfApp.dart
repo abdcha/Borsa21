@@ -1,6 +1,6 @@
-import 'package:badges/badges.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
+import 'package:central_borssa/presentation/Admin/Profile.dart';
 import 'package:central_borssa/presentation/Auction/Auction.dart';
 import 'package:central_borssa/presentation/Auction/Global.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
@@ -38,7 +38,14 @@ class home_page extends State<HomeOfApp>
   late String temp2 = "ss";
   bool allow = true;
   late String? istrader = "";
+
   sharedValue() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    print('-------------');
+    print(token);
+    print('-------------');
+    _loginBloc = BlocProvider.of<LoginBloc>(context);
+    _loginBloc.add(FireBaseTokenEvent(fcmToken: token));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     istrader = prefs.get('token').toString();
     print('dsa {$istrader}');
@@ -88,11 +95,8 @@ class home_page extends State<HomeOfApp>
   nothing() {}
 
   fireBase() async {
-    // String? token = await FirebaseMessaging.instance.getToken();
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // _loginBloc.add(FireBaseTokenEvent(fcmToken: token));
-    // _loginBloc = BlocProvider.of<LoginBloc>(context);
+
     FirebaseMessaging.onMessage.handleError((error) {
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) {
@@ -390,6 +394,16 @@ class home_page extends State<HomeOfApp>
           break;
         default:
       }
+    } else if (isTrader == false && userType == "Admin") {
+      switch (index) {
+        case 0:
+          return CentralBorssa();
+        case 1:
+          return Profile();
+          // ignore: dead_code
+          break;
+        default:
+      }
     }
   }
 
@@ -440,54 +454,8 @@ class home_page extends State<HomeOfApp>
             case ConnectionState.active:
               return Welcome();
             case ConnectionState.done:
-              return (userType == "User")
+              return (userType == "Trader" || isTrader == true)
                   ? Scaffold(
-                      key: _scaffoldKey,
-                      body: callBody(selectedPage),
-                      bottomNavigationBar: BottomNavigationBar(
-                        type: BottomNavigationBarType.fixed,
-                        backgroundColor: Color(navbar.hashCode),
-                        selectedItemColor: Colors.white,
-                        unselectedItemColor: Colors.white.withOpacity(.60),
-                        selectedFontSize: 14,
-                        unselectedFontSize: 14,
-                        unselectedLabelStyle: TextStyle(
-                          fontFamily: 'Cairo',
-                        ),
-                        currentIndex: selectedPage,
-                        onTap: choosePage,
-                        items: [
-                          BottomNavigationBarItem(
-                            label: 'الرئيسية',
-                            icon: Icon(Icons.home),
-                          ),
-                          BottomNavigationBarItem(
-                            label: 'البورصة',
-                            icon: Icon(Icons.attach_money),
-                          ),
-                          BottomNavigationBarItem(
-                            label: 'المحادثة',
-                            icon: Icon(Icons.chat_outlined),
-                            // Badge(
-                            //   badgeContent: messageUnread == 0
-                            //       ? Container(
-                            //           color: Colors.transparent,
-                            //         )
-                            //       : Text(messageUnread.toString()),
-                            //   child:
-                            //   Icon(Icons.chat_outlined),
-                            // ),
-                          ),
-                          BottomNavigationBarItem(
-                            label: 'الشخصية',
-                            icon: Icon(Icons.person_rounded),
-                          ),
-                        ],
-                        selectedLabelStyle: TextStyle(
-                          fontFamily: 'Cairo',
-                        ),
-                      ))
-                  : Scaffold(
                       key: _scaffoldKey,
                       body: callBody(selectedPage),
                       bottomNavigationBar: BottomNavigationBar(
@@ -528,6 +496,56 @@ class home_page extends State<HomeOfApp>
                             label: 'المزاد المركزي',
                             icon: Icon(Icons.person_rounded),
                           ),
+                        ],
+                        selectedLabelStyle: TextStyle(
+                          fontFamily: 'Cairo',
+                        ),
+                      ))
+                  : Scaffold(
+                      key: _scaffoldKey,
+                      body: callBody(selectedPage),
+                      bottomNavigationBar: BottomNavigationBar(
+                        type: BottomNavigationBarType.fixed,
+                        backgroundColor: Color(navbar.hashCode),
+                        selectedItemColor: Colors.white,
+                        unselectedItemColor: Colors.white.withOpacity(.60),
+                        selectedFontSize: 14,
+                        unselectedFontSize: 14,
+                        unselectedLabelStyle: TextStyle(
+                          fontFamily: 'Cairo',
+                        ),
+                        currentIndex: selectedPage,
+                        onTap: choosePage,
+                        items: [
+                          if (userType == "User")
+                            BottomNavigationBarItem(
+                              label: 'الرئيسية',
+                              icon: Icon(Icons.home),
+                            ),
+                          if (userType == "User" || userType == "Admin")
+                            BottomNavigationBarItem(
+                              label: 'البورصة',
+                              icon: Icon(Icons.attach_money),
+                            ),
+                          if (userType == "User")
+                            BottomNavigationBarItem(
+                              label: 'المحادثة',
+                              icon: Icon(Icons.chat_outlined),
+                              // Badge(
+                              //   badgeContent: messageUnread == 0
+                              //       ? Container(
+                              //           color: Colors.transparent,
+                              //         )
+                              //       : Text(messageUnread.toString()),
+                              //   child:
+                              //   Icon(Icons.chat_outlined),
+                              // ),
+                            ),
+                          if (userType == "User" || userType == "Admin")
+                            BottomNavigationBarItem(
+                              label: 'الشخصية',
+                              icon: Icon(Icons.person_rounded),
+                            ),
                         ],
                         selectedLabelStyle: TextStyle(
                           fontFamily: 'Cairo',

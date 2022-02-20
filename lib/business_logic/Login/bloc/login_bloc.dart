@@ -25,7 +25,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         yield ErrorLoginState();
       }, (r) async* {
         yield LoginLoadingState();
-
         print(r);
         yield UserLoginScreen();
       });

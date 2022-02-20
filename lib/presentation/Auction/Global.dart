@@ -30,24 +30,24 @@ class GlobalPage extends State<Global> {
   int companyuser = 0;
   late int userActive = 0;
 
-  sharedValue() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userName = prefs.get('username').toString();
-    userPhone = prefs.get('userphone').toString();
-    userLocation = "Empty";
-    userPermissions = prefs.getStringList('permissions')!.toList();
-    var y = userPermissions.contains('Update_Auction_Price_Permission');
-    print('user permission$y');
-    companyuser = int.parse(prefs.get('companyid').toString());
-    userType = prefs.get('roles').toString();
-    await Future.delayed(Duration(milliseconds: 50));
-  }
+  // sharedValue() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   userName = prefs.get('username').toString();
+  //   userPhone = prefs.get('userphone').toString();
+  //   userLocation = "Empty";
+  //   userPermissions = prefs.getStringList('permissions')!.toList();
+  //   var y = userPermissions.contains('Update_Auction_Price_Permission');
+  //   print('user permission$y');
+  //   companyuser = int.parse(prefs.get('companyid').toString());
+  //   userType = prefs.get('roles').toString();
+  //   await Future.delayed(Duration(milliseconds: 50));
+  // }
 
   @override
   void initState() {
     bloc2 = BlocProvider.of<GlobalauctionBloc>(context);
     bloc2.add(GetGlobalauctionEvent());
-    sharedValue();
+    // sharedValue();
 
     super.initState();
   }
@@ -1389,7 +1389,7 @@ class GlobalPage extends State<Global> {
     return Scaffold(
       backgroundColor: Color(0xff6e7d91),
       drawer: null,
-      appBar: userPermissions.contains('Chat_Permission')
+      appBar: userType == "Trader"
           ? new AppBar(
               title: Container(
                 height: 50,

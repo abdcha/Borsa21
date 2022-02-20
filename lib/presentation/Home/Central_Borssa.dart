@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_bloc.dart';
 import 'package:central_borssa/business_logic/Login/bloc/login_event.dart';
+import 'package:central_borssa/business_logic/Login/bloc/login_state.dart';
 import 'package:central_borssa/constants/string.dart';
 import 'package:central_borssa/presentation/Auction/Auction.dart';
 import 'package:central_borssa/presentation/Auction/GlobalAuction.dart';
@@ -148,6 +149,7 @@ class CentralBorssaPage extends State<CentralBorssa> {
 
     print('from init central borsa');
     sharedValue();
+    firebase();
     super.initState();
   }
 
@@ -918,38 +920,70 @@ class CentralBorssaPage extends State<CentralBorssa> {
         ),
         backgroundColor: Color(navbar.hashCode),
       ),
-      body: BlocListener<BorssaBloc, BorssaState>(
-        listener: (context, state) {
-          if (state is GetAllCityState) {
-            print(state);
-            currencyprice = state.cities;
-            isloading = false;
-            setState(() {});
-          } else if (state is BorssaErrorLoading) {
-            print(state);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('خطأ في التحميل'),
-                action: SnackBarAction(
-                  label: 'تنبيه',
-                  onPressed: () {},
-                ),
-              ),
-            );
-          } else if (state is GetAllTransfersLoading) {
-            print(state);
-          } else if (state is GetAllTransfersLoaded) {
-            print(state);
-            transferprice = state.cities;
-            istransferloading = false;
-            setState(() {});
-          } else if (state is GetAllTransfersError) {
-            print(state);
-            setState(() {
-              istransferloading = true;
-            });
-          }
-        },
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<BorssaBloc, BorssaState>(
+            listener: (context, state) {
+              if (state is GetAllCityState) {
+                setState(() {
+                  print(state);
+                  currencyprice = state.cities;
+                  isloading = false;
+                });
+              } else if (state is BorssaErrorLoading) {
+                print(state);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('خطأ في التحميل'),
+                    action: SnackBarAction(
+                      label: 'تنبيه',
+                      onPressed: () {},
+                    ),
+                  ),
+                );
+              } else if (state is GetAllTransfersLoading) {
+                print(state);
+              } else if (state is GetAllTransfersLoaded) {
+                setState(() {
+                  print(state);
+                  transferprice = state.cities;
+                  istransferloading = false;
+                });
+              } else if (state is GetAllTransfersError) {
+                print(state);
+                setState(() {
+                  istransferloading = true;
+                });
+              }
+            },
+          ),
+          BlocListener<LoginBloc, LoginState>(
+            listener: (context, state) {
+              if (state is UserLoginScreen) {
+                setState(() {
+                  sharedValue();
+                });
+                print(state);
+              }
+              if (state is ErrorLoginState) {
+                setState(() {});
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('الرجاء التأكد من المعلومات المدخلة'),
+                    action: SnackBarAction(
+                      label: 'تنبيه',
+                      onPressed: () {
+                        // Code to execute.
+                      },
+                    ),
+                  ),
+                );
+              } else if (state is LoginLoadingState) {
+                setState(() {});
+              }
+            },
+          ),
+        ],
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -1053,170 +1087,168 @@ class CentralBorssaPage extends State<CentralBorssa> {
                         )
                       : Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: !istransferloading &&
-                                  currencyprice.isNotEmpty &&
-                                  transferprice.isNotEmpty
-                              ? Container(
-                                  child: Column(
-                                    children: [
-                                      dataTable(currencyprice, "currency"),
-                                      dataTabletransfer(
-                                          transferprice, "transfer"),
-                                      (userPermissions.contains(
-                                                  'Trader_Permission') ||
-                                              userPermissions.contains(
-                                                  'Update_Auction_Price_Permission'))
-                                          ? Container()
-                                          : istransferloading
+                          child:
+                              !istransferloading &&
+                                      currencyprice.isNotEmpty &&
+                                      transferprice.isNotEmpty
+                                  ? Container(
+                                      child: Column(
+                                        children: [
+                                          dataTable(currencyprice, "currency"),
+                                          dataTabletransfer(
+                                              transferprice, "transfer"),
+                                          (userPermissions.contains(
+                                                      'Trader_Permission') ||
+                                                  userPermissions.contains(
+                                                      'Update_Auction_Price_Permission'))
                                               ? Container()
-                                              : Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(1.0),
-                                                  child: Card(
-                                                    elevation: 4,
-                                                    shadowColor: Colors.black,
-                                                    color: Color(0xff7d8a99),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15.0),
-                                                      side: new BorderSide(
-                                                          color: Colors.white),
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        Spacer(),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 24.0),
-                                                          child: Container(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: Column(
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      auctionRead();
-                                                                      Navigator
-                                                                          .push(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                            builder: (context) =>
-                                                                                Auction()),
-                                                                      );
-                                                                    },
-
-                                                                    child: countofAuctions !=
-                                                                            0
-                                                                        ? Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.only(right: 8.0, top: 2),
-                                                                            child:
-                                                                                Badge(
-                                                                              badgeContent: Text(countofAuctions.toString()),
-                                                                              child: Icon(Icons.account_balance_sharp, color: Colors.white, size: 55),
-                                                                            ),
-                                                                          )
-                                                                        : Icon(
-                                                                            Icons
-                                                                                .account_balance_sharp,
-                                                                            color:
-                                                                                Colors.white,
-                                                                            size: 55),
-                                                                    //  Icon(
-                                                                    //   Icons
-                                                                    //       .account_balance_sharp,
-                                                                    //   color: Colors
-                                                                    //       .white,
-                                                                    //   size: 55,
-                                                                    // ),
-                                                                  ),
-                                                                  Text(
-                                                                    "المزاد المركزي",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontFamily:
-                                                                          'Cairo',
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
+                                              : istransferloading
+                                                  ? Container()
+                                                  : Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              1.0),
+                                                      child: Card(
+                                                        elevation: 4,
+                                                        shadowColor:
+                                                            Colors.black,
+                                                        color:
+                                                            Color(0xff7d8a99),
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      15.0),
+                                                          side: new BorderSide(
+                                                              color:
+                                                                  Colors.white),
                                                         ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 24.0),
-                                                          child: Container(
-                                                            child: Padding(
+                                                        child: Row(
+                                                          children: [
+                                                            Spacer(),
+                                                            Padding(
                                                               padding:
                                                                   const EdgeInsets
                                                                           .only(
                                                                       right:
+                                                                          24.0),
+                                                              child: Container(
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
                                                                           8.0),
-                                                              child: Column(
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      Navigator
-                                                                          .push(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                            builder: (context) =>
-                                                                                GlobalAuction()),
-                                                                      );
-                                                                    },
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .public_outlined,
-                                                                      size: 55,
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
+                                                                  child: Column(
+                                                                    children: [
+                                                                      InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          auctionRead();
+                                                                          Navigator
+                                                                              .push(
+                                                                            context,
+                                                                            MaterialPageRoute(builder: (context) => Auction()),
+                                                                          );
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: const EdgeInsets.only(
+                                                                              right: 8.0,
+                                                                              top: 2),
+                                                                          child:
+                                                                              Badge(
+                                                                            badgeContent:
+                                                                                Text(countofAuctions.toString()),
+                                                                            child: Icon(Icons.account_balance_sharp,
+                                                                                color: Colors.white,
+                                                                                size: 55),
+                                                                            showBadge: countofAuctions != 0
+                                                                                ? true
+                                                                                : false,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Text(
+                                                                        "المزاد المركزي",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              12,
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          fontFamily:
+                                                                              'Cairo',
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                  Text(
-                                                                    "البورصة العالميه",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontFamily:
-                                                                          'Cairo',
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left:
+                                                                          24.0),
+                                                              child: Container(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      right:
+                                                                          8.0),
+                                                                  child: Column(
+                                                                    children: [
+                                                                      InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          Navigator
+                                                                              .push(
+                                                                            context,
+                                                                            MaterialPageRoute(builder: (context) => GlobalAuction()),
+                                                                          );
+                                                                        },
+                                                                        child:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .public_outlined,
+                                                                          size:
+                                                                              55,
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                      ),
+                                                                      Text(
+                                                                        "البورصة العالميه",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              12,
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          fontFamily:
+                                                                              'Cairo',
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Spacer(),
+                                                          ],
                                                         ),
-                                                        Spacer(),
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
-                                    ],
-                                  ),
-                                )
-                              : Container()),
+                                        ],
+                                      ),
+                                    )
+                                  : Container()),
             ],
           ),
         ),

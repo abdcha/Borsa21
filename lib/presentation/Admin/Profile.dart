@@ -32,11 +32,11 @@ class ProfilePage extends State<Profile> {
   late String? location;
   bool isEditn = true;
 
-  // @override
-  // void dispose() {
-  //   // refreshController.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    // refreshController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -125,6 +125,7 @@ class ProfilePage extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: newDrawer(),
+      backgroundColor: Color(0xff6e7d91),
       appBar: AppBar(
         title: Center(
           child: Text('البورصة المركزية'),
@@ -138,7 +139,6 @@ class ProfilePage extends State<Profile> {
         ],
         backgroundColor: Color(navbar.hashCode),
       ),
-      backgroundColor: Colors.grey[300],
       body: MultiBlocListener(
         listeners: [
           BlocListener<CompanyBloc, CompanyState>(
@@ -151,96 +151,91 @@ class ProfilePage extends State<Profile> {
             },
           ),
         ],
-        child: Card(
-          child: Card(
-            color: Color(navbar.hashCode),
-            child: Column(
-              children: [
-                Container(
-                  height: 400,
-                  width: 400,
-                  child: CircleAvatar(
-                    radius: 30.0,
-                    backgroundColor: Colors.transparent,
-                    child: Image.asset('assest/Images/Logo.png'),
-                  ),
-                ),
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: 8, top: 8, right: 12, left: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          userName,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: InkWell(
-                            child: Icon(
-                              Icons.person,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: 8, top: 8, right: 12, left: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          userPhone,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: InkWell(
-                            onTap: () {
-                              launch("tel://$userPhone");
-                            },
-                            child: Icon(
-                              Icons.phone,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: 8, top: 8, right: 12, left: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          userActive == "" ? "فعال" : userActive,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Icon(
-                            Icons.av_timer,
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+        child: Column(
+          children: [
+            Container(
+              height: 400,
+              width: 400,
+              child: CircleAvatar(
+                radius: 30.0,
+                backgroundColor: Colors.transparent,
+                child: Image.asset('assest/Images/Logo.png'),
+              ),
             ),
-          ),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 8, top: 8, right: 12, left: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      userName,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: InkWell(
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 8, top: 8, right: 12, left: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      userPhone,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: InkWell(
+                        onTap: () {
+                          launch("tel://$userPhone");
+                        },
+                        child: Icon(
+                          Icons.phone,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 8, top: 8, right: 12, left: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      userActive == "" ? "فعال" : userActive,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Icon(
+                        Icons.av_timer,
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

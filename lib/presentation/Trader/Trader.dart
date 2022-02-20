@@ -55,30 +55,32 @@ class TraderPage extends State<Trader> {
 
   sharedValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userName = prefs.get('username').toString();
-    userPhone = prefs.get('userphone').toString();
-    userLocation = "Empty";
-    userPermissions = prefs.getStringList('permissions')!.toList();
-    if (prefs.getInt('countofMessage') != null) {
-      countofMessage = 0;
-      countofMessage = prefs.getInt('countofMessage')!;
-      print('--share---');
-      print(countofMessage);
-    }
-    if (prefs.get('end_subscription') != null) {
-      userActive = prefs.get('end_subscription').toString();
-    }
-    if (prefs.getStringList('MessageBody') != null) {
-      messageBody.clear();
-      messageBody = prefs.getStringList('MessageBody')!;
-      print('--share---');
-      print(messageBody);
-    }
-    var y = userPermissions.contains('Update_Auction_Price_Permission');
-    print('user permission$y');
-    companyuser = int.parse(prefs.get('companyid').toString());
-    userType = prefs.get('roles').toString();
-    setState(() {});
+    if (prefs.get('token').toString() != "null") {
+      userName = prefs.get('username').toString();
+      userPhone = prefs.get('userphone').toString();
+      userLocation = "Empty";
+      userPermissions = prefs.getStringList('permissions')!.toList();
+      if (prefs.getInt('countofMessage') != null) {
+        countofMessage = 0;
+        countofMessage = prefs.getInt('countofMessage')!;
+        print('--share---');
+        print(countofMessage);
+      }
+      if (prefs.get('end_subscription') != null) {
+        userActive = prefs.get('end_subscription').toString();
+      }
+      if (prefs.getStringList('MessageBody') != null) {
+        messageBody.clear();
+        messageBody = prefs.getStringList('MessageBody')!;
+        print('--share---');
+        print(messageBody);
+      }
+      var y = userPermissions.contains('Update_Auction_Price_Permission');
+      print('user permission$y');
+      companyuser = int.parse(prefs.get('companyid').toString());
+      userType = prefs.get('roles').toString();
+      setState(() {});
+    } else {}
   }
 
   firebase() async {
@@ -132,10 +134,10 @@ class TraderPage extends State<Trader> {
 
   @override
   void initState() {
-    // sharedValue();
+    sharedValue();
     advertisementbloc = BlocProvider.of<AdvertisementBloc>(context);
     advertisementbloc.add(GetAdvertisementEvent());
-    // firebase();
+    firebase();
     bloc = BlocProvider.of<BorssaBloc>(context);
     bloc.add(TraderCurrencyEvent());
 

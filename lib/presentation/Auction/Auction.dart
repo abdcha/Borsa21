@@ -30,16 +30,16 @@ class AuctionPage extends State<Auction> {
   bool _isLoading = false;
   NumberFormat myFormat = NumberFormat.decimalPattern('en_us');
 
-  sharedValue() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userName = prefs.get('username').toString();
-    userPhone = prefs.get('userphone').toString();
-    userLocation = "Empty";
-    userPermissions = prefs.getStringList('permissions')!.toList();
-    companyuser = int.parse(prefs.get('companyid').toString());
-    userType = prefs.get('roles').toString();
-    setState(() {});
-  }
+  // sharedValue() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   userName = prefs.get('username').toString();
+  //   userPhone = prefs.get('userphone').toString();
+  //   userLocation = "Empty";
+  //   userPermissions = prefs.getStringList('permissions')!.toList();
+  //   companyuser = int.parse(prefs.get('companyid').toString());
+  //   userType = prefs.get('roles').toString();
+  //   setState(() {});
+  // }
 
   @override
   void initState() {
@@ -261,7 +261,7 @@ class AuctionPage extends State<Auction> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff6e7d91),
-      appBar: userPermissions.contains('Chat_Permission')
+      appBar: userType == "User"
           ? new AppBar(
               title: Container(
                 height: 50,
