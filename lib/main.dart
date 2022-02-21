@@ -16,7 +16,6 @@ import 'package:central_borssa/data/repositroy/CurrencyRepository.dart';
 import 'package:central_borssa/data/repositroy/PostRepository.dart';
 import 'package:central_borssa/data/repositroy/loginRepository.dart';
 import 'package:central_borssa/presentation/Main/HomeOfApp.dart';
-import 'package:central_borssa/presentation/Main/Loginpage.dart';
 import 'package:central_borssa/presentation/Main/SkipePage.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -62,8 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<String?> getValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // prefs.clear();
     await Firebase.initializeApp();
+
     print('firebase');
 
     setState(() {

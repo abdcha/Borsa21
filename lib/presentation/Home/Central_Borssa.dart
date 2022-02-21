@@ -1012,19 +1012,14 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      whatsappSender(number: '07716600999');
-                                    },
-                                    child: Text(
-                                      'هذه الصفحة خاصة بموظفي المصارف ومحلات الصرافة والمتعاملين الرسميين بالبورصات. للحصول على معلومات نرجو التواصل معنا من خلال الرقم التالي 07716600999.',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Cairo',
-                                      ),
+                                  child: Text(
+                                    'هذه الصفحة خاصة بموظفي المصارف ومحلات الصرافة والمتعاملين الرسميين بالبورصة. للحصول على معلومات الدخول يمكن مراسلتنا على الرقم التالي 07700198027.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Cairo',
                                     ),
                                   ),
                                 ),
@@ -1076,9 +1071,27 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       onPressed: () {
-                                        authloginBloc.add(LoginSubmite(
-                                            phone: phoneNumberTextEdit.text,
-                                            password: passwordTextEdit.text));
+                                        if (passwordTextEdit.text.isEmpty ||
+                                            phoneNumberTextEdit.text.isEmpty) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: const Text(
+                                                  'الرجاء التأكد من المعلومات المدخلة'),
+                                              action: SnackBarAction(
+                                                label: 'تنبيه',
+                                                onPressed: () {},
+                                              ),
+                                            ),
+                                          );
+                                        } else if (passwordTextEdit
+                                                .text.isNotEmpty &&
+                                            phoneNumberTextEdit
+                                                .text.isNotEmpty) {
+                                          authloginBloc.add(LoginSubmite(
+                                              phone: phoneNumberTextEdit.text,
+                                              password: passwordTextEdit.text));
+                                        }
                                       },
                                     )),
                               ],
@@ -1154,8 +1167,8 @@ class CentralBorssaPage extends State<CentralBorssa> {
                                                                         child:
                                                                             Padding(
                                                                           padding: const EdgeInsets.only(
-                                                                              right: 8.0,
-                                                                              top: 2),
+                                                                              right: 0.0,
+                                                                              top: 0),
                                                                           child:
                                                                               Badge(
                                                                             badgeContent:

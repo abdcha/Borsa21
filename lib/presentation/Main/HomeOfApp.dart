@@ -5,6 +5,7 @@ import 'package:central_borssa/presentation/Auction/Auction.dart';
 import 'package:central_borssa/presentation/Auction/Global.dart';
 import 'package:central_borssa/presentation/Share/Welcome.dart';
 import 'package:central_borssa/presentation/Trader/Trader.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,6 +56,7 @@ class home_page extends State<HomeOfApp>
         isTrader = true;
       });
     } else if (istrader != "null" && istrader != "") {
+
       isTrader = false;
 
       userName = prefs.get('username').toString();
@@ -94,13 +96,21 @@ class home_page extends State<HomeOfApp>
 
   nothing() {}
 
-  fireBase() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  _backgroundmessage() async {
+    await Firebase.initializeApp();
 
+    print('ddd');
+  }
+
+  fireBase() async {
+      await Firebase.initializeApp();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    FirebaseMessaging.onBackgroundMessage(_backgroundmessage());
     FirebaseMessaging.onMessage.handleError((error) {
       print("Erorrrrrr : ${error.toString()}");
     }).listen((event) {
-      if (userPermissions.contains('Trader_Permission')) {
+      if (userType == "Trader") {
         if (event.data['type'] == "trader_currency_price_change") {
           String? temp = event.notification!.body;
           temp2 = temp!;
@@ -213,8 +223,7 @@ class home_page extends State<HomeOfApp>
             prefs.setInt('countofauction', countofAuctions);
           }
         }
-      } else if (userPermissions.contains('Chat_Permission') &&
-          userActive != "") {
+      } else {
         if (event.data['type'] == "new_followed_post") {
           String? temp = event.notification!.body;
           temp2 = temp!;
@@ -358,7 +367,6 @@ class home_page extends State<HomeOfApp>
 
   @override
   bool get wantKeepAlive => true;
-  //test
 
   callBody(int index) {
     print(userPermissions);

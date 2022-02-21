@@ -26,7 +26,7 @@ class SplashPage_page extends State<splashpage> {
 
   @override
   initState() {
-    Firebase.initializeApp();
+    // Firebase.initializeApp();
     print('firebase');
     token = widget.token;
     setState(() {});
